@@ -2,9 +2,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 
-DEFAULT_PFP = "./default.jpg"
-BG_IMAGE = "./Imagen fondo para login.png"
-LOGO = "./Letras El ricon de los 4 diablitos.png"
+DEFAULT_PFP = "./img/default.jpg"
+BG_IMAGE = "./img/Imagen fondo para login.png"
+LOGO = "./img/Letras El ricon de los 4 diablitos.png"
 USERNAMES = ["Admin", "Jose", "Eustacio", "Anaconda", "suelto", "otro", "otro mas"]
 
 class Canvas(tk.Tk):
@@ -33,6 +33,8 @@ class Canvas(tk.Tk):
         right_panel = self.crear_panel_derecho(root=self)
         right_panel.grid(column=1, row=0, sticky="nswe", columnspan=2)
 
+        self.bind("<MouseWheel>", self.accion_rueda_mouse)
+
 
     def crear_panel_izquierdo(self, root: tk.Tk) -> tk.Frame:
         panel = tk.Frame(root)
@@ -44,8 +46,8 @@ class Canvas(tk.Tk):
         users_entry = tk.Entry(panel)
         users_entry.grid(column=0, row=0)
 
-        users_panel = self.crear_panel_usuarios(root=panel)
-        users_panel.grid(column=0, row=1, sticky="nswe")
+        self.users_panel = self.crear_panel_usuarios(root=panel)
+        self.users_panel.grid(column=0, row=1, sticky="nswe")
 
         return panel
 
@@ -53,18 +55,18 @@ class Canvas(tk.Tk):
     def crear_panel_usuarios(self, root: tk.Frame) -> tk.Frame:
         panel = tk.Frame(root)
 
-        canvas = tk.Canvas(panel, width=0)
-        canvas.pack(fill="both", expand=True)
+        self.canvas = tk.Canvas(panel, width=0)
+        self.canvas.pack(fill="both", expand=True)
 
         for i in range(len(USERNAMES)):
-            self.agregar_usuario(canvas, i, USERNAMES[i], self.square_sides, self.yPos)
+            self.agregar_usuario(self.canvas, i, USERNAMES[i], self.square_sides, self.yPos)
             self.yPos += self.square_sides + 10
 
-        scrollbar = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview, width=20)
+        scrollbar = tk.Scrollbar(self.canvas, orient="vertical", command=self.canvas.yview, width=20)
         scrollbar.pack(fill="y", side="right")
 
-        canvas.config(yscrollcommand=scrollbar.set) 
-        canvas.config(scrollregion=canvas.bbox("all"))
+        self.canvas.config(yscrollcommand=scrollbar.set) 
+        self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
         return panel
 
@@ -81,9 +83,9 @@ class Canvas(tk.Tk):
         image_label.image = pfp_tk
         image_label.pack(expand=True)
 
-        name_label = tk.Label(panel, text=user, anchor="center", font=("Impact", 16))
+        name_label = tk.Label(panel, text=user, anchor="center", font=("Segoe ui", 16))
         name_label.str_id = user
-        name_label.pack(expand=True, fill="x", pady=10)
+        name_label.pack(expand=True, fill="x", pady=5)
 
         panel.place(width=size, height=size, x=50)
         root.create_window(20, yPos, anchor="nw", window=panel)
@@ -92,7 +94,7 @@ class Canvas(tk.Tk):
     def crear_panel_derecho(self, root: tk.Tk) -> tk.Frame:
         panel = tk.Frame(self)
 
-        bg_canvas = tk.Canvas(panel, width=1030, height=720)
+        bg_canvas = tk.Canvas(panel, width=1030, height=720, background="grey")
 
         background_image = Image.open(BG_IMAGE)
         resized_img = background_image.resize((1030, 720))
@@ -102,40 +104,16 @@ class Canvas(tk.Tk):
         bg_canvas.create_image(0, 0, anchor="nw", image=background_image_tk)
         bg_canvas.place(x=0, y=0)
 
-        #rec_canv = tk.Canvas(panel, width=self.rec_canv_width, height=self.rec_canv_height)
-
-        logo = Image.open(LOGO)
-        resized_logo = logo.resize((600, 600))
-        logo_tk = ImageTk.PhotoImage(resized_logo)
-
-        bg_canvas.image = logo_tk
-
-        #bg_canvas.create_window(300,300, window=logo_label)
-        bg_canvas.create_image(300, 300, anchor="nw", image=logo_tk)
-
-        #rec_canv.create_rectangle(0, 0, rec_canv_width, rec_canv_height, fill="black", outline="black")
-
-        #rec_canv.place(x=110, y=50)
-
         return panel
-
-
-    def agregar_imagen(self, root: tk.Canvas) -> tk.Label:
-        label_logo = tk.Label(root)
-
-        logo = Image.open(LOGO)
-        resized_logo = logo.resize((600, 600))
-        logo_tk = ImageTk.PhotoImage(resized_logo)
-
-        label_logo.image = logo_tk
-        label_logo.config(image=logo_tk)
-
-        return label_logo
 
 
     def limpiar_canvas(canvas) -> None:
         for widget in canvas.winfo_children():
             widget.destroy()  # Elimina cada widget del canvas
+
+    
+    def accion_rueda_mouse(self, event):
+        self.canvas.yview_scroll(int(-1*(event.delta//120)), "units")
 
 
 
