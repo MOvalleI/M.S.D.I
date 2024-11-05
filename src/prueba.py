@@ -1,14 +1,48 @@
-# import InventarioDB as idb
-# import BuscadorDB as bi
+# Import the required libraries
+from tkinter import *
+from tkinter import ttk
 
-# a = idb.InventarioDB()
+# Create an instance of tkinter frame
+win = Tk()
 
-# print(a.Menu[1])
+# Set the size of the tkinter window
+win.geometry("700x350")
 
-# # print(bi.BuscadorDB.buscar_categoria_por_id(a.Categoria, 6))
-# # print(bi.BuscadorDB.buscar_categoria_por_id(a.Tamaños, 2))
-# # print(bi.BuscadorDB.buscar_unidad_por_id(a.Unidades, 10))
+# Create an instance of Style widget
+style = ttk.Style()
+style.theme_use('clam')
 
-a = "10"
-b = 5
-print(a * b)
+# Add a Treeview widget
+tree = ttk.Treeview(win, column=("c1", "c2"), show='headings', height=8)
+tree.column("# 1", anchor=CENTER)
+tree.heading("# 1", text="ID")
+tree.column("# 2", anchor=CENTER)
+tree.heading("# 2", text="Company")
+
+# Insert the data in Treeview widget
+tree.insert('', 'end', text="1", values=('1', 'Honda'))
+tree.insert('', 'end', text="2", values=('2', 'Hyundai'))
+tree.insert('', 'end', text="3", values=('3', 'Tesla'))
+tree.insert('', 'end', text="4", values=('4', 'Wolkswagon'))
+tree.insert('', 'end', text="5", values=('5', 'Tata Motors'))
+tree.insert('', 'end', text="6", values=('6', 'Renault'))
+
+tree.pack()
+
+def edit():
+   # Get selected item to Edit
+   selected_item = tree.selection()[0]
+   tree.item(selected_item, text="blub", values=("foo", "bar"))
+
+def delete():
+   # Get selected item to Delete
+   selected_item = tree.selection()[0]
+   tree.delete(selected_item)
+
+# Add Buttons to Edit and Delete the Treeview items
+edit_btn = ttk.Button(win, text="Edit", command=edit)
+edit_btn.pack()
+del_btn = ttk.Button(win, text="Delete", command=delete)
+del_btn.pack()
+
+win.mainloop()

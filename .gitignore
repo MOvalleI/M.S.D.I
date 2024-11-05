@@ -7,4 +7,4 @@ __pycache__/
 *.pyc
 
 # Ingora estos archivos especificos
-src/prueba.py
+*/prueba.py

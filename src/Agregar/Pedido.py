@@ -117,7 +117,7 @@ class Pedido(tk.Toplevel):
         self.b_aumentar = tk.Button(panel, text="/\\", command=self.aumentar_cantidad)
         self.b_aumentar.pack(side="left", expand=True)
 
-        self.b_disminuir = tk.Button(panel, text="\\/", command=self.dismiunir_cantidad)
+        self.b_disminuir = tk.Button(panel, text="\\/", command=self.dismiunir_cantidad, state="disabled")
         self.b_disminuir.pack(side="left", expand=True)
 
     

@@ -60,6 +60,14 @@ class ArbolBinarioBusqueda:
             return self._buscar_por_id_recursivo(node.izquierdo, clave)
         return self._buscar_por_id_recursivo(node.derecho, clave)
 
+    def buscar_ultimo_id(self):
+        return self._buscar_ultimo_id_recursivo(self.raiz)
+
+    def _buscar_ultimo_id_recursivo(self, node):
+        if node.derecho is None:
+            return node
+        return self._buscar_ultimo_id_recursivo(node.derecho)
+
 class InventarioDB:
     def __init__(self):
         conn = sqlite3.connect(DATABASE)
@@ -136,5 +144,5 @@ class InventarioDB:
 
             
 if __name__ == "__main__":
-    a = InventarioDB()
-    print(a.Categoria)
+    a = InventarioDB() 
+    print(a.Unidades.buscar_ultimo_id())

@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as msg
 from PIL import Image, ImageTk
 import Inicio as i
+import Agregar.ModificarPedido as mp
 
 import Agregar.Pedido as p
 
@@ -21,6 +22,12 @@ class Ventas(tk.Tk):
         self.datos_inventario = self.datos["Inventario"]
 
         self.precio_total = 0
+
+        self.menu_seleccionado = None
+        self.cantidad_seleccionada = None
+        self.precio_seleccionado = None
+        self.tamaño_seleccionado = None
+        self.id_seleccionado = None
 
         self.configurar_ventana()
 
@@ -82,6 +89,8 @@ class Ventas(tk.Tk):
         self.tabla.grid(row=0, column=0, sticky="nsew")
         self.scrollbar.grid(row=0, column=1, sticky="ns")
 
+        self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_menu)
+
 
     def botones_modificar_tabla(self):
         button_panel = tk.Frame(self, background=BGCOLOR)
@@ -90,11 +99,11 @@ class Ventas(tk.Tk):
         b_agregar = tk.Button(button_panel, text="Agregar\nPedido", command=self.abrir_agregar_pedido)
         b_agregar.pack(expand=True, side="left")
 
-        b_modificar = tk.Button(button_panel, text="Modificar Pedido\nSeleccionado", anchor="center", state="disabled")
-        b_modificar.pack(expand=True, side="left")
+        self.b_modificar = tk.Button(button_panel, text="Modificar Pedido\nSeleccionado", anchor="center", state="disabled", command=self.abrir_modificar_pedido)
+        self.b_modificar.pack(expand=True, side="left")
 
-        b_modificar = tk.Button(button_panel, text="Eliminar Pedido\nSeleccionado", anchor="center", state="disabled")
-        b_modificar.pack(expand=True, side="left")
+        self.b_eliminar = tk.Button(button_panel, text="Eliminar Pedido\nSeleccionado", anchor="center", state="disabled")
+        self.b_eliminar.pack(expand=True, side="left")
 
     
     def botones_confirmacion(self):
@@ -112,6 +121,10 @@ class Ventas(tk.Tk):
         p.Pedido(parent=self, datos_inventario=self.datos_inventario)
 
 
+    def abrir_modificar_pedido(self):
+        mp.ModificarPedido(parent=self, id=self.id_seleccionado, values=(self.menu_seleccionado, self.precio_seleccionado, self.cantidad_seleccionada, self.tamaño_seleccionado))
+
+
     def registrar_venta(self):
         if msg.askyesno(title="¿Registrar Venta?", message="¿Está seguro de registrar esta venta?"):
             self.datos["Inventario"] = self.datos_inventario
@@ -122,6 +135,33 @@ class Ventas(tk.Tk):
         self.tabla.insert("", tk.END, values=values, iid=id)
         self.precio_total += values[1]
         self.label_precio.config(text=f"Precio Total: ${self.precio_total}")
+
+
+    def actualizar_pedido(self, id: int, values: tuple):
+        self.tabla.item(id, values=values)
+
+    
+    def seleccionar_menu(self, event):
+        self.id_seleccionado = self.tabla.selection()[0]  
+
+        item = self.tabla.item(self.id_seleccionado)
+        valores = item['values']
+
+        self.menu_seleccionado = valores[0]
+        self.precio_seleccionado = valores[1]
+        self.cantidad_seleccionada = valores[2]
+        self.tamaño_seleccionado = valores[3]
+
+        self.activar_botones()
+
+    
+    def activar_botones(self):
+        if self.menu_seleccionado:
+            self.b_modificar.config(state="active")
+            self.b_eliminar.config(state="active")
+        else:
+            self.b_modificar.config(state="disabled")
+            self.b_eliminar.config(state="disabled")
 
 
     def volver(self):
