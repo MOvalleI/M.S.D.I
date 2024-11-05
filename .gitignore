@@ -1,2 +1,10 @@
+# Ingorar estos directorios
 .vscode/
 venv/
+__pycache__/
+
+# Ingora estas extensiones de archivo
+*.pyc
+
+# Ingora estos archivos especificos
+src/prueba.py

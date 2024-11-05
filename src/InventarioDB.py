@@ -50,6 +50,16 @@ class ArbolBinarioBusqueda:
     def __str__(self):
         return str(self.raiz)
 
+    def buscar_por_id(self, clave):
+        return self._buscar_por_id_recursivo(self.raiz, clave)
+
+    def _buscar_por_id_recursivo(self, node, clave):
+        if node is None or node.id == clave:
+            return node
+        if clave < node.id:
+            return self._buscar_por_id_recursivo(node.izquierdo, clave)
+        return self._buscar_por_id_recursivo(node.derecho, clave)
+
 class InventarioDB:
     def __init__(self):
         conn = sqlite3.connect(DATABASE)
@@ -127,9 +137,4 @@ class InventarioDB:
             
 if __name__ == "__main__":
     a = InventarioDB()
-    print(a)
-
-
-
-
-    
+    print(a.Categoria)

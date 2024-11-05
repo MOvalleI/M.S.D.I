@@ -1,24 +1,14 @@
-import hashlib
+# import InventarioDB as idb
+# import BuscadorDB as bi
 
-def convertir_texto(texto: str) -> str:
-    h = hashlib.new("SHA256")
-    h.update(texto.encode())
+# a = idb.InventarioDB()
 
-    return h.hexdigest()
+# print(a.Menu[1])
 
+# # print(bi.BuscadorDB.buscar_categoria_por_id(a.Categoria, 6))
+# # print(bi.BuscadorDB.buscar_categoria_por_id(a.Tamaños, 2))
+# # print(bi.BuscadorDB.buscar_unidad_por_id(a.Unidades, 10))
 
-def verificar_texto(texto: str, texto_real: str) -> bool:
-    h = hashlib.new("SHA256")
-    h.update(texto.encode())
-
-    texto_hash = h.hexdigest()
-
-    if texto_hash == texto_real:
-        return True
-    return False
-
-
-texto = "admin"
-texto_hash = convertir_texto(texto=texto)
-
-print(texto_hash)
+a = "10"
+b = 5
+print(a * b)

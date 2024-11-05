@@ -1,5 +1,6 @@
 import sqlite3
 import hashlib
+import Login
 
 USERDATABASE = "./db/NewUsers.db"
 QUERYUSERS = "SELECT * FROM usuarios"
@@ -45,9 +46,22 @@ class Usuarios:
         return h.hexdigest()
     
 
-    def buscar_datos_usuario(self, nombre: str) -> int:
+    def buscar_datos_usuario(self, regex: str) -> dict:
         """
-        Devuelve el id correspondiente al usuario.
+        Devuelve un diccionario con los usuarios cuyo nombre contiene regex.
+        """
+
+        diccionario = {}
+
+        for id_usuario, valores in self._datos_usuarios.items():
+            if regex.lower() in valores[0].lower():
+                diccionario[id_usuario] = valores
+
+        return diccionario
+
+    def buscar_datos_usuario_exacto(self, nombre: str) -> int:
+        """
+        Devuelve el id correspondiente al usuario exacto.
         Devuelve 0 en caso de no encontrar al usuario.
         """
         for id_usuario, valores in self._datos_usuarios.items():
@@ -115,6 +129,25 @@ class Usuarios:
         return False
     
 
+    def buscar_imagen_por_id(self, id: int):
+        for id_pfp in self._datos_imagenes.keys():
+            if id == id_pfp:
+                return self._datos_imagenes[id_pfp][0]
+    
+
+    def obtener_datos_usuarios(self) -> dict:
+        return self._datos_usuarios
+    
+
+    def obtener_datos_tipo(self) -> dict:
+        return self._datos_tipo_usuario
+    
+
+    def obtener_datos_fotos(self) -> dict:
+        return self._datos_imagenes
+    
+
 if __name__ == "__main__":
     a = Usuarios()
-    print(a._datos_imagenes)
+    root = Login.Login(datos_usuarios=a)
+    root.mainloop()
