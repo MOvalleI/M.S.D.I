@@ -29,6 +29,8 @@ class Ventas(tk.Tk):
         self.tamaño_seleccionado = None
         self.id_seleccionado = None
 
+        self.precio_modificado = False
+
         self.configurar_ventana()
 
 
@@ -122,8 +124,9 @@ class Ventas(tk.Tk):
 
 
     def abrir_modificar_pedido(self):
+        self.precio_total -= self.precio_seleccionado
         mp.ModificarPedido(parent=self, id=self.id_seleccionado, values=(self.menu_seleccionado, self.precio_seleccionado, self.cantidad_seleccionada, self.tamaño_seleccionado))
-
+        
 
     def registrar_venta(self):
         if msg.askyesno(title="¿Registrar Venta?", message="¿Está seguro de registrar esta venta?"):
@@ -137,22 +140,49 @@ class Ventas(tk.Tk):
         self.label_precio.config(text=f"Precio Total: ${self.precio_total}")
 
 
-    def actualizar_pedido(self, id: int, values: tuple):
-        self.tabla.item(id, values=values)
+    def actualizar_pedido(self, id: int, values: tuple, event=None):
+        if self.precio_modificado:
+            self.tabla.item(id, values=values)
 
+            self.precio_total += values[1]
+
+            self.id_seleccionado = None
+            self.menu_seleccionado = None
+            self.precio_seleccionado = None
+            self.cantidad_seleccionada = None
+            self.tamaño_seleccionado = None
+        
+            self.label_precio.config(text=f"Precio Total: ${self.precio_total}")
+        else:
+            self.precio_total += self.precio_seleccionado
+
+        self.tabla.selection_remove(self.tabla.focus())
     
+
     def seleccionar_menu(self, event):
-        self.id_seleccionado = self.tabla.selection()[0]  
+        if len(self.tabla.selection()) > 0:
+            self.id_seleccionado = self.tabla.selection()[0]
 
-        item = self.tabla.item(self.id_seleccionado)
-        valores = item['values']
+            item = self.tabla.item(self.id_seleccionado)
+            valores = item['values']
 
-        self.menu_seleccionado = valores[0]
-        self.precio_seleccionado = valores[1]
-        self.cantidad_seleccionada = valores[2]
-        self.tamaño_seleccionado = valores[3]
+            self.menu_seleccionado = valores[0]
+            self.precio_seleccionado = valores[1]
+            self.cantidad_seleccionada = valores[2]
+            self.tamaño_seleccionado = valores[3]
+        else:
+            self.id_seleccionado = None
+
+            self.menu_seleccionado = None
+            self.precio_seleccionado = None
+            self.cantidad_seleccionada = None
+            self.tamaño_seleccionado = None
 
         self.activar_botones()
+
+    
+    def actualizar_precio_total(self):
+        pass
 
     
     def activar_botones(self):

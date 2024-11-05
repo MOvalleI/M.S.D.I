@@ -15,6 +15,9 @@ BGCOLOR = "#1e1e1e"
 ANOTHERBGCOLOR = "black"
 DEFAULT_FONT = "Segoe UI"
 
+BGBUTTON = "gray"
+FGBUTTON = "white"
+
 class Inicio(tk.Tk):
     def __init__(self, datos: dict):
         super().__init__()
@@ -59,9 +62,9 @@ class Inicio(tk.Tk):
         button_panel = tk.Frame(self, background=BGCOLOR)
         button_panel.pack(fill="x", expand=True)
 
-        self.button_ventas = tk.Button(button_panel, text="Ver Opciones\nde Ventas", anchor="center", command=lambda: self.cambiar_opciones("Ventas"))
-        self.button_menu = tk.Button(button_panel, text="Ver Opciones\nde Menu", anchor="center", command=lambda: self.cambiar_opciones("Menu"))
-        self.button_inventario = tk.Button(button_panel, text="Ver Opciones\nde Inventario", anchor="center", command=lambda: self.cambiar_opciones("Inventario"))
+        self.button_ventas = tk.Button(button_panel, text="Ver Opciones\nde Ventas", anchor="center", command=lambda: self.cambiar_opciones("Ventas"), background=BGBUTTON, foreground=FGBUTTON)
+        self.button_menu = tk.Button(button_panel, text="Ver Opciones\nde Menu", anchor="center", command=lambda: self.cambiar_opciones("Menu"), background=BGBUTTON, foreground=FGBUTTON)
+        self.button_inventario = tk.Button(button_panel, text="Ver Opciones\nde Inventario", anchor="center", command=lambda: self.cambiar_opciones("Inventario"), background=BGBUTTON, foreground=FGBUTTON)
 
         self.button_ventas.pack(expand=True, side="left")
         self.button_menu.pack(expand=True, side="left")
@@ -72,9 +75,9 @@ class Inicio(tk.Tk):
         panel_opciones = tk.Frame(self, background=BGCOLOR)
         panel_opciones.pack(expand=True, fill="x", pady=20)
 
-        self.button_ventas = tk.Button(panel_opciones, text="Perfil", anchor="center", command=lambda: self.cambiar_opciones("Ventas"))
-        self.button_menu = tk.Button(panel_opciones, text="Cerrar\nSesión", anchor="center", command=self.cerrar_sesion)
-        self.button_inventario = tk.Button(panel_opciones, text="Salir", anchor="center", command=self.salir)
+        self.button_ventas = tk.Button(panel_opciones, text="Perfil", anchor="center", command=lambda: self.cambiar_opciones("Ventas"), background=BGBUTTON, foreground=FGBUTTON)
+        self.button_menu = tk.Button(panel_opciones, text="Cerrar\nSesión", anchor="center", command=self.cerrar_sesion, background=BGBUTTON, foreground=FGBUTTON)
+        self.button_inventario = tk.Button(panel_opciones, text="Salir", anchor="center", command=self.salir, background=BGBUTTON, foreground=FGBUTTON)
 
         self.button_ventas.pack(side="left", expand=True)
         self.button_menu.pack(side="left", expand=True)
@@ -95,10 +98,10 @@ class Inicio(tk.Tk):
 
 
     def configurar_botones(self, root: tk.Frame):
-        self.boton_agregar = tk.Button(root)
-        self.boton_ver = tk.Button(root)
-        self.boton_eliminar = tk.Button(root)
-        self.boton_modificar = tk.Button(root)
+        self.boton_agregar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
+        self.boton_ver = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
+        self.boton_eliminar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
+        self.boton_modificar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
 
         match self.opciones_seleccionada:
             case "Ventas":

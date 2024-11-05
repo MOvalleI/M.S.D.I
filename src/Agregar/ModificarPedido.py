@@ -30,12 +30,17 @@ class ModificarPedido(tk.Toplevel):
     
     def configurar_ventana(self):
         self.title("Modificar Pedido")
+        self.resizable(False, False)
+        self.config(background=BGCOLOR)
+
+        self.protocol("WM_DELETE_WINDOW",lambda e: self.parent.actualizar_pedido(None, None, event=e))
 
         self.agregar_titulo()
         self.agregar_nombre()
         self.agregar_cantidad()
         self.agregar_precio()
         self.agregar_opciones()
+        self.activar_boton_disminuir()
 
 
     def agregar_titulo(self):
@@ -91,19 +96,18 @@ class ModificarPedido(tk.Toplevel):
         self.b_agregar = tk.Button(panel, text="Modificar", anchor="center", command=self.salir_y_modificar)
         self.b_agregar.pack(side="left", expand=True)
 
-        self.b_cancelar = tk.Button(panel, text="Cancelar", anchor="center", command=self.destroy)
+        self.b_cancelar = tk.Button(panel, text="Cancelar", anchor="center", command=lambda e: self.parent.actualizar_pedido(None, None, event=e))
         self.b_cancelar.pack(side="left", expand=True)
 
 
     def aumentar_cantidad(self):
-        if self.cantidad == 1:
-            self.b_disminuir.config(state="active")
-        
         self.cantidad += 1
         self.precio += self.precio_individual
 
         self.cantidad_label.config(text=f"Cantidad: {self.cantidad}")
         self.precio_label.config(text=f"Precio: ${self.precio}")
+
+        self.b_disminuir.config(state="active")
 
 
     def dismiunir_cantidad(self):
@@ -115,8 +119,15 @@ class ModificarPedido(tk.Toplevel):
         if self.cantidad == 1:
             self.b_disminuir.config(state="disabled")
 
+    
+    def activar_boton_disminuir(self):
+        if self.cantidad > 1:
+            self.b_disminuir.config(state="active")
+
 
     def salir_y_modificar(self):
+        self.parent.precio_modificado = True
+
         values = (self.nombre, self.precio, self.cantidad, self.tamaño)
 
         self.destroy()
