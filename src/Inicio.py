@@ -4,23 +4,18 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import Login
 import Agregar.Ventas as av
-
-LOGO = "./img/logo_128x128.png"
+import gui.Ventanas as ven
 
 IMG_VENTAS = "./img/ventas.png"
 IMG_MENU = "./img/menu.png"
 IMG_INVENTARIO = "./img/inventario.png"
 
-BGCOLOR = "#1e1e1e"
-ANOTHERBGCOLOR = "black"
-DEFAULT_FONT = "Segoe UI"
-
 BGBUTTON = "gray"
 FGBUTTON = "white"
 
-class Inicio(tk.Tk):
+class Inicio(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
-        super().__init__()
+        super().__init__(titulo="Inicio", titulo_ventana="Inicio")
 
         self.datos = datos
 
@@ -33,33 +28,16 @@ class Inicio(tk.Tk):
 
     
     def configurar_ventana(self):
-        self.title("Inicio")
         self.geometry("500x600")
         self.resizable(False, False)
-        self.config(background=BGCOLOR)
         self.protocol("WM_DELETE_WINDOW", self.salir)
 
         self.agregar_titulo()
         self.agregar_botones_opciones()
 
     
-    def agregar_titulo(self):
-        panel_logo = tk.Frame(self, background=BGCOLOR)
-        panel_logo.pack(expand=True)
-
-        logo = Image.open(LOGO)
-        logo_tk = ImageTk.PhotoImage(logo)
-
-        label_logo = tk.Label(panel_logo, image=logo_tk, background=BGCOLOR)
-        label_logo.image = logo_tk
-        label_logo.grid(row=0, column=0, sticky="nsew", padx=30)
-
-        label_logo = tk.Label(panel_logo, background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 20), text=f"Bienvenido\n{self.usuario_logueado}")
-        label_logo.grid(row=0, column=1, sticky="nsew", padx=30)
-
-    
     def agregar_botones_opciones(self):
-        button_panel = tk.Frame(self, background=BGCOLOR)
+        button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(fill="x", expand=True)
 
         self.button_ventas = tk.Button(button_panel, text="Ver Opciones\nde Ventas", anchor="center", command=lambda: self.cambiar_opciones("Ventas"), background=BGBUTTON, foreground=FGBUTTON)
@@ -72,7 +50,7 @@ class Inicio(tk.Tk):
 
         self.agregar_panel_opciones()
 
-        panel_opciones = tk.Frame(self, background=BGCOLOR)
+        panel_opciones = tk.Frame(self, background=self.bgcolor)
         panel_opciones.pack(expand=True, fill="x", pady=20)
 
         self.button_ventas = tk.Button(panel_opciones, text="Perfil", anchor="center", command=lambda: self.cambiar_opciones("Ventas"), background=BGBUTTON, foreground=FGBUTTON)
@@ -85,7 +63,7 @@ class Inicio(tk.Tk):
 
 
     def agregar_panel_opciones(self):
-        self.panel_opciones = tk.Frame(self, background=BGCOLOR, pady=50)
+        self.panel_opciones = tk.Frame(self, background=self.bgcolor, pady=50)
         self.panel_opciones.pack(expand=True, fill="both")
 
         self.panel_opciones.grid_columnconfigure(0, weight=1)
@@ -104,16 +82,6 @@ class Inicio(tk.Tk):
         self.boton_modificar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
 
         match self.opciones_seleccionada:
-            case "Ventas":
-                logo = IMG_VENTAS
-                agregar_text = "Registrar Venta"
-                ver_text = "Ver Venta"
-                eliminar_text = ""
-                modificar_text = ""
-                self.boton_agregar.config(command=self.abrir_agregar_ventas)
-                self.boton_ver.config(command=None)
-                self.boton_agregar.grid(row=0, column=1, rowspan=2)
-                self.boton_ver.grid(row=0, column=2, rowspan=2)
             case "Menu": 
                 logo = IMG_MENU
                 agregar_text = "Agregar Menu"
@@ -126,12 +94,22 @@ class Inicio(tk.Tk):
                 ver_text = "Ver Inventario"
                 eliminar_text = "Eliminar Inventario"
                 modificar_text = "Modificar Inventario"
+            case _:
+                logo = IMG_VENTAS
+                agregar_text = "Registrar Venta"
+                ver_text = "Ver Venta"
+                eliminar_text = ""
+                modificar_text = ""
+                self.boton_agregar.config(command=self.abrir_agregar_ventas)
+                self.boton_ver.config(command=None)
+                self.boton_agregar.grid(row=0, column=1, rowspan=2)
+                self.boton_ver.grid(row=0, column=2, rowspan=2)
 
         icono = Image.open(logo)
         icono_resized = icono.resize((128, 128))
         icono_tk = ImageTk.PhotoImage(icono_resized)
 
-        label = tk.Label(root, image=icono_tk, background=BGCOLOR)
+        label = tk.Label(root, image=icono_tk, background=self.bgcolor)
         label.image = icono_tk
         label.grid(row=0, column=0, rowspan=2, sticky="nswe")
 

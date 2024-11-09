@@ -4,6 +4,7 @@ import tkinter.messagebox as msg
 from PIL import Image, ImageTk
 import Inicio as i
 import Agregar.ModificarPedido as mp
+import gui.Ventanas as ven
 
 import Agregar.Pedido as p
 
@@ -14,9 +15,9 @@ ANOTHERBGCOLOR = "black"
 DEFAULT_FONT = "Segoe UI"
 
 
-class Ventas(tk.Tk):
+class Ventas(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
-        super().__init__()
+        super().__init__(titulo="Registrar\nVenta", titulo_ventana="Registrar Venta")
 
         self.datos = datos
         self.datos_inventario = self.datos["Inventario"]
@@ -35,9 +36,8 @@ class Ventas(tk.Tk):
 
 
     def configurar_ventana(self):
-        self.title("Registrar Venta")
         self.resizable(False, False)
-        self.config(background=BGCOLOR)
+        self.config(background=self.bgcolor)
         self.geometry("500x700")
 
         self.protocol("WM_DELETE_WINDOW", self.volver)
@@ -45,30 +45,15 @@ class Ventas(tk.Tk):
         self.agregar_titulo()
         self.agregar_tabla()
 
-        self.label_precio = tk.Label(self, background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 16), text=f"Precio Total: ${self.precio_total}")
+        self.label_precio = tk.Label(self, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Precio Total: ${self.precio_total}")
         self.label_precio.pack(expand=True)
 
         self.botones_modificar_tabla()
         self.botones_confirmacion()
 
-        
-    def agregar_titulo(self):
-        panel_logo = tk.Frame(self, background=BGCOLOR)
-        panel_logo.pack(expand=True)
-
-        logo = Image.open(LOGO)
-        logo_tk = ImageTk.PhotoImage(logo)
-
-        label_logo = tk.Label(panel_logo, image=logo_tk, background=BGCOLOR)
-        label_logo.image = logo_tk
-        label_logo.grid(row=0, column=0, sticky="nsew", padx=30)
-
-        label_logo = tk.Label(panel_logo, background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 20), text="Registrar\nVenta", anchor="center")
-        label_logo.grid(row=0, column=1, sticky="nsew", padx=30)
-
 
     def agregar_tabla(self):
-        panel_tabla = tk.Frame(self, background=BGCOLOR)
+        panel_tabla = tk.Frame(self, background=self.bgcolor)
         panel_tabla.pack(expand=True, fill="both")
 
         panel_tabla.grid_rowconfigure(0, weight=1)
@@ -95,7 +80,7 @@ class Ventas(tk.Tk):
 
 
     def botones_modificar_tabla(self):
-        button_panel = tk.Frame(self, background=BGCOLOR)
+        button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(expand=True, fill="x")
 
         b_agregar = tk.Button(button_panel, text="Agregar\nPedido", command=self.abrir_agregar_pedido)
@@ -109,7 +94,7 @@ class Ventas(tk.Tk):
 
     
     def botones_confirmacion(self):
-        button_panel = tk.Frame(self, background=BGCOLOR)
+        button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(expand=True, fill="x")
 
         b_confirmar = tk.Button(button_panel, text="Registrar Venta", command=self.registrar_venta)
