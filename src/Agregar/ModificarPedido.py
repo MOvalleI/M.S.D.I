@@ -1,19 +1,10 @@
 import tkinter as tk
-import tkinter.ttk as ttk
-import tkinter.messagebox as msg
-from PIL import Image, ImageTk
-import BuscadorDB as bi
+import gui.Ventanas as ven
 
 
-LOGO = "./img/logo_128x128.png"
-BGCOLOR = "#1e1e1e"
-ANOTHERBGCOLOR = "black"
-DEFAULT_FONT = "Segoe UI"
-
-
-class ModificarPedido(tk.Toplevel):
+class ModificarPedido(ven.VentanaTopLevel):
     def __init__(self, parent: tk.Tk, id: int, values: tuple):
-        super().__init__(master = parent)
+        super().__init__(parent=parent, titulo="Modificar\nPedido", titulo_ventana="Modificar Pedido")
         
         self.parent = parent
 
@@ -29,9 +20,8 @@ class ModificarPedido(tk.Toplevel):
         self.configurar_ventana()
     
     def configurar_ventana(self):
-        self.title("Modificar Pedido")
         self.resizable(False, False)
-        self.config(background=BGCOLOR)
+        self.config(background=self.bgcolor)
 
         self.protocol("WM_DELETE_WINDOW",lambda e: self.parent.actualizar_pedido(None, None, event=e))
 
@@ -42,36 +32,21 @@ class ModificarPedido(tk.Toplevel):
         self.agregar_opciones()
         self.activar_boton_disminuir()
 
-
-    def agregar_titulo(self):
-        panel_logo = tk.Frame(self, background=BGCOLOR)
-        panel_logo.pack(expand=True)
-
-        logo = Image.open(LOGO)
-        logo_tk = ImageTk.PhotoImage(logo)
-
-        label_logo = tk.Label(panel_logo, image=logo_tk, background=BGCOLOR)
-        label_logo.image = logo_tk
-        label_logo.grid(row=0, column=0, sticky="nsew", padx=30)
-
-        label_logo = tk.Label(panel_logo, background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 20), text="Modificar\nPedido", anchor="center")
-        label_logo.grid(row=0, column=1, sticky="nsew", padx=30)
-
     
     def agregar_nombre(self):
-        panel_datos = tk.Frame(self, background=BGCOLOR)
+        panel_datos = tk.Frame(self, background=self.bgcolor)
         panel_datos.pack(expand=True, fill="both")
 
         texto_nombre = f"Menu Seleccionado: {self.nombre}"
-        nombre_label = tk.Label(panel_datos, background=BGCOLOR, foreground="white", anchor="center", font=(DEFAULT_FONT, 16), text=texto_nombre)
+        nombre_label = tk.Label(panel_datos, background=self.bgcolor, foreground=self.fgcolor, anchor="center", font=(self.font, 16), text=texto_nombre)
         nombre_label.pack(expand=True)
 
     
     def agregar_cantidad(self):
-        panel = tk.Frame(self, background=BGCOLOR)
+        panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both")
 
-        self.cantidad_label = tk.Label(panel, background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 16), text=f"Cantidad: {self.cantidad}")
+        self.cantidad_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Cantidad: {self.cantidad}")
         self.cantidad_label.pack(side="left", expand=True)
 
         self.b_aumentar = tk.Button(panel, text="/\\", command=self.aumentar_cantidad)
@@ -82,15 +57,15 @@ class ModificarPedido(tk.Toplevel):
 
     
     def agregar_precio(self):
-        panel = tk.Frame(self, background=BGCOLOR)
+        panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both")
 
-        self.precio_label = tk.Label(panel, background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 16), text=f"Precio: ${self.precio}")
+        self.precio_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Precio: ${self.precio}")
         self.precio_label.pack(side="left", expand=True)
 
 
     def agregar_opciones(self):
-        panel = tk.Frame(self, background=BGCOLOR)
+        panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both")
 
         self.b_agregar = tk.Button(panel, text="Modificar", anchor="center", command=self.salir_y_modificar)
