@@ -37,7 +37,7 @@ class Boton(tk.Button):
         image_tk = self._configurar_imagen()
         self.config(width=self.width, height=self.height)
         self.config(image=image_tk, borderwidth=0, background=BUTTONBG, highlightthickness=0, activebackground=BUTTONBG)
-        self.config(cursor="hand1")
+        self.config(cursor="hand2")
         self.config(text=self.text, compound="center", foreground=BUTTONFG, font=(self.font, self.font_size, "bold"))
         self.image_tk = image_tk
 
