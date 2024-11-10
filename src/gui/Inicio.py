@@ -7,6 +7,7 @@ import gui.Ventas.Ventas as av
 import gui.Ventanas as ven
 import gui.Inventario.Agregar as iai
 import gui.Inventario.Eliminar as iei
+import gui.Componentes as comp
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -43,9 +44,14 @@ class Inicio(ven.VentanaPrincipal):
         button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(fill="x", expand=True)
 
-        self.button_ventas = tk.Button(button_panel, text="Ver Opciones\nde Ventas", anchor="center", command=lambda: self.cambiar_opciones("Ventas"), background=BGBUTTON, foreground=FGBUTTON)
-        self.button_menu = tk.Button(button_panel, text="Ver Opciones\nde Menu", anchor="center", command=lambda: self.cambiar_opciones("Menu"), background=BGBUTTON, foreground=FGBUTTON)
-        self.button_inventario = tk.Button(button_panel, text="Ver Opciones\nde Inventario", anchor="center", command=lambda: self.cambiar_opciones("Inventario"), background=BGBUTTON, foreground=FGBUTTON)
+        self.button_ventas = comp.Boton(button_panel, text="Ver Opciones\nde Ventas")
+        self.button_ventas.config(command=lambda: self.cambiar_opciones("Ventas"))
+
+        self.button_inventario = comp.Boton(button_panel, text="Ver Opciones\nde Inventario")
+        self.button_inventario.config(command=lambda: self.cambiar_opciones("Inventario"))
+
+        self.button_menu = comp.Boton(button_panel, text="Ver Opciones\nde Menu")
+        self.button_menu.config(command=lambda: self.cambiar_opciones("Menu"))
 
         self.button_ventas.pack(expand=True, side="left")
         self.button_menu.pack(expand=True, side="left")
@@ -56,17 +62,22 @@ class Inicio(ven.VentanaPrincipal):
         panel_opciones = tk.Frame(self, background=self.bgcolor)
         panel_opciones.pack(expand=True, fill="x", pady=20)
 
-        self.button_ventas = tk.Button(panel_opciones, text="Perfil", anchor="center", command=lambda: self.cambiar_opciones("Ventas"), background=BGBUTTON, foreground=FGBUTTON)
-        self.button_menu = tk.Button(panel_opciones, text="Cerrar\nSesión", anchor="center", command=self.cerrar_sesion, background=BGBUTTON, foreground=FGBUTTON)
-        self.button_inventario = tk.Button(panel_opciones, text="Salir", anchor="center", command=self.salir, background=BGBUTTON, foreground=FGBUTTON)
+        self.button_perfil = comp.Boton(panel_opciones, text="Perfil")
+        self.button_perfil.config(command=None)
 
-        self.button_ventas.pack(side="left", expand=True)
-        self.button_menu.pack(side="left", expand=True)
-        self.button_inventario.pack(side="left", expand=True)
+        self.button_cerrar_sesion = comp.Boton(panel_opciones, text="Cerrar\nSesión")
+        self.button_cerrar_sesion.config(command=self.cerrar_sesion)
+
+        self.button_salir = comp.Boton(panel_opciones, text="Salir")
+        self.button_salir.config(command=self.salir)
+
+        self.button_perfil.pack(side="left", expand=True)
+        self.button_cerrar_sesion.pack(side="left", expand=True)
+        self.button_salir.pack(side="left", expand=True)
 
 
     def agregar_panel_opciones(self):
-        self.panel_opciones = tk.Frame(self, background=self.bgcolor, pady=50)
+        self.panel_opciones = tk.Frame(self, background=self.bgcolor, pady=50, borderwidth=5)
         self.panel_opciones.pack(expand=True, fill="both")
 
         self.panel_opciones.grid_columnconfigure(0, weight=1)
@@ -79,30 +90,30 @@ class Inicio(ven.VentanaPrincipal):
 
 
     def configurar_botones(self, root: tk.Frame):
-        self.boton_agregar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
-        self.boton_ver = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
-        self.boton_eliminar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
-        self.boton_modificar = tk.Button(root, background=BGBUTTON, foreground=FGBUTTON)
+        self.boton_agregar = comp.Boton(root)
+        self.boton_ver = comp.Boton(root)
+        self.boton_eliminar = comp.Boton(root)
+        self.boton_modificar = comp.Boton(root)
 
         match self.opciones_seleccionada:
             case "Menu": 
                 logo = IMG_MENU
-                agregar_text = "Agregar Menu"
-                ver_text = "Ver Menu"
-                eliminar_text = "Eliminar Menu"
-                modificar_text = "Modificar Menu"
+                agregar_text = "Agregar\nMenu"
+                ver_text = "Ver\nMenu"
+                eliminar_text = "Eliminar\nMenu"
+                modificar_text = "Modificar\nMenu"
             case "Inventario": 
                 logo = IMG_INVENTARIO
-                agregar_text = "Agregar Inventario"
-                ver_text = "Ver Inventario"
-                eliminar_text = "Eliminar Inventario"
-                modificar_text = "Modificar Inventario"
+                agregar_text = "Agregar\nInventario"
+                ver_text = "Ver\nInventario"
+                eliminar_text = "Eliminar\nInventario"
+                modificar_text = "Modificar\nInventario"
                 self.boton_agregar.config(command=self.abrir_agregar_producto)
                 self.boton_eliminar.config(command=self.abrir_eliminar_producto)
             case _:
                 logo = IMG_VENTAS
-                agregar_text = "Registrar Venta"
-                ver_text = "Ver Venta"
+                agregar_text = "Registrar\nVenta"
+                ver_text = "Ver\nVenta"
                 eliminar_text = ""
                 modificar_text = ""
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)
