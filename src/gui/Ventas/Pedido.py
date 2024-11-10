@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import data.BuscadorDB as bi
 import gui.Ventanas as ven
+import gui.Componentes as comp
 
 
 
@@ -93,10 +94,12 @@ class Pedido(ven.VentanaTopLevel):
         self.cantidad_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Cantidad: {self.cantidad}")
         self.cantidad_label.pack(side="left", expand=True)
 
-        self.b_aumentar = tk.Button(panel, text="/\\", command=self.aumentar_cantidad)
+        self.b_aumentar = comp.Boton(panel, text="/\\")
+        self.b_aumentar.config(command=self.aumentar_cantidad)
         self.b_aumentar.pack(side="left", expand=True)
 
-        self.b_disminuir = tk.Button(panel, text="\\/", command=self.dismiunir_cantidad, state="disabled")
+        self.b_disminuir = comp.Boton(panel, text="\\/")
+        self.b_disminuir.config(command=self.dismiunir_cantidad, state="disabled")
         self.b_disminuir.pack(side="left", expand=True)
 
     
@@ -112,10 +115,12 @@ class Pedido(ven.VentanaTopLevel):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both")
 
-        self.b_agregar = tk.Button(panel, text="Agregar\nPedido", anchor="center", state="disabled", command=self.salir_y_agregar)
+        self.b_agregar = comp.Boton(panel, text="Agregar\nPedido")
+        self.b_agregar.config(state="disabled", command=self.salir_y_agregar)
         self.b_agregar.pack(side="left", expand=True)
 
-        self.b_cancelar = tk.Button(panel, text="Cancelar", anchor="center", command=self.destroy)
+        self.b_cancelar = comp.Boton(panel, text="Cancelar")
+        self.b_cancelar.config(command=self.destroy)
         self.b_cancelar.pack(side="left", expand=True)
 
 

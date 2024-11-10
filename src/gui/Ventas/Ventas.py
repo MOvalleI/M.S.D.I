@@ -5,6 +5,7 @@ import gui.Inicio as i
 import gui.Ventas.ModificarPedido as mp
 import gui.Ventanas as ven
 import gui.Ventas.Pedido as p
+import gui.Componentes as comp
 
 
 class Ventas(ven.VentanaPrincipal):
@@ -75,13 +76,17 @@ class Ventas(ven.VentanaPrincipal):
         button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(expand=True, fill="x")
 
-        b_agregar = tk.Button(button_panel, text="Agregar\nPedido", command=self.abrir_agregar_pedido)
+        b_agregar = comp.Boton(button_panel, text="Agregar\nPedido")
+        b_agregar.config(command=self.abrir_agregar_pedido)
+
         b_agregar.pack(expand=True, side="left")
 
-        self.b_modificar = tk.Button(button_panel, text="Modificar Pedido\nSeleccionado", anchor="center", state="disabled", command=self.abrir_modificar_pedido)
+        self.b_modificar = comp.Boton(button_panel, text="Modificar Pedido\nSeleccionado")
+        self.b_modificar.config(state="disabled", command=self.abrir_modificar_pedido)
         self.b_modificar.pack(expand=True, side="left")
 
-        self.b_eliminar = tk.Button(button_panel, text="Eliminar Pedido\nSeleccionado", anchor="center", state="disabled")
+        self.b_eliminar = comp.Boton(button_panel, text="Eliminar Pedido\nSeleccionado")
+        self.b_eliminar.config(state="disabled")
         self.b_eliminar.pack(expand=True, side="left")
 
     
@@ -89,10 +94,12 @@ class Ventas(ven.VentanaPrincipal):
         button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(expand=True, fill="x")
 
-        b_confirmar = tk.Button(button_panel, text="Registrar Venta", command=self.registrar_venta)
+        b_confirmar = comp.Boton(button_panel, text="Registrar Venta")
+        b_confirmar.config(command=self.registrar_venta)
         b_confirmar.pack(expand=True, side="left")
 
-        b_cancelar = tk.Button(button_panel, text="Cancelar", anchor="center", command=self.volver)
+        b_cancelar = comp.Boton(button_panel, text="Cancelar")
+        b_cancelar.config(command=self.volver)
         b_cancelar.pack(expand=True, side="left")
 
     
