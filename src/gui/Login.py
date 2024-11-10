@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 import io
-import Inicio
+import gui.Inicio
 
 LOGO = "./img/Letras El ricon de los 4 diablitos.png"
 
@@ -306,7 +306,7 @@ class Login(tk.Tk):
                 "Rol": self.usuarios[self.id_usuario_seleccionado][2]
             }
             
-            Inicio.Inicio(datos=self.datos)
+            gui.Inicio.Inicio(datos=self.datos)
         else:
             self.mensaje_passwd_incorrecto()
 

@@ -1,7 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from PIL import Image, ImageTk
-import BuscadorDB as bi
+import data.BuscadorDB as bi
 import gui.Ventanas as ven
 
 

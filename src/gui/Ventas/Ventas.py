@@ -1,18 +1,10 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.messagebox as msg
-from PIL import Image, ImageTk
-import Inicio as i
-import Agregar.ModificarPedido as mp
+import gui.Inicio as i
+import gui.Ventas.ModificarPedido as mp
 import gui.Ventanas as ven
-
-import Agregar.Pedido as p
-
-
-LOGO = "./img/logo_128x128.png"
-BGCOLOR = "#1e1e1e"
-ANOTHERBGCOLOR = "black"
-DEFAULT_FONT = "Segoe UI"
+import gui.Ventas.Pedido as p
 
 
 class Ventas(ven.VentanaPrincipal):

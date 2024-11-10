@@ -1,6 +1,6 @@
-import InventarioDB as idb
-import Usuarios as u
-import Login as l
+import data.InventarioDB as idb
+import data.Usuarios as u
+import gui.Login as l
  
 class MSDI:
     def __init__(self):

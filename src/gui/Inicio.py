@@ -2,9 +2,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-import Login
-import Agregar.Ventas as av
+import gui.Login
+import gui.Ventas.Ventas as av
 import gui.Ventanas as ven
+import gui.Inventario.Agregar as iai
+import gui.Inventario.Eliminar as iei
+
 
 IMG_VENTAS = "./img/ventas.png"
 IMG_MENU = "./img/menu.png"
@@ -94,6 +97,8 @@ class Inicio(ven.VentanaPrincipal):
                 ver_text = "Ver Inventario"
                 eliminar_text = "Eliminar Inventario"
                 modificar_text = "Modificar Inventario"
+                self.boton_agregar.config(command=self.abrir_agregar_producto)
+                self.boton_eliminar.config(command=self.abrir_eliminar_producto)
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar Venta"
@@ -145,6 +150,17 @@ class Inicio(ven.VentanaPrincipal):
         self.destroy()
         av.Ventas(datos=self.datos)
 
+
+    def abrir_agregar_producto(self):
+        self.destroy()
+        iai.Agregar(datos=self.datos)
+
+    
+    def abrir_eliminar_producto(self):
+        self.destroy()
+        iei.Eliminar(datos=self.datos)
+
+
     
     def salir(self):
         if messagebox.askyesno(title="Salir", message="¿Seguro que deseas salir?"):
@@ -155,7 +171,7 @@ class Inicio(ven.VentanaPrincipal):
         if messagebox.askyesno(title="Salir", message="¿Seguro que deseas cerrar sesión?"):
             self.destroy()
             self.datos.pop("Usuario_Logueado", None)
-            Login.Login(datos=self.datos)
+            gui.Login.Login(datos=self.datos)
 
     
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 import sqlite3
 import hashlib
-import Login
 
 USERDATABASE = "./db/NewUsers.db"
 QUERYUSERS = "SELECT * FROM usuarios"
@@ -147,7 +146,3 @@ class Usuarios:
         return self._datos_imagenes
     
 
-if __name__ == "__main__":
-    a = Usuarios()
-    root = Login.Login(datos_usuarios=a)
-    root.mainloop()
