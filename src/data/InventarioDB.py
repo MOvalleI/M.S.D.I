@@ -27,6 +27,9 @@ class ArbolBinarioBusqueda:
         else:
             self._insertar_recursivo(self.raiz, clave, dato)
 
+    def items(self):
+        return self._items_recursivo(self.raiz)        
+
     def _insertar_recursivo(self, node, clave, dato):
         if clave < node.id:
             if node.izquierdo is None:
@@ -44,36 +47,22 @@ class ArbolBinarioBusqueda:
             return 0
         return 1 + self._calcular_cantidad(node.izquierdo) + self._calcular_cantidad(node.derecho)
 
+    def _items_recursivo(self, node):
+        if node is None:
+            return []
+        return self._items_recursivo(node.izquierdo) + [(node.id,) + tuple(node.dato)] + self._items_recursivo(node.derecho)
+ 
     def __len__(self):
         return self._calcular_cantidad(self.raiz)
 
     def __str__(self):
         return str(self.raiz)
 
-    def buscar_por_id(self, clave):
-        return self._buscar_por_id_recursivo(self.raiz, clave)
-
-    def _buscar_por_id_recursivo(self, node, clave):
-        if node is None or node.id == clave:
-            return node
-        if clave < node.id:
-            return self._buscar_por_id_recursivo(node.izquierdo, clave)
-        return self._buscar_por_id_recursivo(node.derecho, clave)
-
-    def buscar_ultimo_id(self):
-        return self._buscar_ultimo_id_recursivo(self.raiz)
-
-    def _buscar_ultimo_id_recursivo(self, node):
-        if node.derecho is None:
-            return node
-        return self._buscar_ultimo_id_recursivo(node.derecho)
-
 class InventarioDB:
     def __init__(self):
-        conn = sqlite3.connect(DATABASE)
-        self.cursor = conn.cursor()
+        self.conn = sqlite3.connect(database=DATABASE)
+        self.cursor = self.conn.cursor()
         self.inicializar_estructuras()
-        conn.close()
 
     def inicializar_estructuras(self):
         self.Lugares = self._crear_arbol("Lugares","ID_lugar") #arbol
@@ -86,6 +75,31 @@ class InventarioDB:
         self.Productos = self._cargar_tabla("Productos") #diccionario
         self.Menu = self._cargar_tabla("Menu") #diccionario
         self.Ventas = self._cargar_tabla("Ventas") #diccionario
+
+    def cerrar(self):
+        self.conn.close()
+
+    def inner_join_menu(self, like = None, order = "ID_Menu", where = None):
+        query = "SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M INNER JOIN Categoria C ON M.ID_categoria = C.ID_categoria INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño "
+
+        if like or where:
+            query += " WHERE "
+
+        if like:
+            where.append("M.nombre_menu LIKE ?")
+
+        if where:
+            query += " AND ".join(where)
+        
+        ordering_options = {"ID_categoria": ("C", "nombre_categoria"),"ID_tamaño": ("T", "nombre_tamaño")}
+        tabla, columna = ordering_options.get(order, ("M", order))
+        query += f" ORDER BY {tabla}.{columna};"
+
+        if like:
+            self.cursor.execute(query, (f"%{like}%",))
+        else:
+            self.cursor.execute(query)
+        return self.cursor.fetchall()
 
     def _cargar_tabla(self, nombre_tabla):
         self.cursor.execute(f'SELECT * FROM {nombre_tabla};')
@@ -144,5 +158,6 @@ class InventarioDB:
 
             
 if __name__ == "__main__":
-    a = InventarioDB() 
-    print(a.Unidades.buscar_ultimo_id())
+    a = InventarioDB()
+    print(a.inner_join_menu(where = ["C.nombre_categoria = 'bebidas'", 'M.precio > 700']))
+    

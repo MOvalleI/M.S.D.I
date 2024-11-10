@@ -125,3 +125,55 @@ class Lista(ttk.Combobox):
     Clase en contrucción.
     Subclase de ttk.Combobox que integra funcionalidades de busqueda.
     """
+
+
+class CustomTreeview(ttk.Treeview):
+    def __init__(self, parent=None, **kwargs):
+        super().__init__(parent, **kwargs)
+
+        self.parent = parent
+        
+        self.style = ttk.Style()
+        self.style.configure("Custom.Treeview",
+                             background="white",
+                             foreground="black",
+                             rowheight=25,
+                             fieldbackground="white",
+                             bordercolor="black",
+                             lightcolor="black",
+                             darkcolor="black")
+        self.style.layout("Custom.Treeview", [('Treeview.field', {'sticky': 'nswe'})])
+        self.configure(style="Custom.Treeview")
+
+    def create_table(self, head, side='top') -> None:
+        self.config(columns=head, show='headings')
+        for col in head:
+            self.column(col, anchor='center', width=150)
+            self.heading(col, text=col, anchor='center')
+
+    def add_data(self, data):
+        for i, row in enumerate(data):
+            row_id = self.insert(parent='', index=tk.END, values=row)
+
+            tag = 'evenrow' if i % 2 == 0 else 'oddrow'
+
+            self.tag_configure(tag, background='#d3d3d3' if tag == 'evenrow' else '#ffffff')
+
+            self.item(row_id, tags=(tag,))
+
+    def recharge_data(self, data):
+        for item in self.get_children():
+            self.delete(item)
+
+        self.add_data(data)
+
+    def añadir_scrollbarv(self, indicador):
+        if indicador == 1 or indicador == 3:
+            scrollbarv = tk.Scrollbar(self, orient='vertical', command=self.yview)
+            scrollbarv.place(relx=1, rely=0, relheight=1, anchor='ne')
+            self.configure(yscrollcommand=scrollbarv.set)
+        
+        if indicador == 2 or indicador == 3:
+            scrollbarh = tk.Scrollbar(self, orient='horizontal', command=self.xview)
+            scrollbarh.place(relx=0, rely=1, relwidth=1, anchor='sw')
+            self.configure(xscrollcommand=scrollbarh.set)

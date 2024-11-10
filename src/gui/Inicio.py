@@ -8,6 +8,7 @@ import gui.Ventanas as ven
 import gui.Inventario.Agregar as iai
 import gui.Inventario.Eliminar as iei
 import gui.Componentes as comp
+import gui.Menu.VisualizarMenu as vm
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -102,6 +103,7 @@ class Inicio(ven.VentanaPrincipal):
                 ver_text = "Ver\nMenu"
                 eliminar_text = "Eliminar\nMenu"
                 modificar_text = "Modificar\nMenu"
+                self.boton_ver.config(command=self.abrir_ver_menu)
             case "Inventario": 
                 logo = IMG_INVENTARIO
                 agregar_text = "Agregar\nInventario"
@@ -172,6 +174,10 @@ class Inicio(ven.VentanaPrincipal):
         iei.Eliminar(datos=self.datos)
 
 
+    def abrir_ver_menu(self):
+        self.destroy()
+        vm.VisualizarMenu(datos=self.datos)
+    
     
     def salir(self):
         if messagebox.askyesno(title="Salir", message="¿Seguro que deseas salir?"):
