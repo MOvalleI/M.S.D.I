@@ -2,6 +2,7 @@ import gui.Ventanas as v
 import gui.Componentes as comp
 import tkinter as tk
 import tkinter.ttk as ttk
+import gui.Inicio as i
 
 class VisualizarMenu(v.VentanaPrincipal):
     def __init__(self, datos: dict,**kwargs):
@@ -10,11 +11,16 @@ class VisualizarMenu(v.VentanaPrincipal):
                          **kwargs)
         self.agregar_titulo()
 
+        self.resizable(False, False)
+
+        self.datos = datos
         self.datos_menu = datos["Inventario"]
         self.like = None
         self.orden = "ID Menu"
         self.id_seleccionado = None
         self.where = None
+
+        self.protocol("WM_DELETE_WINDOW", self.volver)
 
         self.entry_busqueda = ttk.Entry(self)
         self.entry_busqueda.pack(pady=5)
@@ -56,10 +62,13 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.boton_filtrar.pack(expand=True, side="left")
 
         self.boton_volver = comp.Boton(panel, text="Volver") 
-        self.boton_volver.config(command=self.destroy)
+        self.boton_volver.config(command=self.volver)
         self.boton_volver.pack(expand=True, side="left")
 
 
+    def volver(self, e=None):
+        self.destroy()
+        i.Inicio(datos=self.datos)
 
 
     def seleccionar_menu(self, event):
@@ -115,8 +124,7 @@ class VisualizarMenu(v.VentanaPrincipal):
     def crear_sub_tabla(self, titulo_ventana, titulo, encabezados, datos):
         sub_tabla = v.VentanaTopLevel(parent = self,
                                       titulo = titulo,
-                                      titulo_ventana = titulo_ventana,
-                                      logo=self.logo)
+                                      titulo_ventana = titulo_ventana)
         sub_tabla.agregar_titulo()
         sub_tabla.grab_set()
 
@@ -157,32 +165,37 @@ class VisualizarMenu(v.VentanaPrincipal):
 
         por_defecto = "(nada)"
 
-        self.label_categoria = tk.Label(ventana, text="categoria")
-        self.label_categoria.pack()
+        self.label_categoria = tk.Label(ventana, text="Categoría", bg=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
+        self.label_categoria.pack(pady=(10, 5))
 
         comobobox_categoria = ttk.Combobox(ventana,
                                            values=[por_defecto] + [x[1] for x in self.datos_menu.Categoria.items()],
                                            state='readonly')
         comobobox_categoria.set(por_defecto)
-        comobobox_categoria.pack()
+        comobobox_categoria.pack(pady=(0, 10))
 
-        label_tamaño = tk.Label(ventana, text="categoria")
-        label_tamaño.pack()
+        label_tamaño = tk.Label(ventana, text="Tamaño", bg=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
+        label_tamaño.pack(pady=(10, 5))
 
         comobobox_tamaño = ttk.Combobox(ventana,
                                         values=[por_defecto] + [x[1] for x in self.datos_menu.Tamaños.items()],
                                         state='readonly')
         comobobox_tamaño.set(por_defecto)
-        comobobox_tamaño.pack()
+        comobobox_tamaño.pack(pady=(0, 10))
 
-        label_precio = tk.Label(ventana, text="precio")
-        label_precio.pack()
+        label_precio = tk.Label(ventana, text="Precio", bg=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
+        label_precio.pack(pady=(10, 5))
 
-        comobobox_precio = ttk.Combobox(ventana,
+
+        panel_precio = tk.Frame(ventana, background=self.bgcolor)
+        panel_precio.pack(pady=10, expand=True)
+
+        comobobox_precio = ttk.Combobox(panel_precio,
                                         values=[por_defecto, "Mayor que", "Mayor o igual que", "Igual que", "Menor o igual que", "Menor que"],
                                         state='readonly')
         comobobox_precio.set(por_defecto)
-        comobobox_precio.pack()
+        comobobox_precio.config(width=20)
+        comobobox_precio.pack(padx=5, side="left")
 
         def solo_numeros(P):
             if P == "" or P.isdigit():
@@ -190,17 +203,21 @@ class VisualizarMenu(v.VentanaPrincipal):
             return False
         vcmd = ventana.register(solo_numeros)
 
-        precio_entry = tk.Entry(ventana, validate="key", validatecommand=(vcmd, "%P"))
-        precio_entry.pack(pady=10)
+        precio_entry = tk.Entry(panel_precio, validate="key", validatecommand=(vcmd, "%P"))
+        precio_entry.config(width=10)
+        precio_entry.pack(padx=5, side="left")
 
-        boton_vaciar = tk.Button(ventana, text="Vaciar", command=command_vaciar)
-        boton_vaciar.pack()
+        boton_vaciar = comp.Boton(ventana, text="Vaciar", command=command_vaciar)
+        boton_vaciar.pack(pady=10)
 
-        boton_aplicar = tk.Button(ventana, text="Filtrar", command=aplicar_filtros)
-        boton_aplicar.pack()
+        panel = tk.Frame(ventana, background=self.bgcolor)
+        panel.pack(expand=True, fill="both", pady=10)
 
-        boton_cancelar = tk.Button(ventana, text="Cancelar", command=ventana.destroy)
-        boton_cancelar.pack()
+        boton_aplicar = comp.Boton(panel, text="Filtrar", command=aplicar_filtros)
+        boton_aplicar.pack(expand=True, side="left")
+
+        boton_cancelar = comp.Boton(panel, text="Cancelar", command=ventana.destroy)
+        boton_cancelar.pack(expand=True, side="left")
 
 if __name__ == "__main__":
     import data.InventarioDB as idb

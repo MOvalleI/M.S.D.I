@@ -115,7 +115,7 @@ class Inicio(ven.VentanaPrincipal):
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
-                ver_text = "Ver\nVenta"
+                ver_text = "Ver Ventas\nRegistradas"
                 eliminar_text = ""
                 modificar_text = ""
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)

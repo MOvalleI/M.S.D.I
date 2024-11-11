@@ -19,7 +19,7 @@ class Boton(tk.Button):
     Esta clase configurará el tamaño y la imágen de un botón, asi como su fuente, 
     tamaño de letra y otras configuraciones.
     """
-    def __init__(self, master: tk.Widget, text: str="", width: int=125, height: int=50, image: str=BUTTONIMAGE, font: str=BUTTONFONT, font_size: int=10):
+    def __init__(self, master: tk.Widget, text: str="", width: int=125, height: int=50, image: str=BUTTONIMAGE, font: str=BUTTONFONT, font_size: int=10, command=None):
         super().__init__(master=master)
 
         self.master = master
@@ -29,12 +29,14 @@ class Boton(tk.Button):
         self.image = image
         self.font = font
         self.font_size = font_size
+        self.command = command
 
         self._configurar_boton()
 
 
     def _configurar_boton(self):
         image_tk = self._configurar_imagen()
+        self.config(command=self.command)
         self.config(width=self.width, height=self.height)
         self.config(image=image_tk, borderwidth=0, background=BUTTONBG, highlightthickness=0, activebackground=BUTTONBG)
         self.config(cursor="hand2")
@@ -145,10 +147,10 @@ class CustomTreeview(ttk.Treeview):
         self.style.layout("Custom.Treeview", [('Treeview.field', {'sticky': 'nswe'})])
         self.configure(style="Custom.Treeview")
 
-    def create_table(self, head, side='top') -> None:
+    def create_table(self, head, side='top', width=150) -> None:
         self.config(columns=head, show='headings')
         for col in head:
-            self.column(col, anchor='center', width=150)
+            self.column(col, anchor='center', width=width)
             self.heading(col, text=col, anchor='center')
 
     def add_data(self, data):

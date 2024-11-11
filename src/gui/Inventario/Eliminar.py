@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 import gui.Ventanas as ven
 import gui.Inicio as i
 import data.BuscadorDB as bi
+import gui.Componentes as comp
 
 class Eliminar(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
@@ -20,6 +21,8 @@ class Eliminar(ven.VentanaPrincipal):
         self.protocol("WM_DELETE_WINDOW", self.volver)
         self.bind('<Escape>', lambda event: self.volver)
 
+        self.resizable(False, False)
+
         self.agregar_titulo()
         self.agregar_lista_productos()
         self.agregar_datos_productos()
@@ -28,20 +31,76 @@ class Eliminar(ven.VentanaPrincipal):
         
     def agregar_lista_productos(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both")
+        panel.pack(expand=True, fill="both", pady=10)
 
         label = tk.Label(panel, text="Selecciona un Producto:", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
         label.pack(expand=True)
 
-        values = []
+        values = ["(no seleccionado)"]
 
-        for id_menu in self.datos_inventario.Menu.keys():
-                nombre = self.datos_inventario.Menu[id_menu][0]
+        for id_prod in self.datos_inventario.Productos.keys():
+                nombre = self.datos_inventario.Productos[id_prod][0]
                 values.append(nombre)
 
         self.prod_list = ttk.Combobox(panel, values=values)
+        self.prod_list.current(0)
         self.prod_list.pack(expand=True)
         
+
+    def agregar_tabla_productos(self):
+        panel = tk.Frame(self, background=self.bgcolor)
+        panel.pack(expand=True, fill="both", pady=10)
+
+        label = tk.Label(panel, text="Busca un Producto por Nombre:", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
+        label.pack(expand=True)
+
+
+        self.tabla.heading("Nombre", text="Nombre")
+        self.tabla.heading("Clase", text="Clase")
+        self.tabla.heading("Lugar", text="Lugar de Compra")
+        self.tabla.heading("Unidad", text="Unidad")
+        self.tabla.heading("Precio", text="Precio Unitario")
+        self.tabla.heading("Stock_min", text="Stock Mínimo")
+        self.tabla.heading("Stock_max", text="Stock Deseado")
+        self.tabla.heading("Stock_disp", text="Stock Disponible")
+
+        self.tabla.column("Nombre", width=100)
+        self.tabla.column("Clase", width=50)
+        self.tabla.column("Lugar", width=50)
+        self.tabla.column("Unidad", width=50)
+        self.tabla.column("Precio", width=50)
+        self.tabla.column("Stock_min", width=50)
+        self.tabla.column("Stock_max", width=50)
+        self.tabla.column("Stock_disp", width=50)
+
+        encabezados = {
+            "nombre"
+        }
+
+
+        self.tabla = comp.CustomTreeview(panel)
+        self.tabla.create_table()
+
+    # TODO: Reemplazar metodo por otro si es necesario
+    def actualizar_tabla(self, event):
+        self.tabla.delete(*self.tabla.get_children())
+
+        if self.buscador_entry.get() == "":
+            for id_prod in self.datos_inventario.Productos.keys():
+                nombre = self.datos_inventario.Productos[id_prod][0]
+                precio = self.datos_inventario.Productos[id_prod][1]
+                tamaño = bi.BuscadorDB.buscar_tamano_por_id(self.datos_inventario.Tamaños, self.datos_inventario.Menu[id_prod][3])
+
+                self.tabla.insert("", tk.END, iid=id_prod, values=(nombre, precio, tamaño))
+        else:
+            for id_prod in self.datos_inventario.Menu.keys():
+                nombre = self.datos_inventario.Menu[id_prod][0]
+                if self.buscador_entry.get().lower() in nombre.lower():
+                    precio = self.datos_inventario.Menu[id_prod][1]
+                    tamaño = bi.BuscadorDB.buscar_tamano_por_id(self.datos_inventario.Tamaños, self.datos_inventario.Menu[id_prod][3])
+
+                    self.tabla.insert("", tk.END, iid=id_prod, values=(nombre, precio, tamaño))
+
 
     def agregar_datos_productos(self):
         panel = tk.Frame(self, background=self.bgcolor)
@@ -90,12 +149,13 @@ class Eliminar(ven.VentanaPrincipal):
 
     def agregar_botones_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both")
+        panel.pack(expand=True, fill="both", pady=10)
 
-        self.b_eliminar = tk.Button(panel, text="Eliminar", anchor="center", state="disabled", command=None)
+        self.b_eliminar = comp.Boton(panel, text="Eliminar", command=None)
+        self.b_eliminar.config(state="disabled")
         self.b_eliminar.pack(expand=True, side="left")
 
-        self.b_volver = tk.Button(panel, text="Volver", anchor="center", command=self.volver)
+        self.b_volver = comp.Boton(panel, text="Volver", command=self.volver)
         self.b_volver.pack(expand=True, side="left")
 
 

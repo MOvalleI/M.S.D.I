@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 import tkinter.messagebox as msbox
 import gui.Ventanas as ven
 import gui.Inicio as i
+import gui.Componentes as comp
 
 class Agregar(ven.VentanaPrincipal):
     def __init__(self, datos: dict=None):
@@ -16,6 +17,8 @@ class Agregar(ven.VentanaPrincipal):
         self.label_error_min = None
         self.label_error_max = None
         self.label_error_stock = None
+
+        self.resizable(False, False)
 
         self.configurar_ventana()
         self.protocol("WM_DELETE_WINDOW", self.volver)
@@ -97,7 +100,8 @@ class Agregar(ven.VentanaPrincipal):
         label = tk.Label(panel, text="Precio:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.precio_entry = tk.Entry(panel, width=25)
+        self.precio_entry = comp.CampoTexto(panel, tipo="int")
+        self.precio_entry.config(width=15)
         self.precio_entry.pack()
 
 
@@ -108,7 +112,8 @@ class Agregar(ven.VentanaPrincipal):
         label = tk.Label(panel, text="Stock Mínimo:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.stock_min_entry = tk.Entry(panel, width=25)
+        self.stock_min_entry = comp.CampoTexto(panel, tipo="int")
+        self.stock_min_entry.config(width=15)
         self.stock_min_entry.pack()
 
     
@@ -119,7 +124,8 @@ class Agregar(ven.VentanaPrincipal):
         label = tk.Label(panel, text="Stock Deseado:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.stock_max_entry = tk.Entry(panel, width=25)
+        self.stock_max_entry = comp.CampoTexto(panel, tipo="int")
+        self.stock_max_entry.config(width=15)
         self.stock_max_entry.pack()
 
 
@@ -130,18 +136,19 @@ class Agregar(ven.VentanaPrincipal):
         label = tk.Label(panel, text="Stock Actual:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.precio_entry = tk.Entry(panel, width=25)
-        self.precio_entry.pack()
+        self.stock_actual_entry = comp.CampoTexto(panel, tipo="int")
+        self.stock_actual_entry.config(width=15)
+        self.stock_actual_entry.pack()
 
 
     def agregar_botones_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, pady=35, fill="both")
 
-        self.b_agregar = tk.Button(panel, text="Agregar\nProducto", anchor="center", command=None)
+        self.b_agregar = comp.Boton(panel, text="Agregar\nProducto", command=None)
         self.b_agregar.pack(expand=True, side="left")
 
-        self.b_volver = tk.Button(panel, text="Volver", anchor="center", command=self.volver)
+        self.b_volver = comp.Boton(panel, text="Volver", command=self.volver)
         self.b_volver.pack(expand=True, side="left")
 
 

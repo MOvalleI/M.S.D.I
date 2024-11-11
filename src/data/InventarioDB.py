@@ -82,14 +82,16 @@ class InventarioDB:
     def inner_join_menu(self, like = None, order = "ID_Menu", where = None):
         query = "SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M INNER JOIN Categoria C ON M.ID_categoria = C.ID_categoria INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño "
 
-        if like or where:
-            query += " WHERE "
+        query_list = []
 
         if like:
-            where.append("M.nombre_menu LIKE ?")
+            query_list.append("M.nombre_menu LIKE ?")
 
         if where:
-            query += " AND ".join(where)
+            query_list += where
+
+        if like or where:
+            query += " WHERE " + " AND ".join(query_list)
         
         ordering_options = {"ID_categoria": ("C", "nombre_categoria"),"ID_tamaño": ("T", "nombre_tamaño")}
         tabla, columna = ordering_options.get(order, ("M", order))

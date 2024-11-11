@@ -74,6 +74,12 @@ class VentanaTopLevel(tk.Toplevel):
         self.fgcolor = fgcolor
         self.font = font
 
+        self._configurar_ventana()
+
+    def _configurar_ventana(self):
+        self.config(background=self.bgcolor)
+        self.resizable(False, False)
+
 
     def agregar_titulo(self):
         self.panel_logo = tk.Frame(self, background=self.bgcolor)
