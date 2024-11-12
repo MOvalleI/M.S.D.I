@@ -42,6 +42,24 @@ class ArbolBinarioBusqueda:
             else:
                 self._insertar_recursivo(node.derecho, clave, dato)
 
+    def buscar_ultimo_id(self):
+        return self._buscar_ultimo_id_recursivo(self.raiz)
+
+    def _buscar_ultimo_id_recursivo(self, node):
+        if node.derecho is None:
+            return node
+        return self._buscar_ultimo_id_recursivo(node.derecho)
+
+    def buscar_por_id(self, clave):
+        return self._buscar_por_id_recursivo(self.raiz, clave)
+        
+    def _buscar_por_id_recursivo(self, node, clave):
+        if node is None or node.id == clave:
+            return node
+        if clave < node.id:
+            return self._buscar_por_id_recursivo(node.izquierdo, clave)
+        return self._buscar_por_id_recursivo(node.derecho, clave)
+
     def _calcular_cantidad(self, node):
         if node is None:
             return 0
@@ -75,6 +93,8 @@ class InventarioDB:
         self.Productos = self._cargar_tabla("Productos") #diccionario
         self.Menu = self._cargar_tabla("Menu") #diccionario
         self.Ventas = self._cargar_tabla("Ventas") #diccionario
+
+   
 
     def cerrar(self):
         self.conn.close()

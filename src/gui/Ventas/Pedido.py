@@ -42,7 +42,7 @@ class Pedido(ven.VentanaTopLevel):
     
     def agregar_buscador(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both", pady=20)
+        panel.pack(expand=True, fill="both", pady=10)
 
         label = tk.Label(panel, text="Buscar Menu por Nombre", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16))
         label.pack()
@@ -54,7 +54,7 @@ class Pedido(ven.VentanaTopLevel):
     
     def agregar_tabla(self):
         panel_tabla = tk.Frame(self, background=self.bgcolor)
-        panel_tabla.pack(expand=True, fill="both")
+        panel_tabla.pack(expand=True, fill="both", pady=10)
 
         panel_tabla.grid_rowconfigure(0, weight=1)
         panel_tabla.grid_columnconfigure(0, weight=1)
@@ -81,7 +81,7 @@ class Pedido(ven.VentanaTopLevel):
     
     def agregar_menu_seleccionado(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both")
+        panel.pack(expand=True, fill="both", pady=10)
 
         self.menu_seleccionado_label = tk.Label(panel, text=f"Menu Seleccionado: {self.menu_seleccionado}", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16))
         self.menu_seleccionado_label.pack(expand=True)
@@ -89,23 +89,23 @@ class Pedido(ven.VentanaTopLevel):
 
     def agregar_cantidad(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both")
+        panel.pack(expand=True, fill="both", pady=10)
 
         self.cantidad_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Cantidad: {self.cantidad}")
-        self.cantidad_label.pack(side="left", expand=True)
+        self.cantidad_label.pack(side="left", expand=True, padx=5)
 
         self.b_aumentar = comp.Boton(panel, text="/\\")
         self.b_aumentar.config(command=self.aumentar_cantidad)
-        self.b_aumentar.pack(side="left", expand=True)
+        self.b_aumentar.pack(side="left", expand=True, padx=5)
 
         self.b_disminuir = comp.Boton(panel, text="\\/")
         self.b_disminuir.config(command=self.dismiunir_cantidad, state="disabled")
-        self.b_disminuir.pack(side="left", expand=True)
+        self.b_disminuir.pack(side="left", expand=True, padx=5)
 
     
     def agregar_precio(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both")
+        panel.pack(expand=True, fill="both", pady=10)
 
         self.precio_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Precio: ${self.precio}")
         self.precio_label.pack(side="left", expand=True)
@@ -113,7 +113,7 @@ class Pedido(ven.VentanaTopLevel):
     
     def agregar_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both")
+        panel.pack(expand=True, fill="both", pady=10)
 
         self.b_agregar = comp.Boton(panel, text="Agregar\nPedido")
         self.b_agregar.config(state="disabled", command=self.salir_y_agregar)
