@@ -77,7 +77,7 @@ class VisualizarMenu(v.VentanaPrincipal):
             self.boton_ingredientes.config(state="active")
             item = self.tabla_menu.item(selection[0], "values")
             self.label_nombre.config(text=item[1])
-            self.id_seleccionado = item[0]
+            self.id_seleccionado = int(item[0])
         
         
     def buscar_nombre(self):
@@ -105,9 +105,11 @@ class VisualizarMenu(v.VentanaPrincipal):
         
     def ver_ingredientes(self):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar ingredientes",
-                             titulo = self.datos_menu.Menu[int(self.id_seleccionado)][0],
+                             titulo = self.datos_menu.Menu[self.id_seleccionado][0],
                              encabezados = ["ID producto","producto"],
-                             datos = [(x, self.datos_menu.Productos[int(x)][0]) for x in self.datos_menu.Ingredientes[0][self.id_seleccionado]])
+                             datos = [(x[0], self.datos_menu.Productos[x[0]][0]) for x in self.datos_menu.Ingredientes[0][self.id_seleccionado]])
+        
+
         
     def ver_categorias(self):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar categorias",

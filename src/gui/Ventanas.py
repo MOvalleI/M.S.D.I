@@ -4,7 +4,7 @@ from PIL import Image, ImageTk
 LOGO = "./img/logo_128x128.png"
 BGCOLOR = "#1e1e1e"
 FGCOLOR = "white"
-DEFAULT_FONT = "Segoe UI"
+DEFAULT_FONT = "Impact"
 
 
 class VentanaPrincipal(tk.Tk):
@@ -49,7 +49,7 @@ class VentanaPrincipal(tk.Tk):
 
     def configurar_titulo(self, texto: str):
         self.titulo = texto
-        self.label_logo.config(text=self.titulo)
+        self.label_titulo.config(text=self.titulo)
 
     
     def configurar_logo(self, ruta_logo: str):
@@ -79,6 +79,7 @@ class VentanaTopLevel(tk.Toplevel):
     def _configurar_ventana(self):
         self.config(background=self.bgcolor)
         self.resizable(False, False)
+        self.grab_set()
 
 
     def agregar_titulo(self):

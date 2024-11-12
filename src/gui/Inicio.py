@@ -3,12 +3,13 @@ import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
 import gui.Login
-import gui.Ventas.Ventas as av
+import gui.Ventas.AgregarVentas as av
 import gui.Ventanas as ven
 import gui.Inventario.Agregar as iai
 import gui.Inventario.Eliminar as iei
 import gui.Componentes as comp
 import gui.Menu.VisualizarMenu as vm
+import gui.Ventas.VerVentas as vv
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -119,6 +120,7 @@ class Inicio(ven.VentanaPrincipal):
                 eliminar_text = ""
                 modificar_text = ""
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)
+                self.boton_ver.config(command=self.abrir_ver_ventas)
                 self.boton_ver.config(command=None)
                 self.boton_agregar.grid(row=0, column=1, rowspan=2)
                 self.boton_ver.grid(row=0, column=2, rowspan=2)
@@ -161,7 +163,7 @@ class Inicio(ven.VentanaPrincipal):
 
     def abrir_agregar_ventas(self):
         self.destroy()
-        av.Ventas(datos=self.datos)
+        av.AgregarVentas(datos=self.datos)
 
 
     def abrir_agregar_producto(self):
@@ -177,6 +179,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_ver_menu(self):
         self.destroy()
         vm.VisualizarMenu(datos=self.datos)
+
+    
+    def abrir_ver_ventas(self):
+        self.destroy()
+        vv.VerVentas(datos=self.datos)
     
     
     def salir(self):

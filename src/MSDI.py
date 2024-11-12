@@ -13,5 +13,6 @@ def init():
 
     root = l.Login(datos=datosDB)
     root.mainloop()
+    datos_inventario.cerrar()
 
 init()

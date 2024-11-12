@@ -20,6 +20,24 @@ class BuscadorDB:
         unidad = arbol_unidades.buscar_por_id(id_unidad)
         if unidad is not None:
             return unidad.dato[0]
-        return None  
+        return None 
+    
+
+    # @staticmethod
+    # # def buscar_menu_por_venta(inventario, id_venta) -> list:
+    # #     menu = inventario.Menu
+    # #     contenidoventa  = inventario.ContenidoVenta[0]
+
+    # #     ids_contenido = contenidoventa[id_venta]
+
+    # #     datos_contenido = []
+    # #     hola :)+-<-<
+
+
+
+
+
+
+
 
     

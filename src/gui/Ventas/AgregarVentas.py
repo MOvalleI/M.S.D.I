@@ -4,11 +4,11 @@ import tkinter.messagebox as msg
 import gui.Inicio as i
 import gui.Ventas.ModificarPedido as mp
 import gui.Ventanas as ven
-import gui.Ventas.Pedido as p
+import gui.Ventas.AgregarPedido as p
 import gui.Componentes as comp
 
 
-class Ventas(ven.VentanaPrincipal):
+class AgregarVentas(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
         super().__init__(titulo="Registrar\nVenta", titulo_ventana="Registrar Venta")
 
@@ -182,8 +182,3 @@ class Ventas(ven.VentanaPrincipal):
         self.destroy()
         i.Inicio(datos=self.datos)
     
-
-    
-if __name__ == "__main__":
-    a = Ventas()
-    a.mainloop()

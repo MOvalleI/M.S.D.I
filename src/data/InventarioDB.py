@@ -113,9 +113,9 @@ class InventarioDB:
         if like or where:
             query += " WHERE " + " AND ".join(query_list)
         
-        ordering_options = {"ID_categoria": ("C", "nombre_categoria"),"ID_tamaño": ("T", "nombre_tamaño")}
-        tabla, columna = ordering_options.get(order, ("M", order))
-        query += f" ORDER BY {tabla}.{columna};"
+        ordering_options = {"ID_categoria": "C.nombre_categoria","ID_tamaño": "T.nombre_tamaño"}
+        tabla = ordering_options.get(order, (f"M.{order}"))
+        query += f" ORDER BY {tabla};"
 
         if like:
             self.cursor.execute(query, (f"%{like}%",))
@@ -139,8 +139,8 @@ class InventarioDB:
         relacion_izquierda = {}
         relacion_derecha = {}
         for registro in registros:
-            relacion_izquierda.setdefault(str(registro[0]), []).append(str(registro[1]))
-            relacion_derecha.setdefault(str(registro[1]), []).append(str(registro[0]))
+            relacion_izquierda.setdefault(registro[0], []).append(registro[1:])
+            relacion_derecha.setdefault(registro[1], []).append(registro[0])
         return [relacion_izquierda, relacion_derecha]
             
 
