@@ -3,7 +3,8 @@ import tkinter.ttk as ttk
 import re
 from PIL import Image, ImageTk
 
-BUTTONIMAGE = "./img/botonsalchicha.png"
+BUTTONACTIVEIMAGE = "./img/botonsalchicha.png"
+BUTTONDISABLEIMAGE = "./img/botonsalchicha5.png"
 BUTTONBG = "#1e1e1e"
 BUTTONFG = "#3a110c"
 BUTTONFONT = "Segoe UI"
@@ -19,7 +20,7 @@ class Boton(tk.Button):
     Esta clase configurará el tamaño y la imágen de un botón, asi como su fuente, 
     tamaño de letra y otras configuraciones.
     """
-    def __init__(self, master: tk.Widget, text: str="", width: int=125, height: int=50, image: str=BUTTONIMAGE, font: str=BUTTONFONT, font_size: int=10, command=None):
+    def __init__(self, master: tk.Widget, text: str="", width: int=125, height: int=50, image: str=BUTTONACTIVEIMAGE, font: str=BUTTONFONT, font_size: int=10, command=None):
         super().__init__(master=master)
 
         self.master = master
@@ -66,6 +67,24 @@ class Boton(tk.Button):
             self.font_size = font_size
 
         self._configurar_boton()
+
+    
+    def deshabilitar_boton(self):
+        self.image = BUTTONDISABLEIMAGE
+        self.image_tk = self._configurar_imagen()
+        self.config(image=self.image_tk, command=self._funcion_vacia)
+        self.update()
+
+    
+    def habilitar_boton(self):
+        self.image = BUTTONACTIVEIMAGE
+        self._configurar_imagen()
+        self.config(image=self.image_tk, command=self.command)
+        self.update()
+
+
+    def _funcion_vacia(self):
+        pass
 
 
 class CampoTexto(tk.Entry):

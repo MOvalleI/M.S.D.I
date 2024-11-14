@@ -34,7 +34,7 @@ class Inicio(ven.VentanaPrincipal):
 
     
     def configurar_ventana(self):
-        self.geometry("500x600")
+        self.geometry("520x600")
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.salir)
 
@@ -55,9 +55,13 @@ class Inicio(ven.VentanaPrincipal):
         self.button_menu = comp.Boton(button_panel, text="Ver Opciones\nde Menu")
         self.button_menu.config(command=lambda: self.cambiar_opciones("Menu"))
 
+        self.button_otros = comp.Boton(button_panel, text="Ver Opciones de\nOtros Datos")
+        self.button_otros.config(command=lambda: self.cambiar_opciones("Otros"))
+
         self.button_ventas.pack(expand=True, side="left")
         self.button_menu.pack(expand=True, side="left")
         self.button_inventario.pack(expand=True, side="left")
+        self.button_otros.pack(expand=True, side="left")
 
         self.agregar_panel_opciones()
 
@@ -106,6 +110,14 @@ class Inicio(ven.VentanaPrincipal):
                 modificar_text = "Modificar\nMenu"
                 self.boton_ver.config(command=self.abrir_ver_menu)
             case "Inventario": 
+                logo = IMG_INVENTARIO
+                agregar_text = "Agregar\nInventario"
+                ver_text = "Ver\nInventario"
+                eliminar_text = "Eliminar\nInventario"
+                modificar_text = "Modificar\nInventario"
+                self.boton_agregar.config(command=self.abrir_agregar_producto)
+                self.boton_eliminar.config(command=self.abrir_eliminar_producto)
+            case "Otros":
                 logo = IMG_INVENTARIO
                 agregar_text = "Agregar\nInventario"
                 ver_text = "Ver\nInventario"

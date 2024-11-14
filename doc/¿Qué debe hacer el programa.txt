@@ -1,0 +1,66 @@
+¿Qué debe hacer el programa?:
+Manejar:
+- Registro de Ventas
+- Registro y seguimiento de Menú Disponible
+- Registro y seguimiento de Productos
+
+===========================================
+===========================================
+
+Ventas:
+- Registrar una venta
+	- Indicar local de venta
+	- Indicar Menú y cantidad vendida
+
+- Ver ventas registradas
+	- Filtrar ventas por precio/fecha realizada/local realizado
+	- Mostrar Detalles de la venta (Menús vendidos)
+
+- Realizar documento con ventas realizadas durante el mes
+	- Especificar todas la ventas con su fecha y precio total
+	- Especificar Menú mas vendido
+	- Especificar Ganancias del mes
+
+===========================================
+===========================================
+
+Menú:
+- Ver Menú Disponible
+	- Ver ingredientes asociados al menú
+	- Filtrar por nombre/precio/tamaño/categoría
+
+- Agregar Nuevo Menú
+	- Especificar nombre/precio/categoría/tamaño
+	- Agregar Ingredientes
+		- Filtrar por nombre
+		- Filtrar por clase
+	- Eliminar Ingrediente
+
+- Eliminar Menú Existente
+	- Filtrar por nombre/tamaño/categoría/precio
+	- Seleccionar y eliminar Menú
+
+- Modificar Datos de Menú Existente
+	- Filtrar por nombre/tamaño/categoría/precio
+	- Modificar nombre/tamaño/categoría/precio
+	- Agregar/Eliminar Ingrediente de Menú
+
+===========================================
+===========================================
+
+Productos (Inventario):
+- Ver Productos
+	- Filtrar por nombre/{toda la wea}
+	
+- Realizar Informe con los Productos disponibles, su stock en el local, y los mas urgentes por comprar, junto con su coste estimado
+
+- Agregar Producto Existente
+	- Especificar sus datos
+
+- Eliminar Producto Existente
+	- Filtrar por nombre/{toda la wea}
+
+- Modificar Producto
+	- Filtrar por nombre/{toda la wea}
+	- Modificar cantidad de stock de un producto (mínimo 0)
+	- Modificar otros datos, como nombre, precio unitario, entre otros

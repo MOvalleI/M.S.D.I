@@ -27,123 +27,138 @@ class Agregar(ven.VentanaPrincipal):
         self.bind('<Escape>', lambda event: self.volver)
 
     def configurar_ventana(self):
+        self.geometry("450x625")
+
         self.agregar_titulo()
 
         self.panel_data = tk.Frame(self, background=self.bgcolor)
         self.panel_data.pack(expand=True, fill="both")
 
-        self.agregar_entry_nombre()
-        self.agregar_lista_clase()
-        self.agregar_lista_lugar_compra()
-        self.agregar_lista_unidad()
-        self.agregar_entry_precio()
-        self.agregar_entry_stock_min()
-        self.agregar_entry_stock_deseado()
-        self.agregar_entry_stock_actual()
+        self.agregar_fila_1()
+        self.agregar_fila_2()
+        self.agregar_fila_3()
+        self.agregar_fila_4()
+
         self.agregar_botones_opciones()
 
 
-    def agregar_entry_nombre(self):
+    def agregar_fila_1(self):
+        # Nombre y Clase
         panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=0, column=0, pady=35, padx=5)
+        panel.pack(expand=True, fill="both", pady=15)
 
-        label = tk.Label(panel, text="Nombre:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
-        label.pack(expand=True)
+        # Nombre
+        panel_nombre = tk.Frame(panel, background=self.bgcolor)
+        panel_nombre.pack(expand=True, fill="both", side="left")
 
-        self.nombre_entry = tk.Entry(panel, width=25)
+        label_nombre = tk.Label(panel_nombre, text="Nombre:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        label_nombre.pack(expand=True)
+
+        self.nombre_entry = tk.Entry(panel_nombre, width=25)
         self.nombre_entry.pack(expand=True)
 
-    
-    def agregar_lista_clase(self):
-        panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=0, column=1, pady=35, padx=5)
+        # Clase
+        panel_clase = tk.Frame(panel, background=self.bgcolor)
+        panel_clase.pack(expand=True, fill="both", side="left")
 
-        label = tk.Label(panel, text="Clase:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
-        label.pack(expand=True)
+        label_clase = tk.Label(panel_clase, text="Clase:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        label_clase.pack(expand=True)
 
         values = ["clase1","clase2","clase3"]
 
-        self.clase_list = ttk.Combobox(panel, values=values)
+        self.clase_list = ttk.Combobox(panel_clase, values=values)
         self.clase_list.pack(expand=True)
 
     
-    def agregar_lista_lugar_compra(self):
+    def agregar_fila_2(self):
+        # Lugar de Compra y Unidad
         panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=1, column=0, pady=35, padx=5)
+        panel.pack(expand=True, fill="both", pady=15)
 
-        label = tk.Label(panel, text="Lugar de Compra:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        # Lugar de Compra
+        panel_lugar = tk.Frame(panel, background=self.bgcolor)
+        panel_lugar.pack(expand=True, fill="both", side="left")
+
+        label = tk.Label(panel_lugar, text="Lugar de Compra:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
         values = ["clase1","clase2","clase3"]
 
-        self.lugar_compra_list = ttk.Combobox(panel, values=values)
+        self.lugar_compra_list = ttk.Combobox(panel_lugar, values=values)
         self.lugar_compra_list.pack(expand=True)
 
+        # Unidad
+        panel_unidad = tk.Frame(panel, background=self.bgcolor)
+        panel_unidad.pack(expand=True, fill="both", side="left")
 
-    def agregar_lista_unidad(self):
-        panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=1, column=1, pady=35, padx=5)
-
-        label = tk.Label(panel, text="Unidad:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        label = tk.Label(panel_unidad, text="Unidad:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
         values = ["clase1","clase2","clase3"]
 
-        self.unidad_list = ttk.Combobox(panel, values=values)
+        self.unidad_list = ttk.Combobox(panel_unidad, values=values)
         self.unidad_list.pack(expand=True)
 
-    
-    def agregar_entry_precio(self):
-        panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=2, column=0, pady=35, padx=5)
 
-        label = tk.Label(panel, text="Precio:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+    def agregar_fila_3(self):
+        # Precio y Stock Minimo
+        panel = tk.Frame(self.panel_data, background=self.bgcolor)
+        panel.pack(expand=True, fill="both", pady=15)
+
+        # Precio
+        panel_precio = tk.Frame(panel, background=self.bgcolor)
+        panel_precio.pack(expand=True, fill="both", side="left")
+
+        label = tk.Label(panel_precio, text="Precio:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.precio_entry = comp.CampoTexto(panel, tipo="int")
+        self.precio_entry = comp.CampoTexto(panel_precio, tipo="int")
         self.precio_entry.config(width=15)
         self.precio_entry.pack()
 
+        # Stock Mínimo
+        panel_stock_min = tk.Frame(panel, background=self.bgcolor)
+        panel_stock_min.pack(expand=True, fill="both", side="left")
 
-    def agregar_entry_stock_min(self):
-        panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=2, column=1, pady=35, padx=5)
-
-        label = tk.Label(panel, text="Stock Mínimo:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        label = tk.Label(panel_stock_min, text="Stock Mínimo:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.stock_min_entry = comp.CampoTexto(panel, tipo="int")
+        self.stock_min_entry = comp.CampoTexto(panel_stock_min, tipo="int")
         self.stock_min_entry.config(width=15)
         self.stock_min_entry.pack()
 
     
-    def agregar_entry_stock_deseado(self):
+    def agregar_fila_4(self):
+        # Stock Deseado y Disponible
         panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=3, column=0, pady=35, padx=5)
+        panel.pack(expand=True, fill="both", pady=15)
 
-        label = tk.Label(panel, text="Stock Deseado:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        # Stock Deseado
+        panel_stock_deseado = tk.Frame(panel, background=self.bgcolor)
+        panel_stock_deseado.pack(expand=True, fill="both", side="left")
+
+        label = tk.Label(panel_stock_deseado, text="Stock Deseado:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.stock_max_entry = comp.CampoTexto(panel, tipo="int")
+        self.stock_max_entry = comp.CampoTexto(panel_stock_deseado, tipo="int")
         self.stock_max_entry.config(width=15)
         self.stock_max_entry.pack()
 
+        # Stock Disponible
+        panel_stock_disponible = tk.Frame(panel, background=self.bgcolor)
+        panel_stock_disponible.pack(expand=True, fill="both", side="left")
 
-    def agregar_entry_stock_actual(self):
-        panel = tk.Frame(self.panel_data, background=self.bgcolor)
-        panel.grid(row=3, column=1, pady=35, padx=5)
-
-        label = tk.Label(panel, text="Stock Actual:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        label = tk.Label(panel_stock_disponible, text="Stock Actual:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        self.stock_actual_entry = comp.CampoTexto(panel, tipo="int")
+        self.stock_actual_entry = comp.CampoTexto(panel_stock_disponible, tipo="int")
         self.stock_actual_entry.config(width=15)
         self.stock_actual_entry.pack()
 
 
     def agregar_botones_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, pady=35, fill="both")
+        panel.pack(expand=True, pady=15, fill="both")
 
         self.b_agregar = comp.Boton(panel, text="Agregar\nProducto", command=None)
         self.b_agregar.pack(expand=True, side="left")

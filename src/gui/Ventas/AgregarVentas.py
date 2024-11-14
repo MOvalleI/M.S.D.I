@@ -81,8 +81,8 @@ class AgregarVentas(ven.VentanaPrincipal):
 
         b_agregar.pack(expand=True, side="left")
 
-        self.b_modificar = comp.Boton(button_panel, text="Modificar Pedido\nSeleccionado")
-        self.b_modificar.config(state="disabled", command=self.abrir_modificar_pedido)
+        self.b_modificar = comp.Boton(button_panel, text="Modificar Pedido\nSeleccionado", command=self.abrir_modificar_pedido)
+        self.b_modificar.deshabilitar_boton()
         self.b_modificar.pack(expand=True, side="left")
 
         self.b_eliminar = comp.Boton(button_panel, text="Eliminar Pedido\nSeleccionado")
@@ -124,7 +124,7 @@ class AgregarVentas(ven.VentanaPrincipal):
         self.label_precio.config(text=f"Precio Total: ${self.precio_total}")
 
 
-    def actualizar_pedido(self, id: int, values: tuple, event=None):
+    def actualizar_pedido(self, id: int, values: tuple):
         if self.precio_modificado:
             self.tabla.item(id, values=values)
 
@@ -171,11 +171,15 @@ class AgregarVentas(ven.VentanaPrincipal):
     
     def activar_botones(self):
         if self.menu_seleccionado:
-            self.b_modificar.config(state="active")
-            self.b_eliminar.config(state="active")
+            self.b_modificar.habilitar_boton()
+            self.b_eliminar.habilitar_boton()
         else:
-            self.b_modificar.config(state="disabled")
-            self.b_eliminar.config(state="disabled")
+            self.b_modificar.deshabilitar_boton()
+            self.b_eliminar.deshabilitar_boton()
+
+
+    def quitar_focus(self):
+        self.tabla.selection_remove(self.tabla.focus())
 
 
     def volver(self):

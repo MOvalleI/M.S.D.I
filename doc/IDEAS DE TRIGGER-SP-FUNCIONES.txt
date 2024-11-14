@@ -1,0 +1,15 @@
+IDEAS DE TRIGGER-SP-FUNCIONES:
+
+- Agregar Fecha Actual a venta al realizar una venta
+
+- Al eliminar un menú, eliminar todas las referencias del menú en Ingredientes 
+
+- Al eliminar un menú, {por decidir...}
+
+- Al eliminar un Local, eliminar todas las referencias del Local en local/productos
+
+- Al Insertar un local, agregar una referencia por cada producto existente, y configurarlo en 0
+
+- Al eliminar una categoría/clase/lugar/unidad/tamaño, configurar sus referencias respectivas en id 1 (no especificado) (requiere agregar como id=1 valor=No Especificado)
+
+- Obtener datos de venta, filtrados por local
