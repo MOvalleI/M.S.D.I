@@ -27,9 +27,6 @@ class Pedido(ven.VentanaTopLevel):
 
     
     def configurar_ventana(self):
-        self.title("Agregar Pedido")
-        self.config(background=self.bgcolor)
-
         self.agregar_titulo()
         self.agregar_buscador()
         self.agregar_tabla()

@@ -32,6 +32,8 @@ class Boton(tk.Button):
         self.font_size = font_size
         self.command = command
 
+        self.is_active = True
+
         self._configurar_boton()
 
 
@@ -52,19 +54,9 @@ class Boton(tk.Button):
         return image_tk
 
 
-    def configurar(self, text: str=None, width: int=None, height: int=None, image: str=None, font: str=None, font_size: int=None):
-        if text:
-            self.text = text
-        if width:
-            self.width = width
-        if height:
-            self.height = height
-        if image:
-            self.image = image
-        if font:
-            self.font = font
-        if font_size:
-            self.font_size = font_size
+    def configurar(self, **kwargs):
+        for clave, valor in kwargs.items():
+            setattr(self, clave, valor)
 
         self._configurar_boton()
 
@@ -74,13 +66,15 @@ class Boton(tk.Button):
         self.image_tk = self._configurar_imagen()
         self.config(image=self.image_tk, command=self._funcion_vacia)
         self.update()
+        self.is_active = False
 
     
     def habilitar_boton(self):
         self.image = BUTTONACTIVEIMAGE
-        self._configurar_imagen()
+        self.image_tk = self._configurar_imagen()
         self.config(image=self.image_tk, command=self.command)
         self.update()
+        self.is_active = True
 
 
     def _funcion_vacia(self):
@@ -128,7 +122,7 @@ class CampoTexto(tk.Entry):
 
 
     def validar_str(self, texto: str):
-        return re.match("^[a-zA-Z0-9]*$", texto) is not None
+        return re.match(r"^.*$", texto) is not None
 
 
     def validar_int(self, texto: str):

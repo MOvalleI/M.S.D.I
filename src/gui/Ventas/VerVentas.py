@@ -12,6 +12,8 @@ class VerVentas(ven.VentanaPrincipal):
         self.datos = datos
         self.datos_ventas = self.datos["Inventario"]
 
+        self.nombre_seleccionado = None
+
         self.configurar_ventana()
 
 
@@ -19,6 +21,7 @@ class VerVentas(ven.VentanaPrincipal):
         self.resizable(False, False)
 
         self.protocol("WM_DELETE_WINDOW", self.volver)
+
 
         self.agregar_titulo()
         self.agregar_tabla()
@@ -37,6 +40,8 @@ class VerVentas(ven.VentanaPrincipal):
         self.tabla.create_table(head=encabezados)
         self.tabla.add_data(data)
 
+        self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_venta)
+
         self.tabla.pack(pady=10)
 
     
@@ -44,7 +49,9 @@ class VerVentas(ven.VentanaPrincipal):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=10)
 
-        self.b_ver_contenido = comp.Boton(panel, text="Ver Contenido\nde Venta", command=None)
+        self.b_ver_contenido = comp.Boton(panel, text="Ver Contenido\nde Venta", command=self.abrir_ver_contenido)
+        self.b_ver_contenido.deshabilitar_boton()
+
         self.b_filtrar = comp.Boton(panel, text="Filtrar", command=None)
         self.b_volver = comp.Boton(panel, text="Volver", command=self.volver)
 
@@ -53,6 +60,16 @@ class VerVentas(ven.VentanaPrincipal):
         self.b_filtrar.pack(expand=True, side="left")
         self.b_volver.pack(expand=True, side="left")
 
+    
+    def seleccionar_venta(self, event=None):
+        selection = self.tabla.selection()
+        if selection:
+            self.b_ver_contenido.habilitar_boton()
+
+
+    def abrir_ver_contenido(self):
+        VerContenido(self)
+
 
     def volver(self, e=None):
         self.destroy()
@@ -60,7 +77,7 @@ class VerVentas(ven.VentanaPrincipal):
 
 
 class VerContenido(ven.VentanaTopLevel):
-    def __init__(self, parent: tk.Widget, data: list):
+    def __init__(self, parent: tk.Widget):
         super().__init__(parent, titulo="Contenido\nde Venta", titulo_ventana="Contenido de Venta")
 
         self.parent = parent

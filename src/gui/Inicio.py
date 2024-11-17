@@ -10,6 +10,7 @@ import gui.Inventario.Eliminar as iei
 import gui.Componentes as comp
 import gui.Menu.VisualizarMenu as vm
 import gui.Ventas.VerVentas as vv
+import gui.Otros.VerDatos as vod
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -34,12 +35,12 @@ class Inicio(ven.VentanaPrincipal):
 
     
     def configurar_ventana(self):
-        self.geometry("520x600")
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.salir)
 
         self.agregar_titulo()
         self.agregar_botones_opciones()
+        self.centrar_ventana()
 
     
     def agregar_botones_opciones(self):
@@ -58,10 +59,10 @@ class Inicio(ven.VentanaPrincipal):
         self.button_otros = comp.Boton(button_panel, text="Ver Opciones de\nOtros Datos")
         self.button_otros.config(command=lambda: self.cambiar_opciones("Otros"))
 
-        self.button_ventas.pack(expand=True, side="left")
-        self.button_menu.pack(expand=True, side="left")
-        self.button_inventario.pack(expand=True, side="left")
-        self.button_otros.pack(expand=True, side="left")
+        self.button_ventas.pack(expand=True, side="left", padx=3)
+        self.button_menu.pack(expand=True, side="left", padx=3)
+        self.button_inventario.pack(expand=True, side="left", padx=3)
+        self.button_otros.pack(expand=True, side="left", padx=3)
 
         self.agregar_panel_opciones()
 
@@ -119,12 +120,14 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_eliminar.config(command=self.abrir_eliminar_producto)
             case "Otros":
                 logo = IMG_INVENTARIO
-                agregar_text = "Agregar\nInventario"
-                ver_text = "Ver\nInventario"
-                eliminar_text = "Eliminar\nInventario"
-                modificar_text = "Modificar\nInventario"
-                self.boton_agregar.config(command=self.abrir_agregar_producto)
-                self.boton_eliminar.config(command=self.abrir_eliminar_producto)
+                agregar_text = "Agregar\nOtros Datos"
+                ver_text = "Ver\nOtros Datos"
+                eliminar_text = "Eliminar\nOtros Datos"
+                modificar_text = "Modificar\nOtros Datos"
+                self.boton_agregar.config(command=None)
+                self.boton_eliminar.config(command=lambda : self.abrir_ver_otros(accion="Eliminar"))
+                self.boton_ver.config(command=lambda : self.abrir_ver_otros(accion="Ver"))
+                self.boton_modificar.config(command=lambda : self.abrir_ver_otros(accion="Modificar"))
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
@@ -133,7 +136,6 @@ class Inicio(ven.VentanaPrincipal):
                 modificar_text = ""
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)
                 self.boton_ver.config(command=self.abrir_ver_ventas)
-                self.boton_ver.config(command=None)
                 self.boton_agregar.grid(row=0, column=1, rowspan=2)
                 self.boton_ver.grid(row=0, column=2, rowspan=2)
 
@@ -197,14 +199,18 @@ class Inicio(ven.VentanaPrincipal):
         self.destroy()
         vv.VerVentas(datos=self.datos)
     
+    def abrir_ver_otros(self, accion: str):
+        self.destroy()
+        vod.VerDatos(datos=self.datos, accion=accion)
+    
     
     def salir(self):
-        if messagebox.askyesno(title="Salir", message="¿Seguro que deseas salir?"):
+        if ven.VentanaConfirmacion(self, texto="¿Seguro que deseas salir?", titulo_ventana="Salir", opcion1="Salir").obtener_respuesta():
             self.destroy()
 
     
     def cerrar_sesion(self):
-        if messagebox.askyesno(title="Salir", message="¿Seguro que deseas cerrar sesión?"):
+        if ven.VentanaConfirmacion(self, texto="¿Seguro que deseas cerrar sesión?", titulo_ventana="Cerrar Sesión", opcion1="Cerrar Sesión").obtener_respuesta():
             self.destroy()
             self.datos.pop("Usuario_Logueado", None)
             gui.Login.Login(datos=self.datos)
