@@ -16,6 +16,7 @@ import gui.Otros.VerDatos as vod
 IMG_VENTAS = "./img/ventas.png"
 IMG_MENU = "./img/menu.png"
 IMG_INVENTARIO = "./img/inventario.png"
+IMG_OTROS = "./img/otros.png"
 
 BGBUTTON = "gray"
 FGBUTTON = "white"
@@ -119,7 +120,7 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_agregar.config(command=self.abrir_agregar_producto)
                 self.boton_eliminar.config(command=self.abrir_eliminar_producto)
             case "Otros":
-                logo = IMG_INVENTARIO
+                logo = IMG_OTROS
                 agregar_text = "Agregar\nOtros Datos"
                 ver_text = "Ver\nOtros Datos"
                 eliminar_text = "Eliminar\nOtros Datos"
