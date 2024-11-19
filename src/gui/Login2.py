@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import gui.Componentes as comp
 import gui.Ventanas as ven
+import gui.Inicio as i
 from PIL import Image, ImageTk
 import io
 
@@ -16,6 +17,9 @@ class Login(tk.Tk):
         self.datos = datos
         self.datos_usuarios = self.datos["Usuarios"]
         self.usuarios = self.datos_usuarios.obtener_datos_usuarios()
+
+        self.id_usuario_seleccionado = None
+        self.usuario_seleccionado = None
 
         self.ocultar_passwd = True
 
@@ -78,15 +82,6 @@ class Login(tk.Tk):
         xPos = 50
         square_size = 128
 
-        # for i in range(14):
-        #     self.cuadrados(self.user_canvas, xPos=xPos, yPos=yPos)
-            
-        #     xPos += square_size + 10 
-        
-        #     if (i + 1) % 7 == 0:  
-        #         xPos = 50  
-        #         yPos += square_size + 20
-
         for id in self.usuarios.keys():
             self.agregar_usuario(self.user_canvas, id, self.usuarios[id][0], square_size, yPos - 10, xPos)
             xPos += square_size + 10 
@@ -140,11 +135,26 @@ class Login(tk.Tk):
     def agregar_usuario_seleccionado(self):
         self.panel_ingresar_datos = tk.Frame(self, background=ven.BGCOLOR, width=1080, height=520)
         self.panel_ingresar_datos.place(x=100, y=100)
+        self.panel_ingresar_datos.propagate(False)
 
         label_inicio = tk.Label(self.panel_ingresar_datos, background=ven.BGCOLOR, foreground=ven.FGCOLOR, font=(ven.DEFAULT_FONT, 24), text="Iniciar Sesión")
         label_inicio.pack(expand=True)
 
-        # TODO: Agregar aqui el pfp y el username
+        panel_pfp = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
+        panel_pfp.pack(expand=True)
+
+        blob = self.datos_usuarios.buscar_imagen_por_id(self.usuarios[self.id_usuario_seleccionado][3])
+
+        pfp = Image.open(io.BytesIO(blob))
+        resized_pfp = pfp.resize((128, 128))
+        pfp_tk = ImageTk.PhotoImage(resized_pfp)
+
+        label_pfp = tk.Label(panel_pfp, image=pfp_tk, width=128, height=128)
+        label_pfp.image = pfp_tk
+        label_pfp.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+
+        username = tk.Label(panel_pfp, text=self.usuario_seleccionado, font=(ven.DEFAULT_FONT, 26), background=ven.BGCOLOR, foreground="white")
+        username.grid(row=0, column=1, padx=20, pady=10, sticky="nw")
 
         self.agregar_entry_passwd()
         self.agregar_botones_ingresar()
@@ -158,19 +168,28 @@ class Login(tk.Tk):
         label_inicio = tk.Label(self.panel_ingresar_datos, background=ven.BGCOLOR, foreground=ven.FGCOLOR, font=(ven.DEFAULT_FONT, 24), text="Iniciar Sesión")
         label_inicio.pack(expand=True)
 
-        # Nombre
-        panel_nombre = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
-        panel_nombre.pack(expand=True, fill="both")
-
-        label_nombre = tk.Label(panel_nombre, background=ven.BGCOLOR, foreground=ven.FGCOLOR, font=(ven.DEFAULT_FONT, 14), text="Nombre de Usuario:")
-        label_nombre.pack(pady=5)
-
-        self.nombre_entry = comp.CampoTexto(panel_nombre)
-        self.nombre_entry.config(width=50)
-        self.nombre_entry.pack(pady=5)
-
+        self.agregar_entry_usuario()
         self.agregar_entry_passwd()
         self.agregar_botones_ingresar()
+
+
+    def agregar_entry_usuario(self):
+        user_panel = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
+        user_panel.pack(expand=True, fill="both")
+
+        user_panel.columnconfigure(0, weight=1)  # La única columna debe expandirse
+        user_panel.rowconfigure((0,1,2,3), weight=1)  # Cada fila debe expandirse
+
+        label = tk.Label(user_panel, text="Ingrese su Nombre de Usuario:", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="white") 
+        label.grid(column=0, row=0, sticky="nsew")
+
+        self.user_entry = comp.CampoTexto(user_panel)
+        self.user_entry.config(show="*", width=50)
+        self.user_entry.grid(column=0, row=1)
+
+        self.label_not_user = tk.Label(user_panel, text="", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="red")
+        self.label_not_user.grid(column=0, row=2, sticky="nsew")
+        self.label_not_user.grid_forget()
 
 
     def agregar_entry_passwd(self):
@@ -178,10 +197,7 @@ class Login(tk.Tk):
         passwd_panel.pack(expand=True, fill="both")
 
         passwd_panel.columnconfigure(0, weight=1)  # La única columna debe expandirse
-        passwd_panel.rowconfigure(0, weight=1)  # Cada fila debe expandirse
-        passwd_panel.rowconfigure(1, weight=1)
-        passwd_panel.rowconfigure(2, weight=1)
-        passwd_panel.rowconfigure(3, weight=1)
+        passwd_panel.rowconfigure((0,1,2,3), weight=1)  # Cada fila debe expandirse
 
         label = tk.Label(passwd_panel, text="Ingrese su contraseña", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="white") 
         label.grid(column=0, row=0, sticky="nsew")
@@ -213,6 +229,17 @@ class Login(tk.Tk):
             self.label_not_passwd.config(text="* Campo Obligatorio.")
 
         self.label_not_passwd.grid(column=0, row=2)
+
+
+    def mensaje_user_incorrecto(self):
+        self.label_not_user.grid_forget()
+
+        if self.user_entry.get() != "":
+            self.label_not_user.config(text="* El usuario no existe.")
+        else:
+            self.label_not_user.config(text="* Campo Obligatorio.")
+
+        self.label_not_user.grid(column=0, row=2)
 
 
     def agregar_botones_ingresar(self):
@@ -248,26 +275,35 @@ class Login(tk.Tk):
     def on_panel_click(self, event, panel):
         if self.selected_panel is not None:
             self.selected_panel.selected = False
-            self.selected_panel.configure(bg=ven.BGCOLOR)
 
         # Marcar el nuevo panel seleccionado
         panel.selected = True
-        panel.configure(bg="lightblue")  # Color de selección
         self.selected_panel = panel  # Actualizar el panel seleccionado
 
         self.usuario_seleccionado = panel.username
         self.id_usuario_seleccionado = panel.id
 
+        self.panel_cuadro_usuarios.place_forget()
+        self.agregar_usuario_seleccionado()
 
 
-    def iniciar_sesion(self):
-        if 2==1:
-            pass
+    def iniciar_sesion(self, passwd: str):
+        if not self.selected_panel:
+            self.id_usuario_seleccionado = self.datos_usuarios.buscar_id_por_nombre(self.nombre_entry.get())
+
+        if self.id_usuario_seleccionado == 0:
+            self.mensaje_user_incorrecto()
         else:
-            self.mensaje_passwd_incorrecto()
-
-
-        
-        
-
+            if self.datos_usuarios.verificar_passwd(self.id_usuario_seleccionado, passwd):
+                self.destroy()
+                
+                self.datos["Usuario_Logueado"] = {
+                    "ID": self.id_usuario_seleccionado,
+                    "Nombre": self.usuario_seleccionado,
+                    "Rol": self.usuarios[self.id_usuario_seleccionado][2]
+                }
+                
+                i.Inicio(datos=self.datos)
+            else:
+                self.mensaje_passwd_incorrecto()
 

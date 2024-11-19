@@ -90,6 +90,14 @@ class Usuarios:
         if passwd_hash==self._datos_usuarios[id_usuario][1]:
             return True
         return False
+    
+
+    def buscar_id_por_nombre(self, nombre_usuario: str) -> int:
+        "Devuelve el id dado un nombre. Devuelve 0 si no encuentra el id"
+        for ids in self._datos_tipo_usuario.keys():
+            if self._datos_usuarios[ids][0] == nombre_usuario:
+                return ids
+        return 0 
             
     
     def agregar_nuevo_usuario(self, nombre: str, passwd: str, tipo: str) -> bool:
