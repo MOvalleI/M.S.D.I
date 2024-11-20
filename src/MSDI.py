@@ -1,7 +1,7 @@
 import data.InventarioDB as idb
 import data.Usuarios as u
 import gui.Login as l
-import gui.Login2 as l2
+import gui.Login as l
 
 def init():
     datos_inventario = idb.InventarioDB()
@@ -12,7 +12,7 @@ def init():
         "Usuarios": datos_usuarios
     }
 
-    root = l2.Login(datos=datosDB)
+    root = l.Login(datos=datosDB)
     root.mainloop()
     datos_inventario.cerrar()
 

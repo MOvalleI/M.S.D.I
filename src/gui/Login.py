@@ -1,139 +1,120 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import gui.Componentes as comp
+import gui.Ventanas as ven
+import gui.Inicio as i
 from PIL import Image, ImageTk
 import io
-import gui.Inicio
 
-LOGO = "./img/Letras El ricon de los 4 diablitos.png"
 
 BG_IMAGE = "./img/Imagen fondo para login.png"
-BGCOLOR = "#1e1e1e"
-ANOTHERBGCOLOR = "black"
-DEFAULT_FONT = "Segoe UI"
+
 
 class Login(tk.Tk):
-    def __init__(self, datos: dict):
+    def __init__(self, datos: dict = None):
         super().__init__()
 
         self.datos = datos
-
         self.datos_usuarios = self.datos["Usuarios"]
-
         self.usuarios = self.datos_usuarios.obtener_datos_usuarios()
 
-        # Posiciones iniciales para dibujar los cuadrados en el canvas
-        self.yPos = 20
-        self.square_sides = 300 # Tamaño de los cuadrados
-
-        # Tamaño del rectangulo donde se ingresan los datos
-        self.rec_canv_width = 772
-        self.rec_canv_height = 620
-
-        # Panel Seleccionado
-        self.selected_panel = None
-
-        self.usuario_seleccionado = None
         self.id_usuario_seleccionado = None
+        self.usuario_seleccionado = None
 
-        self.panel_login = None
-
-        # Indica si se muestra o no la contraseña
         self.ocultar_passwd = True
+
+        self.selected_panel = None
 
         self.configurar_ventana()
 
-    
-    def configurar_ventana(self) -> None:
-        self.title("Iniciar Sesión")
-        self.geometry("1280x720")
+
+    def configurar_ventana(self):
+        ancho = 1280
+        alto = 720
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+        self.geometry(f"{ancho}x{alto}+{x}+{y}")
+
         self.resizable(False, False)
 
-        self.configure(background=BGCOLOR)
+        self.agregar_fondo()
+        self.agregar_cuadro_usuarios()
 
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=6)
-        self.grid_rowconfigure(0, weight=1)
 
-        left_panel = self.crear_panel_izquierdo(root=self)
-        left_panel.grid(column=0, row=0, sticky="nwse")
 
-        right_panel = self.crear_panel_derecho(root=self)
-        right_panel.grid(column=1, row=0, sticky="nswe", columnspan=2)
+    def agregar_fondo(self):
+        self.panel_bg = tk.Frame(self, background=ven.BGCOLOR)
 
-        self.bind("<MouseWheel>", self.accion_rueda_mouse)
-        
+        bg_canvas = tk.Canvas(self.panel_bg, width=1280, height=720, background=ven.BGCOLOR)
 
-    def crear_panel_izquierdo(self, root: tk.Tk) -> tk.Frame:
-        panel = tk.Frame(root, background=BGCOLOR, borderwidth=10)
+        background_image = Image.open(BG_IMAGE)
+        resized_img = background_image.resize((1280, 720))
+        background_image_tk = ImageTk.PhotoImage(resized_img)
 
-        panel.grid_rowconfigure(0, weight=1)
-        panel.grid_rowconfigure(1, weight=8)
-        panel.grid_columnconfigure(0, weight=1)
+        bg_canvas.image = background_image_tk
+        bg_canvas.create_image(0, 0, anchor="nw", image=background_image_tk)
+        bg_canvas.place(relx=0, rely=0, relwidth=1, relheight=1)
 
-        buscador = self.crear_panel_buscador(panel)
-        buscador.grid(column=0, row=0)
+        self.panel_bg.pack(expand=True, fill="both")
+        self.panel_bg.lower()
 
-        self.users_panel = self.crear_panel_usuarios(root=panel)
-        self.users_panel.grid(column=0, row=1, sticky="nswe")
-
-        return panel
     
+    def agregar_cuadro_usuarios(self):
+        self.panel_cuadro_usuarios = tk.Frame(self, background=ven.BGCOLOR, width=1080, height=520)
+        self.panel_cuadro_usuarios.propagate(False)
+        self.panel_cuadro_usuarios.place(x=100, y=100)
 
-    def crear_panel_buscador(self, root: tk.Frame) -> tk.Frame:
-        panel = tk.Frame(root, background=BGCOLOR)
+        text = "Iniciar Sesión  |  Selecciona a tu usuario"
 
-        titulo = tk.Label(panel, text="Iniciar Sesión", anchor="center", background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 24))
-        titulo.pack(pady=5)
-        
-        label = tk.Label(panel, text="Buscar Usuario:", anchor="center", background=BGCOLOR, foreground="white", font=(DEFAULT_FONT, 16))
-        label.pack(pady=5)
+        label_inicio = tk.Label(self.panel_cuadro_usuarios, background=ven.BGCOLOR, foreground=ven.FGCOLOR, font=(ven.DEFAULT_FONT, 24), text=text)
+        label_inicio.pack(expand=True)
 
-        self.users_entry = tk.Entry(panel)
-        self.users_entry.pack()
-        self.users_entry.bind("<KeyRelease>", lambda event: self.buscar())
+        self.canvas_usuarios()
 
-        return panel
+        self.agregar_botones()
 
 
-    def crear_panel_usuarios(self, root: tk.Frame) -> tk.Frame:
-        panel = tk.Frame(root, background=BGCOLOR)
+    def canvas_usuarios(self):
+        self.user_canvas = tk.Canvas(self.panel_cuadro_usuarios, background=ven.BGCOLOR)
+        self.user_canvas.config(highlightthickness=0)
+        self.user_canvas.pack(expand=True, fill="both")
 
-        style = ttk.Style(root)
-        style.theme_use("alt")  # Cambiar el tema (clam permite más personalización)
-        style.configure("Vertical.TScrollbar", background=ANOTHERBGCOLOR, troughcolor="gray", arrowcolor="white", foreground="white")
+        yPos = 10
+        xPos = 50
+        square_size = 128
 
-        self.canvas = tk.Canvas(panel, width=0, height=0, background=BGCOLOR, border=0)
-        self.canvas.pack(fill="both", expand=True)
-
-        self.scrollbar = ttk.Scrollbar(self.canvas, orient="vertical", command=self.canvas.yview, style="Vertical.TScrollbar")
-        self.canvas.config(yscrollcommand=self.scrollbar.set) 
-        
         for id in self.usuarios.keys():
-            self.agregar_usuario(self.canvas, id, self.usuarios[id][0], self.square_sides, self.yPos - 10)
-            self.yPos += self.square_sides + 10
+            self.agregar_usuario(self.user_canvas, id, self.usuarios[id][0], square_size, yPos - 10, xPos)
+            xPos += square_size + 10 
 
-        self.canvas.config(scrollregion=(0, 0, self.canvas.bbox("all")[2], self.yPos), background=BGCOLOR)
-        self.scrollbar.pack(fill="y", side="right")
+            if (id + 1) % 7 == 0:  
+                xPos = 50  
+                yPos += square_size + 20
 
-        return panel
+
+    def cuadrados(self, canvas: tk.Canvas, xPos: int, yPos: int):
+        canvas.create_rectangle(xPos, yPos, xPos+128, yPos+128, fill="red")
 
 
-    def agregar_usuario(self, root: tk.Canvas, id: int, user: str, size: int, yPos: int) -> None:
-        panel = tk.Frame(root, background=BGCOLOR)
+    def agregar_usuario(self, root: tk.Canvas, id: int, user: str, size: int, yPos: int, xPos: int) -> None:
+        panel = tk.Frame(self.panel_cuadro_usuarios, background=ven.BGCOLOR)
 
         panel.id = id
 
         blob = self.datos_usuarios.buscar_imagen_por_id(self.usuarios[id][3])
 
         pfp = Image.open(io.BytesIO(blob))
-        pfp_tk = ImageTk.PhotoImage(pfp)
+        pfp_res = pfp.resize((100, 100))
+        pfp_tk = ImageTk.PhotoImage(pfp_res)
 
         image_label = tk.Label(panel, image=pfp_tk, background="white")
         image_label.image = pfp_tk
         image_label.pack(expand=True)
 
-        name_label = tk.Label(panel, text=user, anchor="center", font=(DEFAULT_FONT, 16))
-        name_label.config(background=BGCOLOR, foreground="white")
+        name_label = tk.Label(panel, text=user, anchor="center", font=(ven.DEFAULT_FONT, 14))
+        name_label.config(background=ven.BGCOLOR, foreground="white")
         name_label.pack(expand=True, fill="x", pady=5, padx=25)
 
         panel.username = user
@@ -143,30 +124,27 @@ class Login(tk.Tk):
         panel.bind("<Button-1>", lambda e: self.on_panel_click(e, panel))
 
         panel.place(width=size, height=size, x=50)
-        root.create_window(20, yPos, anchor="nw", window=panel)
+        root.create_window(xPos, yPos, anchor="nw", window=panel)
 
 
-    def crear_panel_derecho(self, root: tk.Tk) -> tk.Frame:
-        panel = tk.Frame(root, background=BGCOLOR)
+    def agregar_botones(self):
+        self.panel_botones = tk.Frame(self.panel_cuadro_usuarios, background=ven.BGCOLOR, width=1080, height=130)
+        self.panel_botones.pack(expand=True, fill="both")
 
-        self.bg_canvas = tk.Canvas(panel, width=1030, height=720, background=BGCOLOR)
+        self.b_ingresar_datos = comp.Boton(self.panel_botones, text="Ingresar Datos\nManualmente", command=self.ingresar_datos)
+        self.b_ingresar_datos.pack(expand=True)
 
-        background_image = Image.open(BG_IMAGE)
-        resized_img = background_image.resize((1030, 720))
-        background_image_tk = ImageTk.PhotoImage(resized_img)
 
-        self.bg_canvas.image = background_image_tk
-        self.bg_canvas.create_image(0, 0, anchor="nw", image=background_image_tk)
-        self.bg_canvas.place(x=0, y=0)
+    def agregar_usuario_seleccionado(self):
+        self.panel_ingresar_datos = tk.Frame(self, background=ven.BGCOLOR, width=1080, height=520)
+        self.panel_ingresar_datos.place(x=100, y=100)
+        self.panel_ingresar_datos.propagate(False)
 
-        return panel
-    
+        label_inicio = tk.Label(self.panel_ingresar_datos, background=ven.BGCOLOR, foreground=ven.FGCOLOR, font=(ven.DEFAULT_FONT, 24), text="Iniciar Sesión")
+        label_inicio.pack(expand=True)
 
-    def crear_rectangulo_login(self, root: tk.Canvas) -> tk.Frame:
-        panel = tk.Frame(root, background=BGCOLOR, width=750, height=500)
-
-        panel_user_info = tk.Frame(panel, background=BGCOLOR)
-        panel_user_info.place(x=200, y=50)
+        panel_pfp = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
+        panel_pfp.pack(expand=True)
 
         blob = self.datos_usuarios.buscar_imagen_por_id(self.usuarios[self.id_usuario_seleccionado][3])
 
@@ -174,45 +152,111 @@ class Login(tk.Tk):
         resized_pfp = pfp.resize((128, 128))
         pfp_tk = ImageTk.PhotoImage(resized_pfp)
 
-        label_pfp = tk.Label(panel_user_info, image=pfp_tk, width=128, height=128)
+        label_pfp = tk.Label(panel_pfp, image=pfp_tk, width=128, height=128)
         label_pfp.image = pfp_tk
         label_pfp.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        username = tk.Label(panel_user_info, text=self.usuario_seleccionado, font=(DEFAULT_FONT, 26), background=BGCOLOR, foreground="white")
+        username = tk.Label(panel_pfp, text=self.usuario_seleccionado, font=(ven.DEFAULT_FONT, 26), background=ven.BGCOLOR, foreground="white")
         username.grid(row=0, column=1, padx=20, pady=10, sticky="nw")
 
-        self.passwd_panel = self.agregar_entry_passwd(panel_user_info)
-        self.passwd_panel.grid(row=1, column=0, padx=20, pady=50, columnspan=2)
-
-        self.button_passwd = tk.Button(panel_user_info, text="Iniciar Sesión", command=lambda: self.iniciar_sesion(self.passwd_entry.get()))
-        self.button_passwd.grid(column=0, row=2, columnspan=2)
-
-        return panel
+        self.agregar_entry_passwd()
+        self.agregar_botones_ingresar()
 
 
-    def agregar_entry_passwd(self, root: tk.Frame) -> tk.Frame:
-        passwd_panel = tk.Frame(root, background=BGCOLOR)
+    def agregar_ingresar_datos(self):
+        self.panel_ingresar_datos = tk.Frame(self, background=ven.BGCOLOR, width=1080, height=520)
+        self.panel_ingresar_datos.place(x=100, y=100)
+        self.panel_ingresar_datos.propagate(False)
 
-        label = tk.Label(passwd_panel, text="Ingrese su contraseña", font=(DEFAULT_FONT, 16), background=BGCOLOR, foreground="white") 
-        label.grid(column=0, row=0)
+        label_inicio = tk.Label(self.panel_ingresar_datos, background=ven.BGCOLOR, foreground=ven.FGCOLOR, font=(ven.DEFAULT_FONT, 24), text="Iniciar Sesión")
+        label_inicio.pack(expand=True)
 
-        self.passwd_entry = tk.Entry(passwd_panel, show="*", width=50)
+        self.agregar_entry_usuario()
+        self.agregar_entry_passwd()
+        self.agregar_botones_ingresar()
+
+
+    def agregar_entry_usuario(self):
+        user_panel = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
+        user_panel.pack(expand=True, fill="both")
+
+        user_panel.columnconfigure(0, weight=1)  # La única columna debe expandirse
+        user_panel.rowconfigure((0,1,2,3), weight=1)  # Cada fila debe expandirse
+
+        label = tk.Label(user_panel, text="Ingrese su Nombre de Usuario:", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="white") 
+        label.grid(column=0, row=0, sticky="nsew")
+
+        self.user_entry = comp.CampoTexto(user_panel)
+        self.user_entry.config(width=50)
+        self.user_entry.grid(column=0, row=1)
+
+        self.label_not_user = tk.Label(user_panel, text="", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="red")
+        self.label_not_user.grid(column=0, row=2, sticky="nsew")
+        self.label_not_user.grid_forget()
+
+
+    def agregar_entry_passwd(self):
+        passwd_panel = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
+        passwd_panel.pack(expand=True, fill="both")
+
+        passwd_panel.columnconfigure(0, weight=1)  # La única columna debe expandirse
+        passwd_panel.rowconfigure((0,1,2,3), weight=1)  # Cada fila debe expandirse
+
+        label = tk.Label(passwd_panel, text="Ingrese su contraseña", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="white") 
+        label.grid(column=0, row=0, sticky="nsew")
+
+        self.passwd_entry = comp.CampoTexto(passwd_panel)
+        self.passwd_entry.config(show="*", width=50)
         self.passwd_entry.grid(column=0, row=1)
 
-        self.label_not_passwd = tk.Label(passwd_panel, text="", font=(DEFAULT_FONT, 16), background=BGCOLOR, foreground="red")
-        self.label_not_passwd.grid(column=0, row=2)
+        self.label_not_passwd = tk.Label(passwd_panel, text="", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="red")
+        self.label_not_passwd.grid(column=0, row=2, sticky="nsew")
         self.label_not_passwd.grid_forget()
         
-        self.mostrar_passwd_panel = tk.Frame(passwd_panel, background=BGCOLOR)
+        self.mostrar_passwd_panel = tk.Frame(passwd_panel, background=ven.BGCOLOR)
         self.mostrar_passwd_panel.grid(column=0, row=3)
 
-        self.cb_passwd = tk.Checkbutton(self.mostrar_passwd_panel, command=self.mostrar_passwd, background=BGCOLOR)
-        label_cb = tk.Label(self.mostrar_passwd_panel, text="Mostrar Contraseña", font=(DEFAULT_FONT, 16), background=BGCOLOR, foreground="white")
+        self.cb_passwd = tk.Checkbutton(self.mostrar_passwd_panel, command=self.mostrar_passwd, background=ven.BGCOLOR)
+        label_cb = tk.Label(self.mostrar_passwd_panel, text="Mostrar Contraseña", font=(ven.DEFAULT_FONT, 16), background=ven.BGCOLOR, foreground="white")
 
-        self.cb_passwd.grid(column=0, row=0)
-        label_cb.grid(column=1, row=0)
+        self.cb_passwd.grid(column=0, row=0, sticky="nsew")
+        label_cb.grid(column=1, row=0, sticky="nsew")
 
-        return passwd_panel
+    
+    def mensaje_passwd_incorrecto(self):
+        self.label_not_passwd.grid_forget()
+
+        if self.passwd_entry.get() != "":
+            self.label_not_passwd.config(text="* Contraseña Incorrecta.")
+        else:
+            self.label_not_passwd.config(text="* Campo Obligatorio.")
+
+        self.label_not_passwd.grid(column=0, row=2)
+
+
+    def mensaje_user_incorrecto(self):
+        self.label_not_user.grid_forget()
+
+        if self.user_entry.get() != "":
+            self.label_not_user.config(text="* El usuario no existe.")
+        else:
+            self.label_not_user.config(text="* Campo Obligatorio.")
+
+        self.label_not_user.grid(column=0, row=2)
+
+
+    def agregar_botones_ingresar(self):
+        botones_panel = tk.Frame(self.panel_ingresar_datos, background=ven.BGCOLOR)
+        botones_panel.pack(expand=True, fill="both")
+
+        self.b_iniciar = comp.Boton(botones_panel, text="Iniciar\nSesión", command=lambda :self.iniciar_sesion(self.passwd_entry.get()))
+        self.b_iniciar.pack(expand=True, side="left")
+
+        self.b_volver = comp.Boton(botones_panel, text="Volver", command=self.volver)
+        self.b_volver.pack(expand=True, side="left")
+
+        self.bind("<Return>", lambda e:self.iniciar_sesion(self.passwd_entry.get(), event=e))
+        self.bind("<Escape>", lambda e: self.volver(event=e))
 
 
     def mostrar_passwd(self):
@@ -224,93 +268,48 @@ class Login(tk.Tk):
             self.ocultar_passwd = True
 
 
-    def agregar_rectangulo_login(self):
-        self.panel_login = self.crear_rectangulo_login(self.bg_canvas)
-        self.panel_login.place(x=100, y=120)
+    def ingresar_datos(self):
+        self.panel_cuadro_usuarios.place_forget()
+        self.agregar_ingresar_datos()
 
+    
+    def volver(self, event=None):
+        self.panel_ingresar_datos.destroy()
+        self.panel_cuadro_usuarios.place(x=100, y=100)
 
+    
     def on_panel_click(self, event, panel):
         if self.selected_panel is not None:
             self.selected_panel.selected = False
-            self.selected_panel.configure(bg=BGCOLOR)
-        
-        self.bind('<Return>', lambda event: self.iniciar_sesion(self.passwd_entry.get()))
 
         # Marcar el nuevo panel seleccionado
         panel.selected = True
-        panel.configure(bg="lightblue")  # Color de selección
         self.selected_panel = panel  # Actualizar el panel seleccionado
 
         self.usuario_seleccionado = panel.username
         self.id_usuario_seleccionado = panel.id
 
-        if self.panel_login is not None:
-            self.limpiar_login()
-
-        self.agregar_rectangulo_login()
+        self.panel_cuadro_usuarios.place_forget()
+        self.agregar_usuario_seleccionado()
 
 
-    def limpiar_canvas(self) -> None:
-        for widget in self.canvas.winfo_children():
-            widget.destroy()  # Elimina cada widget del canvas
+    def iniciar_sesion(self, passwd: str, event=None):
+        if not self.selected_panel:
+            self.id_usuario_seleccionado = self.datos_usuarios.buscar_id_por_nombre(self.user_entry.get())
 
-    
-    def limpiar_login(self) -> None:
-        for widget in self.panel_login.winfo_children():
-            widget.destroy()  # Elimina cada widget del canvas
-
-    
-    def accion_rueda_mouse(self, event):
-        self.canvas.yview_scroll(int(-1*(event.delta//120)), "units")
-
-
-    def buscar(self):
-        self.selected_panel = None
-        regex = self.users_entry.get()
-        self.limpiar_canvas()
-        self.yPos = 20
-
-        if not regex:
-            self.usuarios = self.datos_usuarios.obtener_datos_usuarios()
+        if self.id_usuario_seleccionado == 0:
+            self.mensaje_user_incorrecto()
         else:
-            self.usuarios = self.datos_usuarios.buscar_datos_usuario(regex)
+            if self.datos_usuarios.verificar_passwd(self.id_usuario_seleccionado, passwd):
+                self.destroy()
+                
+                self.datos["Usuario_Logueado"] = {
+                    "ID": self.id_usuario_seleccionado,
+                    "Nombre": self.usuario_seleccionado,
+                    "Rol": self.usuarios[self.id_usuario_seleccionado][2]
+                }
+                
+                i.Inicio(datos=self.datos)
+            else:
+                self.mensaje_passwd_incorrecto()
 
-        for id in self.usuarios.keys():
-            self.agregar_usuario(self.canvas, id, self.usuarios[id][0], self.square_sides, self.yPos - 10)
-            self.yPos += self.square_sides + 10
-
-        self.scrollbar = ttk.Scrollbar(self.canvas, orient="vertical", command=self.canvas.yview, style="Vertical.TScrollbar")
-        self.canvas.config(yscrollcommand=self.scrollbar.set) 
-        self.canvas.config(scrollregion=(0, 0, self.canvas.bbox("all")[2], self.yPos), background=BGCOLOR)
-        self.scrollbar.pack(fill="y", side="right")
-
-
-    def mensaje_passwd_incorrecto(self):
-        self.label_not_passwd.grid_forget()
-
-        if self.passwd_entry.get() != "":
-            self.label_not_passwd.config(text="* Contraseña Incorrecta.")
-        else:
-            self.label_not_passwd.config(text="* Campo Obligatorio.")
-
-        self.label_not_passwd.grid(column=0, row=2)
-
-        
-    def iniciar_sesion(self, passwd: str):
-        if self.datos_usuarios.verificar_passwd(self.id_usuario_seleccionado, passwd):
-            self.destroy()
-            
-            self.datos["Usuario_Logueado"] = {
-                "ID": self.id_usuario_seleccionado,
-                "Nombre": self.usuario_seleccionado,
-                "Rol": self.usuarios[self.id_usuario_seleccionado][2]
-            }
-            
-            gui.Inicio.Inicio(datos=self.datos)
-        else:
-            self.mensaje_passwd_incorrecto()
-
-
-if __name__ == "__main__":
-    root = Login()
-    root.mainloop()
