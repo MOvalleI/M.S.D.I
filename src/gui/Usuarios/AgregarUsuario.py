@@ -17,6 +17,7 @@ class AgregarUsuario(comp.VentanaPrincipal):
 
     def configurar_ventana(self):
         self.agregar_titulo()
+        self.agregar_nombre_entry()
         
 
     def agregar_nombre_entry(self):
@@ -24,10 +25,25 @@ class AgregarUsuario(comp.VentanaPrincipal):
         panel.pack(expand=True, fill"both")
 
         label = tk.Frame(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
-        label.pack(expand=True)
+        label.pack(expand=True, pady=5)
 
         self.nombre_entry = comp.CampoTexto(panel)
         self.nombre_entry.config(widht=25)
+        self.nombre_entry.pack(expand=True, pady=5)
+
+
+    def agregar_passwd_entry(self):
+        # TODO: Cambiar de Nombre a Contraseña
+        
+        panel = tk.Frame(self, background=self.bgcolor)
+        panel.pack(expand=True, fill"both")
+
+        label = tk.Frame(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
+        label.pack(expand=True, pady=5)
+
+        self.nombre_entry = comp.CampoTexto(panel)
+        self.nombre_entry.config(widht=25)
+        self.nombre_entry.pack(expand=True, pady=5)
 
 
     def volver(self):
