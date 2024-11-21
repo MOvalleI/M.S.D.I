@@ -2,7 +2,7 @@ import sqlite3
 import hashlib
 
 USERDATABASE = "./db/NewUsers.db"
-QUERYUSERS = "SELECT * FROM usuarios"
+QUERYUSERS = "SELECT * FROM usuarios ORDER BY nombre_usuario"
 QUERYTYPES = "SELECT * FROM tipo"
 QUERYIMAGES = "SELECT * FROM foto_perfil"
 

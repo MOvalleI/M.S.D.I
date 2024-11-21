@@ -17,6 +17,7 @@ IMG_VENTAS = "./img/ventas.png"
 IMG_MENU = "./img/menu.png"
 IMG_INVENTARIO = "./img/inventario.png"
 IMG_OTROS = "./img/otros.png"
+IMG_USUARIOS = "./img/otros.png"
 
 BGBUTTON = "gray"
 FGBUTTON = "white"
@@ -83,6 +84,11 @@ class Inicio(ven.VentanaPrincipal):
         self.button_cerrar_sesion.pack(side="left", expand=True)
         self.button_salir.pack(side="left", expand=True)
 
+        if self.rol_usuario != 3:
+            self.button_usuarios = comp.Boton(panel_opciones, text="Ver Opciones\nde Usuarios")
+            self.button_usuarios.config(command=lambda: self.cambiar_opciones("Usuarios"))
+            self.button_usuarios.pack(side="left", expand=True, before=self.button_perfil)
+
 
     def agregar_panel_opciones(self):
         self.panel_opciones = tk.Frame(self, background=self.bgcolor, pady=50, borderwidth=5)
@@ -113,10 +119,10 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_ver.config(command=self.abrir_ver_menu)
             case "Inventario": 
                 logo = IMG_INVENTARIO
-                agregar_text = "Agregar\nInventario"
+                agregar_text = "Agregar\nProducto"
                 ver_text = "Ver\nInventario"
-                eliminar_text = "Eliminar\nInventario"
-                modificar_text = "Modificar\nInventario"
+                eliminar_text = "Eliminar\nProducto"
+                modificar_text = "Modificar\nProducto"
                 self.boton_agregar.config(command=self.abrir_agregar_producto)
                 self.boton_eliminar.config(command=self.abrir_eliminar_producto)
             case "Otros":
@@ -129,6 +135,15 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_eliminar.config(command=lambda : self.abrir_ver_otros(accion="Eliminar"))
                 self.boton_ver.config(command=lambda : self.abrir_ver_otros(accion="Ver"))
                 self.boton_modificar.config(command=lambda : self.abrir_ver_otros(accion="Modificar"))
+            case "Usuarios":
+                logo = IMG_USUARIOS
+                agregar_text = "Agregar Nuevo\nUsuario"
+                ver_text = "Ver\nUsuarios"
+                eliminar_text = "Eliminar\nUsuario"
+                modificar_text = ""
+                self.boton_agregar.config(command=None)
+                self.boton_eliminar.config(command=None)
+                self.boton_ver.config(command=None)
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
@@ -161,6 +176,12 @@ class Inicio(ven.VentanaPrincipal):
         elif self.opciones_seleccionada == "Ventas":
             self.boton_agregar.grid(row=0, column=1, rowspan=2)
             self.boton_ver.grid(row=0, column=2, rowspan=2)
+        elif self.rol_usuario==3 and self.opciones_seleccionada == "Otros":
+            self.boton_ver.grid(row=0, column=1, rowspan=2, columnspan=2)
+        elif self.opciones_seleccionada == "Usuarios":
+            self.boton_ver.grid(row=0, column=2)
+            self.boton_agregar.grid(row=0, column=1)
+            self.boton_eliminar.grid(row=1, column=1, columnspan=2)
         else:
             self.boton_ver.grid(row=0, column=2)
             self.boton_modificar.grid(row=1, column=2)
