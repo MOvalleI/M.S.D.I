@@ -11,6 +11,7 @@ import gui.Componentes as comp
 import gui.Menu.VisualizarMenu as vm
 import gui.Ventas.VerVentas as vv
 import gui.Otros.VerDatos as vod
+import gui.Usuarios.AgregarUsuario as au
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -141,7 +142,7 @@ class Inicio(ven.VentanaPrincipal):
                 ver_text = "Ver\nUsuarios"
                 eliminar_text = "Eliminar\nUsuario"
                 modificar_text = ""
-                self.boton_agregar.config(command=None)
+                self.boton_agregar.config(command=self.abrir_agregar_usuario)
                 self.boton_eliminar.config(command=None)
                 self.boton_ver.config(command=None)
             case _:
@@ -205,6 +206,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_agregar_producto(self):
         self.destroy()
         iai.Agregar(datos=self.datos)
+
+
+    def abrir_agregar_usuario(self):
+        self.destroy()
+        au.AgregarUsuario(datos=self.datos)
 
     
     def abrir_eliminar_producto(self):
