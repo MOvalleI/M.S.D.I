@@ -14,6 +14,7 @@ import gui.Otros.VerDatos as vod
 import gui.Usuarios.AgregarUsuario as au
 import gui.Usuarios.VerUsuarios as vu
 import gui.Usuarios.EliminarUsuarios as eu
+import gui.Otros.AgregarDatos as ad
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -134,7 +135,7 @@ class Inicio(ven.VentanaPrincipal):
                 ver_text = "Ver\nOtros Datos"
                 eliminar_text = "Eliminar\nOtros Datos"
                 modificar_text = "Modificar\nOtros Datos"
-                self.boton_agregar.config(command=None)
+                self.boton_agregar.config(command=self.abrir_agregar_otro)
                 self.boton_eliminar.config(command=lambda : self.abrir_ver_otros(accion="Eliminar"))
                 self.boton_ver.config(command=lambda : self.abrir_ver_otros(accion="Ver"))
                 self.boton_modificar.config(command=lambda : self.abrir_ver_otros(accion="Modificar"))
@@ -213,6 +214,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_agregar_usuario(self):
         self.destroy()
         au.AgregarUsuario(datos=self.datos)
+
+
+    def abrir_agregar_otro(self):
+        self.destroy()
+        ad.AgregarDatos(datos=self.datos)
 
     
     def abrir_eliminar_producto(self):
