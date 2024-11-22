@@ -13,6 +13,7 @@ import gui.Ventas.VerVentas as vv
 import gui.Otros.VerDatos as vod
 import gui.Usuarios.AgregarUsuario as au
 import gui.Usuarios.VerUsuarios as vu
+import gui.Usuarios.EliminarUsuarios as eu
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -144,7 +145,7 @@ class Inicio(ven.VentanaPrincipal):
                 eliminar_text = "Eliminar\nUsuario"
                 modificar_text = ""
                 self.boton_agregar.config(command=self.abrir_agregar_usuario)
-                self.boton_eliminar.config(command=None)
+                self.boton_eliminar.config(command=self.abrir_eliminar_usuario)
                 self.boton_ver.config(command=self.abrir_ver_usuarios)
             case _:
                 logo = IMG_VENTAS
@@ -217,6 +218,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_eliminar_producto(self):
         self.destroy()
         iei.Eliminar(datos=self.datos)
+
+
+    def abrir_eliminar_usuario(self):
+        self.destroy()
+        eu.EliminarUsuarios(datos=self.datos)
 
 
     def abrir_ver_menu(self):
