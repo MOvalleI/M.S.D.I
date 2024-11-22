@@ -12,6 +12,7 @@ import gui.Menu.VisualizarMenu as vm
 import gui.Ventas.VerVentas as vv
 import gui.Otros.VerDatos as vod
 import gui.Usuarios.AgregarUsuario as au
+import gui.Usuarios.VerUsuarios as vu
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -144,7 +145,7 @@ class Inicio(ven.VentanaPrincipal):
                 modificar_text = ""
                 self.boton_agregar.config(command=self.abrir_agregar_usuario)
                 self.boton_eliminar.config(command=None)
-                self.boton_ver.config(command=None)
+                self.boton_ver.config(command=self.abrir_ver_usuarios)
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
@@ -221,6 +222,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_ver_menu(self):
         self.destroy()
         vm.VisualizarMenu(datos=self.datos)
+
+
+    def abrir_ver_usuarios(self):
+        self.destroy()
+        vu.VerUsuarios(datos=self.datos)
 
     
     def abrir_ver_ventas(self):
