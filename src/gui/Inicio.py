@@ -9,6 +9,7 @@ import gui.Inventario.Agregar as iai
 import gui.Inventario.Eliminar as iei
 import gui.Componentes as comp
 import gui.Menu.VisualizarMenu as vm
+import gui.Menu.AgregarMenu as am
 import gui.Ventas.VerVentas as vv
 import gui.Otros.VerDatos as vod
 import gui.Usuarios.AgregarUsuario as au
@@ -121,6 +122,7 @@ class Inicio(ven.VentanaPrincipal):
                 eliminar_text = "Eliminar\nMenu"
                 modificar_text = "Modificar\nMenu"
                 self.boton_ver.config(command=self.abrir_ver_menu)
+                self.boton_agregar.config(command=self.abrir_agregar_menu)
             case "Inventario": 
                 logo = IMG_INVENTARIO
                 agregar_text = "Agregar\nProducto"
@@ -204,6 +206,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_agregar_ventas(self):
         self.destroy()
         av.AgregarVentas(datos=self.datos)
+
+
+    def abrir_agregar_menu(self):
+        self.destroy()
+        am.AgregarMenu(datos=self.datos)
 
 
     def abrir_agregar_producto(self):

@@ -31,8 +31,9 @@ class VerDatos(ven.VentanaPrincipal):
         label = tk.Label(panel, text="Selecciona una tabla:", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
         label.pack()
 
-        valores = ["Valor1","Valor2","Valor3","Valor4","Valor5"]
-
+        valores = ["Clase","Lugares","Unidad","Categoria","Tamaño"]
+        self.lista.config(state="readonly")
+        self.lista.current(0)
         self.lista = ttk.Combobox(panel, values=valores)
         self.lista.pack()
 
