@@ -1,6 +1,14 @@
 import sqlite3
+import psycopg
 
 DATABASE = "./db/inventario.db"
+
+DB_INFO = """
+    host = localhost
+    user = postgres
+    password = admin
+    dbname = r4d
+"""
 
 class Node:
     def __init__(self, clave, dato):
@@ -78,7 +86,7 @@ class ArbolBinarioBusqueda:
 
 class InventarioDB:
     def __init__(self):
-        self.conn = sqlite3.connect(database=DATABASE)
+        self.conn = psycopg.connect(DB_INFO)
         self.cursor = self.conn.cursor()
         self.inicializar_estructuras()
 
@@ -86,7 +94,7 @@ class InventarioDB:
         self.Lugares = self._crear_arbol("Lugares","ID_lugar") #arbol
         self.Unidades = self._crear_arbol("Unidades","ID_unidad") #arbol
         self.Clases = self._crear_arbol("Clases","ID_clase") #arbol
-        self.Categoria = self._crear_arbol("Categoria","ID_categoria") #arbol
+        self.Categoria = self._crear_arbol("Categorias","ID_categoria") #arbol
         self.Tamaños = self._crear_arbol("Tamaños","ID_tamaño") #arbol
         self.Ingredientes = self._cargar_muchos_a_muchos("Ingredientes") #lista de diccionarios
         self.ContenidoVenta = self._cargar_muchos_a_muchos("ContenidoVenta") #lista de diccionarios
@@ -100,7 +108,7 @@ class InventarioDB:
         self.conn.close()
 
     def inner_join_menu(self, like = None, order = "ID_Menu", where = None):
-        query = "SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M INNER JOIN Categoria C ON M.ID_categoria = C.ID_categoria INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño "
+        query = "SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M INNER JOIN Categorias C ON M.ID_categoria = C.ID_categoria INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño "
 
         query_list = []
 

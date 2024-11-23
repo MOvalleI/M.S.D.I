@@ -1,11 +1,18 @@
-import hashlib
+import json
 
-def hased_passwd(passwd):
-    h = hashlib.new("SHA256")
-    h.update(passwd.encode())
+def obtener_info_db(file: str = "./db/db_info.json") -> str:
+    with open(file, 'r') as archivo:
+        datos = json.load(archivo)
 
-    return h.hexdigest()
+        datos_usuarios = datos["usuarios"]
 
-print("Passwd: admin")
-print(f"hash: {hased_passwd("123")}")
+        info = ""
 
+        for clave, valor in datos_usuarios.items():
+            info += f"{clave}={valor}"
+            info += " "
+
+        return info
+
+
+print(obtener_info_db())

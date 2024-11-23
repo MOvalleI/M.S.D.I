@@ -1,9 +1,26 @@
 import sqlite3
 import hashlib
+import psycopg
+import json
+
+def obtener_info_db(file: str = "./db/db_info.json") -> str:
+    with open(file, 'r') as archivo:
+        datos = json.load(archivo)
+
+        datos_usuarios = datos["usuarios"]
+
+        info = ""
+
+        for clave, valor in datos_usuarios.items():
+            info += f"{clave}={valor}"
+            info += " "
+
+        return info
+
 
 USERDATABASE = "./db/NewUsers.db"
 QUERYUSERS = "SELECT * FROM usuarios ORDER BY nombre_usuario"
-QUERYTYPES = "SELECT * FROM tipo"
+QUERYTYPES = "SELECT * FROM rol"
 QUERYIMAGES = "SELECT * FROM foto_perfil"
 
 class Usuarios:
@@ -13,7 +30,7 @@ class Usuarios:
         self._datos_imagenes = None
         self._usuario_logueado = None
 
-        conn = sqlite3.connect(USERDATABASE)
+        conn = psycopg.connect(obtener_info_db())
         self.cursor = conn.cursor()
         
         self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)

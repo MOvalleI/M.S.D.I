@@ -8,3 +8,6 @@ __pycache__/
 
 # Ingora estos archivos especificos
 */prueba.py
+
+# Información no publica de la base de datos
+*/db_info.json
