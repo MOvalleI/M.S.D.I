@@ -1,14 +1,19 @@
-import sqlite3
 import psycopg
+import json
 
-DATABASE = "./db/inventario.db"
+def obtener_info_db(file: str = "./db/db_info.json") -> str:
+    with open(file, 'r') as archivo:
+        datos = json.load(archivo)
 
-DB_INFO = """
-    host = localhost
-    user = postgres
-    password = admin
-    dbname = r4d
-"""
+        datos_usuarios = datos["inventario"]
+
+        info = ""
+
+        for clave, valor in datos_usuarios.items():
+            info += f"{clave}={valor}"
+            info += " "
+
+        return info
 
 class Node:
     def __init__(self, clave, dato):
@@ -86,12 +91,12 @@ class ArbolBinarioBusqueda:
 
 class InventarioDB:
     def __init__(self):
-        self.conn = psycopg.connect(DB_INFO)
+        self.conn = psycopg.connect(obtener_info_db())
         self.cursor = self.conn.cursor()
         self.inicializar_estructuras()
 
     def inicializar_estructuras(self):
-        self.Lugares = self._crear_arbol("Lugares","ID_lugar") #arbol
+        self.Lugares = self._crear_arbol("lugares","ID_lugar") #arbol
         self.Unidades = self._crear_arbol("Unidades","ID_unidad") #arbol
         self.Clases = self._crear_arbol("Clases","ID_clase") #arbol
         self.Categoria = self._crear_arbol("Categorias","ID_categoria") #arbol
