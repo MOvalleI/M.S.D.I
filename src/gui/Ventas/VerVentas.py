@@ -19,13 +19,13 @@ class VerVentas(ven.VentanaPrincipal):
 
     def configurar_ventana(self):
         self.resizable(False, False)
-
         self.protocol("WM_DELETE_WINDOW", self.volver)
-
 
         self.agregar_titulo()
         self.agregar_tabla()
         self.agregar_opciones()
+
+        self.centrar_ventana()
 
     
     def agregar_tabla(self):

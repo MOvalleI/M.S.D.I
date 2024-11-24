@@ -12,6 +12,7 @@ class AgregarUsuario(ven.VentanaPrincipal):
         self.datos = datos
         self.datos_usuarios = self.datos["Usuarios"]
         self.usuario_logueado = self.datos["Usuario_Logueado"]
+        self.roles = self.datos_usuarios.obtener_datos_tipo()
 
         self.ocultar_passwd = True
 
@@ -29,6 +30,8 @@ class AgregarUsuario(ven.VentanaPrincipal):
         self.agregar_entry_passwd()
         self.agregar_opcion_rol()
         self.agregar_opciones()
+
+        self.centrar_ventana()
         
 
     def agregar_nombre_entry(self):
@@ -79,11 +82,15 @@ class AgregarUsuario(ven.VentanaPrincipal):
         label.pack(expand=True, pady=5)
 
         self.lista_roles = ttk.Combobox(panel)
+        self.lista_roles.config(state="readonly")
         self.configurar_lista_roles()
         self.lista_roles.pack(expand=True, pady=5)
 
-        self.descripcion_rol = tk.Label(panel, text=self.desc_rol, font=(self.font, 14), background=self.bgcolor, foreground=self.fgcolor)
+        self.descripcion_rol = tk.Label(panel, text=self.desc_rol, font=(self.font, 12), background=self.bgcolor, foreground=self.fgcolor, wraplength=300)
         self.descripcion_rol.pack(expand=True, pady=5)
+        self.configurar_descripcion()
+
+        self.lista_roles.bind("<<ComboboxSelected>>", self.configurar_descripcion)
 
     
     def configurar_lista_roles(self):
@@ -102,6 +109,17 @@ class AgregarUsuario(ven.VentanaPrincipal):
             
         self.lista_roles.config(values=roles)
         self.lista_roles.current(0)
+
+
+    def configurar_descripcion(self, event=None):
+        rol = self.lista_roles.get()
+
+        for id in self.roles.keys():
+            if self.roles[id][0] == rol:
+                self.desc_rol = self.roles[id][1]
+                break
+
+        self.descripcion_rol.config(text=self.desc_rol)
 
 
     def agregar_opciones(self):

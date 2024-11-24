@@ -1,6 +1,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import gui.Componentes as comp
+import io
 
 LOGO = "./img/logo_128x128.png"
 BGCOLOR = "#1e1e1e"
@@ -53,11 +54,22 @@ class VentanaPrincipal(tk.Tk):
         self.label_titulo.config(text=self.titulo)
 
     
-    def configurar_logo(self, ruta_logo: str):
+    def configurar_logo_ruta(self, ruta_logo: str):
         self.logo = ruta_logo
 
         logo = Image.open(self.logo)
         logo_tk = ImageTk.PhotoImage(logo)
+
+        self.label_logo.config(image=logo_tk)
+        self.label_logo.image = logo_tk
+
+    
+    def configurar_logo_bytes(self, bytes, size: int=128):
+        self.logo = io.BytesIO(bytes)
+
+        logo = Image.open(self.logo)
+        logo_rezized = logo.resize((size, size))
+        logo_tk = ImageTk.PhotoImage(logo_rezized)
 
         self.label_logo.config(image=logo_tk)
         self.label_logo.image = logo_tk
@@ -135,6 +147,23 @@ class VentanaTopLevel(tk.Toplevel):
         self.label_logo.config(image=logo_tk)
         self.label_logo.image = logo_tk
         self.label_logo.update()
+
+    
+    def centrar_ventana(self):
+        # Llamar a este método despues de agregar todos los componentes a la ventana
+
+        self.update_idletasks()
+
+        ancho = self.winfo_width()
+        alto = self.winfo_height()
+
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+
+        self.geometry(f"+{x}+{y}")
 
 
 class VentanaConfirmacion(tk.Toplevel):

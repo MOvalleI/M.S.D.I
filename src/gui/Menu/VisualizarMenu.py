@@ -39,6 +39,8 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.agregar_botones_otros_datos()
         self.agregar_botones_opciones()
 
+        self.centrar_ventana()
+
 
     def agregar_botones_otros_datos(self):
         panel = tk.Frame(self, bg=self.bgcolor)

@@ -25,6 +25,8 @@ class AgregarMenu(ven.VentanaPrincipal):
         self.agregar_precio()
         self.agregar_opciones()
 
+        self.centrar_ventana()
+
 
     def agregar_nombre(self) -> tk.Frame:
         panel = tk.Frame(self, background=self.bgcolor)

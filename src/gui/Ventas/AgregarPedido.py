@@ -35,6 +35,8 @@ class Pedido(ven.VentanaTopLevel):
         self.agregar_precio()
         self.agregar_opciones()
 
+        self.centrar_ventana()
+
     
     def agregar_buscador(self):
         panel = tk.Frame(self, background=self.bgcolor)

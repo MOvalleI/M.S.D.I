@@ -41,6 +41,8 @@ class Agregar(ven.VentanaPrincipal):
 
         self.agregar_botones_opciones()
 
+        self.centrar_ventana()
+
 
     def agregar_fila_1(self):
         # Nombre y Clase

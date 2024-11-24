@@ -16,6 +16,7 @@ import gui.Usuarios.AgregarUsuario as au
 import gui.Usuarios.VerUsuarios as vu
 import gui.Usuarios.EliminarUsuarios as eu
 import gui.Otros.AgregarDatos as ad
+import gui.Perfil.MenuPerfil as mp
 
 
 IMG_VENTAS = "./img/ventas.png"
@@ -77,7 +78,7 @@ class Inicio(ven.VentanaPrincipal):
         panel_opciones.pack(expand=True, fill="x", pady=20)
 
         self.button_perfil = comp.Boton(panel_opciones, text="Perfil")
-        self.button_perfil.config(command=None)
+        self.button_perfil.config(command=self.abrir_menu_perfil)
 
         self.button_cerrar_sesion = comp.Boton(panel_opciones, text="Cerrar\nSesión")
         self.button_cerrar_sesion.config(command=self.cerrar_sesion)
@@ -255,6 +256,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_ver_otros(self, accion: str):
         self.destroy()
         vod.VerDatos(datos=self.datos, accion=accion)
+
+    
+    def abrir_menu_perfil(self):
+        self.destroy()
+        mp.MenuPerfil(datos=self.datos)
     
     
     def salir(self):

@@ -30,9 +30,6 @@ class AgregarVentas(ven.VentanaPrincipal):
 
     def configurar_ventana(self):
         self.resizable(False, False)
-        self.config(background=self.bgcolor)
-        self.geometry("500x700")
-
         self.protocol("WM_DELETE_WINDOW", self.volver)
 
         self.agregar_titulo()
@@ -43,6 +40,8 @@ class AgregarVentas(ven.VentanaPrincipal):
 
         self.botones_modificar_tabla()
         self.botones_confirmacion()
+
+        self.centrar_ventana()
 
 
     def agregar_tabla(self):

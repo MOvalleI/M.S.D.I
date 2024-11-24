@@ -24,6 +24,8 @@ class VerUsuarios(ven.VentanaPrincipal):
         self.agregar_tabla()
         self.agregar_opciones()
 
+        self.centrar_ventana()
+
     
     def agregar_tabla(self):
         panel = tk.Frame(self, background=self.bgcolor)

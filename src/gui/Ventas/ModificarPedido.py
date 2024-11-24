@@ -33,6 +33,8 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.agregar_opciones()
         self.activar_boton_disminuir()
 
+        self.centrar_ventana()
+
     
     def agregar_nombre(self):
         panel_datos = tk.Frame(self, background=self.bgcolor)

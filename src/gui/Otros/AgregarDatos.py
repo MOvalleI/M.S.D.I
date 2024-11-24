@@ -25,6 +25,8 @@ class AgregarDatos(ven.VentanaPrincipal):
         self.agregar_formularios()
         self.agregar_opciones()
 
+        self.centrar_ventana()
+
 
     def agregar_lista(self):
         panel = tk.Frame(self, background=self.bgcolor)

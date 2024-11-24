@@ -27,6 +27,8 @@ class Eliminar(ven.VentanaPrincipal):
         self.agregar_tabla_productos()
         self.agregar_botones_opciones()
 
+        self.centrar_ventana()
+
         
     def agregar_lista_productos(self):
         panel = tk.Frame(self, background=self.bgcolor)

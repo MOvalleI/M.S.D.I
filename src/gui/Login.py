@@ -306,7 +306,8 @@ class Login(tk.Tk):
                 self.datos["Usuario_Logueado"] = {
                     "ID": self.id_usuario_seleccionado,
                     "Nombre": self.usuario_seleccionado,
-                    "Rol": self.usuarios[self.id_usuario_seleccionado][2]
+                    "Rol": self.usuarios[self.id_usuario_seleccionado][2],
+                    "Pfp": self.usuarios[self.id_usuario_seleccionado][3]
                 }
                 
                 i.Inicio(datos=self.datos)
