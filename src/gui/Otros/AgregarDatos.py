@@ -35,7 +35,7 @@ class AgregarDatos(ven.VentanaPrincipal):
         label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12), text="Selecciona una Tabla:")
         label.pack()
 
-        valores = ["Clase","Lugares","Unidad","Categoria","Tamaño"]
+        valores = ["Clase","Lugar de Compra","Unidad","Categoria","Tamaño"]
 
         self.lista = ttk.Combobox(panel, values=valores)
         self.lista.config(state="readonly")
@@ -58,7 +58,7 @@ class AgregarDatos(ven.VentanaPrincipal):
         self.tabla_seleccionada = texto
         self.nombre_label.config(text=f"Agregar\n{self.tabla_seleccionada}")
 
-        if self.tabla_seleccionada == "Lugares":
+        if self.tabla_seleccionada == "Lugar de Compra":
             self.mostrar_direccion_panel()
         else:
             self.ocultar_direccion_panel()
@@ -73,7 +73,7 @@ class AgregarDatos(ven.VentanaPrincipal):
         label_nombre.pack()
 
         self.nombre_entry = comp.CampoTexto(panel_nombre)
-        self.nombre_entry.config(width=50)
+        self.nombre_entry.config(width=25)
         self.nombre_entry.pack()
 
         # Direccion (Solo aparece cuando se selecciona "Lugares")
@@ -84,7 +84,7 @@ class AgregarDatos(ven.VentanaPrincipal):
         label_direccion.pack()
 
         self.direccion_entry = comp.CampoTexto(self.panel_direccion)
-        self.direccion_entry.config(width=50)
+        self.direccion_entry.config(width=25)
         self.direccion_entry.pack()
 
 

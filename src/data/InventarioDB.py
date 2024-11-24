@@ -1,4 +1,4 @@
-import psycopg
+import pyodbc
 import json
 
 def obtener_info_db(file: str = "./db/db_info.json") -> str:
@@ -7,13 +7,12 @@ def obtener_info_db(file: str = "./db/db_info.json") -> str:
 
         datos_usuarios = datos["inventario"]
 
-        info = ""
+        info = []
 
         for clave, valor in datos_usuarios.items():
-            info += f"{clave}={valor}"
-            info += " "
+            info.append(valor)
 
-        return info
+        return f"DRIVER={{{info[0]}}}; SERVER={info[1]}; DATABASE={info[4]}; UID={info[2]}; PWD={info[3]}"
 
 class Node:
     def __init__(self, clave, dato):
@@ -91,7 +90,7 @@ class ArbolBinarioBusqueda:
 
 class InventarioDB:
     def __init__(self):
-        self.conn = psycopg.connect(obtener_info_db())
+        self.conn = pyodbc.connect(obtener_info_db())
         self.cursor = self.conn.cursor()
         self.inicializar_estructuras()
 

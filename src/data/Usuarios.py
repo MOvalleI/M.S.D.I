@@ -1,5 +1,5 @@
 import hashlib
-import psycopg
+import pyodbc
 import json
 
 def obtener_info_db(file: str = "./db/db_info.json") -> str:
@@ -8,14 +8,13 @@ def obtener_info_db(file: str = "./db/db_info.json") -> str:
 
         datos_usuarios = datos["usuarios"]
 
-        info = ""
+        info = []
 
         for clave, valor in datos_usuarios.items():
-            info += f"{clave}={valor}"
-            info += " "
+            info.append(valor)
 
-        return info
-
+        return f"DRIVER={{{info[0]}}}; SERVER={info[1]}; DATABASE={info[4]}; UID={info[2]}; PWD={info[3]}"
+    
 
 USERDATABASE = "./db/NewUsers.db"
 QUERYUSERS = "SELECT * FROM usuarios ORDER BY nombre_usuario"
@@ -29,7 +28,8 @@ class Usuarios:
         self._datos_imagenes = None
         self._usuario_logueado = None
 
-        conn = psycopg.connect(obtener_info_db())
+        conn = pyodbc.connect(obtener_info_db())
+        
         self.cursor = conn.cursor()
         
         self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)

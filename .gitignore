@@ -10,4 +10,4 @@ __pycache__/
 */prueba.py
 
 # Información no publica de la base de datos
-src/db/db_info.json
+**/db_info.json
