@@ -192,9 +192,37 @@ class CambiarPasswdUsuario(ven.VentanaTopLevel):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
 
-        self.b_aplicar = comp.Boton(panel, text="Aplicar Cambios", command=None)
+        self.b_aplicar = comp.Boton(panel, text="Aplicar Cambios", command=self.temp)
         self.b_aplicar.pack(expand=True, side="left")
 
         b_cancelar = comp.Boton(panel, text="Cancelar", command=self.destroy)
         b_cancelar.pack(expand=True, side="left")
+
+    
+    def mensaje_passwd_old_incorrecto(self):
+        self.old_passwd_warning.grid_forget()
+
+        if self.old_passwd_entry.get() != "":
+            self.old_passwd_warning.config(text="* Contraseña Incorrecta.")
+        else:
+            self.old_passwd_warning.config(text="* Campo Obligatorio.")
+
+        self.old_passwd_warning.grid(column=0, row=2)
+
+    
+    def mensaje_passwd_new_incorrecto(self):
+        self.new_passwd_warning.grid_forget()
+
+        if self.new_passwd_entry.get() == "":
+            self.new_passwd_warning.config(text="* Campo Obligatorio.")
+            self.new_passwd_warning.grid(column=0, row=2)
+        else:
+            self.new_passwd_warning.grid_forget()
+
+
+
+    # TODO: Cambiar este metodo por el de cambiar contraseña
+    def temp(self):
+        self.mensaje_passwd_old_incorrecto()        
+        self.mensaje_passwd_new_incorrecto()        
         

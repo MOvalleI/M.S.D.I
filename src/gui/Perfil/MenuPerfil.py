@@ -15,6 +15,7 @@ class MenuPerfil(ven.VentanaPrincipal):
 
         self.usuario_logueado = self.datos["Usuario_Logueado"]
         self.nombre_usuario = self.usuario_logueado["Nombre"]
+        self.rol_usuario = self.usuario_logueado["Rol"]
         self.pfp_usuario = self.usuario_logueado["Pfp"]
 
         self.configurar_ventana()
@@ -26,7 +27,7 @@ class MenuPerfil(ven.VentanaPrincipal):
 
         self.agregar_titulo()
         self.configurar_pfp()
-        self.agregar_nombre()
+        self.agregar_datos()
         self.agregar_opciones()
 
         b_volver = comp.Boton(self, text="Volver", command=self.volver)
@@ -40,12 +41,18 @@ class MenuPerfil(ven.VentanaPrincipal):
         self.configurar_logo_bytes(pfp)
 
     
-    def agregar_nombre(self):
+    def agregar_datos(self):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
 
-        label = tk.Label(panel, text=f"Nombre de Usuario:\n{self.nombre_usuario}", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 16))
-        label.pack(expand=True)
+        label_nombre = tk.Label(panel, text=f"Nombre de Usuario:\n{self.nombre_usuario}", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 16))
+        label_nombre.pack(expand=True, pady=10)
+
+
+        rol = self.usuarios.buscar_nombre_tipo_por_id(self.rol_usuario)
+
+        label_rol = tk.Label(panel, text=f"Rol de Usuario:\n {rol}", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 16))
+        label_rol.pack(expand=True, pady=10)
 
     
     def agregar_opciones(self):
