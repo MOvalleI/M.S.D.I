@@ -3,6 +3,7 @@ import gui.Componentes as comp
 import gui.Ventanas as ven
 import gui.Inicio as i
 import gui.Perfil.CambiarFoto as cf
+import gui.Perfil.CambiarDatos as cd
 
 class MenuPerfil(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
@@ -51,10 +52,10 @@ class MenuPerfil(ven.VentanaPrincipal):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
 
-        b_cambiar_nombre = comp.Boton(panel, text="Cambiar\nNombre", command=None)
+        b_cambiar_nombre = comp.Boton(panel, text="Cambiar\nNombre", command=self.abrir_cambiar_nombre)
         b_cambiar_nombre.pack(expand=True, side="left")
 
-        b_cambiar_passwd = comp.Boton(panel, text="Cambiar\nContraseña", command=None)
+        b_cambiar_passwd = comp.Boton(panel, text="Cambiar\nContraseña", command=self.abrir_cambiar_passwd)
         b_cambiar_passwd.pack(expand=True, side="left")
 
         b_cambiar_pfp = comp.Boton(panel, text="Cambiar Foto\nde Perfil", command=self.abrir_cambiar_foto)
@@ -63,6 +64,14 @@ class MenuPerfil(ven.VentanaPrincipal):
 
     def abrir_cambiar_foto(self):
         cf.CambiarFoto(parent=self, datos=self.datos)
+
+
+    def abrir_cambiar_nombre(self):
+        cd.CambiarNombreUsuario(self, datos=self.datos)
+
+
+    def abrir_cambiar_passwd(self):
+        cd.CambiarPasswdUsuario(self, datos=self.datos)
 
 
     def volver(self):

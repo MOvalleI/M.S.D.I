@@ -1,7 +1,5 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from PIL import Image, ImageTk
-from tkinter import messagebox
 import gui.Login
 import gui.Ventas.AgregarVentas as av
 import gui.Ventanas as ven

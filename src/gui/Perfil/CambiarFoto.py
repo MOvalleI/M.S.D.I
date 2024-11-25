@@ -83,8 +83,6 @@ class CambiarFoto(ven.VentanaTopLevel):
         self.canvas.create_window(xPos, yPos, anchor="nw", window=panel)
 
 
-
-
     def agregar_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
