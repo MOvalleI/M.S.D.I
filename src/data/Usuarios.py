@@ -16,10 +16,9 @@ def obtener_info_db(file: str = "./db/db_info.json") -> str:
         return f"DRIVER={{{info[0]}}}; SERVER={info[1]}; DATABASE={info[4]}; UID={info[2]}; PWD={info[3]}"
     
 
-USERDATABASE = "./db/NewUsers.db"
-QUERYUSERS = "SELECT * FROM usuarios ORDER BY nombre_usuario"
-QUERYTYPES = "SELECT * FROM rol"
-QUERYIMAGES = "SELECT * FROM foto_perfil"
+QUERYUSERS = "EXEC obtener_usuarios"
+QUERYROL = "EXEC obtener_roles"
+QUERYIMAGES = "EXEC obtener_fotos"
 
 class Usuarios:
     def __init__(self):
@@ -33,7 +32,7 @@ class Usuarios:
         self.cursor = conn.cursor()
         
         self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)
-        self._datos_tipo_usuario = self.obtener_datos(consulta=QUERYTYPES)
+        self._datos_tipo_usuario = self.obtener_datos(consulta=QUERYROL)
         self._datos_imagenes = self.obtener_datos(consulta=QUERYIMAGES)
 
         self.cursor.close()
@@ -168,5 +167,18 @@ class Usuarios:
 
     def obtener_datos_fotos(self) -> dict:
         return self._datos_imagenes
+    
+
+    def recargar_datos(self):
+        conn = pyodbc.connect(obtener_info_db())
+        
+        self.cursor = conn.cursor()
+        
+        self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)
+        self._datos_tipo_usuario = self.obtener_datos(consulta=QUERYROL)
+        self._datos_imagenes = self.obtener_datos(consulta=QUERYIMAGES)
+
+        self.cursor.close()
+        conn.close()
     
 

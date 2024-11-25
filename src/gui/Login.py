@@ -94,10 +94,6 @@ class Login(tk.Tk):
                 yPos += square_size + 20
 
 
-    def cuadrados(self, canvas: tk.Canvas, xPos: int, yPos: int):
-        canvas.create_rectangle(xPos, yPos, xPos+128, yPos+128, fill="red")
-
-
     def agregar_usuario(self, root: tk.Canvas, id: int, user: str, size: int, yPos: int, xPos: int) -> None:
         panel = tk.Frame(self.panel_cuadro_usuarios, background=ven.BGCOLOR)
 

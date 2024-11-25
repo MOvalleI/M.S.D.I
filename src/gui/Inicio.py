@@ -23,7 +23,7 @@ IMG_VENTAS = "./img/ventas.png"
 IMG_MENU = "./img/menu.png"
 IMG_INVENTARIO = "./img/inventario.png"
 IMG_OTROS = "./img/otros.png"
-IMG_USUARIOS = "./img/otros.png"
+IMG_USUARIOS = "./img/usuario.png"
 
 BGBUTTON = "gray"
 FGBUTTON = "white"
