@@ -18,11 +18,11 @@ import gui.Otros.AgregarDatos as ad
 import gui.Perfil.MenuPerfil as mp
 
 
-IMG_VENTAS = "./img/ventas.png"
-IMG_MENU = "./img/menu.png"
-IMG_INVENTARIO = "./img/inventario.png"
-IMG_OTROS = "./img/otros.png"
-IMG_USUARIOS = "./img/usuario.png"
+IMG_VENTAS = "./img/iconos/ventas.png"
+IMG_MENU = "./img/iconos/menu.png"
+IMG_INVENTARIO = "./img/iconos/inventario.png"
+IMG_OTROS = "./img/iconos/otros.png"
+IMG_USUARIOS = "./img/iconos/usuario.png"
 
 BGBUTTON = "gray"
 FGBUTTON = "white"

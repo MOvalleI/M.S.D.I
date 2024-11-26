@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 import gui.Componentes as comp
 import io
 
-LOGO = "./img/logo_128x128.png"
+LOGO = "./img/logos/logo_128x128.png"
 BGCOLOR = "#1e1e1e"
 FGCOLOR = "white"
 DEFAULT_FONT = "Impact"

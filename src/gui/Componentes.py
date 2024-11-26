@@ -3,8 +3,8 @@ import tkinter.ttk as ttk
 import re
 from PIL import Image, ImageTk
 
-BUTTONACTIVEIMAGE = "./img/botonsalchicha.png"
-BUTTONDISABLEIMAGE = "./img/botonsalchicha5.png"
+BUTTONACTIVEIMAGE = "./img/botones/botonsalchicha.png"
+BUTTONDISABLEIMAGE = "./img/botones/botonsalchicha5.png"
 BUTTONBG = "#1e1e1e"
 BUTTONFG = "#3a110c"
 BUTTONFONT = "Segoe UI"

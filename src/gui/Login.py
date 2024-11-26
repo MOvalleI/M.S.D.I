@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 import io
 
 
-BG_IMAGE = "./img/Imagen fondo para login.png"
+BG_IMAGE = "./img/logos/Imagen fondo para login.png"
 
 
 class Login(tk.Tk):
