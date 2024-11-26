@@ -3,6 +3,7 @@ import data.Usuarios as u
 import gui.Login as l
 import gui.Login as l
 
+
 def init():
     datos_inventario = idb.InventarioDB()
     datos_usuarios = u.Usuarios()
@@ -16,4 +17,11 @@ def init():
     root.mainloop()
     datos_inventario.cerrar()
 
-init()
+try:
+    init()
+except:
+    import gui.Ventanas as ven
+
+    root = ven.VentanaAvisoRoot(titulo_ventana="¡Ha Ocurrido un Error!")
+    root.configurar_texto("No se pudo conectar\na la base de datos")
+    root.mainloop()

@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 import gui.Componentes as comp
 import io
@@ -250,6 +251,113 @@ class VentanaConfirmacion(tk.Toplevel):
     def obtener_respuesta(self):
         return self.respuesta
 
+
+TIPO_AVISO_1 = "Aviso"
+TIPO_AVISO_2 = "Cargando"
+
+class VentanaAvisoRoot(tk.Tk):
+    def __init__(self, texto: str= "", titulo_ventana: str = "¿Deseas Continuar?", tipo: str = TIPO_AVISO_1):
+        super().__init__()
+
+        self.texto = texto
+        self.titulo_ventana = titulo_ventana
+        self.tipo = tipo
+
+        self.bgcolor = BGCOLOR
+        self.fgcolor = FGCOLOR
+        self.font = DEFAULT_FONT
+
+        self._configurar_ventana()
+    
+
+    def _configurar_ventana(self):
+        self.config(background=self.bgcolor)
+        self.title(self.titulo_ventana)
+        self.resizable(False, False)
+
+        self.geometry("450x250")
+
+        self._agregar_texto()
+
+        if self.tipo == TIPO_AVISO_1:
+            self._agregar_opciones()
+        else:
+            self._agregar_rueda_progreso()
+
+        self._centrar_ventana()
+
+
+    def _agregar_texto(self):
+        panel_logo = tk.Frame(self, background=self.bgcolor)
+        panel_logo.pack(expand=True, fill="both")
+
+        # Cargar la imagen y mantenerla como un atributo de la clase
+        logo = Image.open(LOGO)
+        self.logo_tk = ImageTk.PhotoImage(logo)  # Guardar como atributo de la clase
+
+        label_logo = tk.Label(panel_logo, image=self.logo_tk, background=self.bgcolor)
+        label_logo.pack(expand=True, side="left")
+
+        # Agregar el texto
+        self.label_texto = tk.Label(
+            panel_logo,
+            background=self.bgcolor,
+            foreground=self.fgcolor,
+            font=(self.font, 18),
+            text=self.texto,
+            anchor="center"
+        )
+        self.label_texto.pack(expand=True, side="left")
+
+
+    def _agregar_opciones(self):
+        panel = tk.Frame(self, background=self.bgcolor)
+        panel.pack(expand=True, fill="both")
+
+        boton2 = comp.Boton(panel, text="Cerrar", command=self.destroy)
+        boton2.pack(expand=True)
+
+    
+    def _agregar_rueda_progreso(self):
+        panel = tk.Frame(self, background=self.bgcolor)
+        panel.pack(expand=True, fill="both")
+        
+        self.texto_barra = ""
+        
+        self.label_barra = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=self.texto_barra, anchor="center")
+        self.label_barra.pack(expand=True, pady=5)
+
+        self.pb = ttk.Progressbar(self,orient=tk.HORIZONTAL,length=300,mode="determinate",takefocus=True,maximum=100)
+        self.pb.pack(expand=True, pady=5)    
+
+
+    def configurar_texto_barra(self):
+        self
+
+
+    def configurar_texto(self, texto: str):
+        self.texto = texto
+        self.label_texto.config(text=self.texto)
+
+    
+    def aumentar_progreso(self, valor: int):
+        self.pb["value"] += valor
+
+
+    def _centrar_ventana(self):
+        # Actualiza la ventana para calcular correctamente su tamaño
+        self.update_idletasks()
+
+        ancho = self.winfo_width()
+        alto = self.winfo_height()
+
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+
+        self.geometry(f"+{x}+{y}")
 
 
 
