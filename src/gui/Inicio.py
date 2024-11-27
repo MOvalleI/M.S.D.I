@@ -38,66 +38,97 @@ class Inicio(ven.VentanaPrincipal):
 
         self.opciones_seleccionada = "Ventas"
 
+        self.num_pagina = 1
+
         self.configurar_ventana()
 
     
     def configurar_ventana(self):
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.salir)
+        self.geometry("600x600")
 
         self.agregar_titulo()
-        self.agregar_botones_opciones()
+        self.agregar_botones_paginas()
+        self.agregar_panel_opciones()
+        self.agregar_opciones()
         self.centrar_ventana()
 
     
-    def agregar_botones_opciones(self):
+    def agregar_botones_paginas(self):
         button_panel = tk.Frame(self, background=self.bgcolor)
         button_panel.pack(fill="x", expand=True)
 
-        self.button_ventas = comp.Boton(button_panel, text="Ver Opciones\nde Ventas")
-        self.button_ventas.config(command=lambda: self.cambiar_opciones("Ventas"))
 
-        self.button_inventario = comp.Boton(button_panel, text="Ver Opciones\nde Inventario")
-        self.button_inventario.config(command=lambda: self.cambiar_opciones("Inventario"))
+        self.flechas_panel = tk.Frame(button_panel, background=self.bgcolor)
+        self.flechas_panel.pack(fill="x", expand=True, pady=10)
+            
+        self.b_izquierda = comp.BotonFlecha(self.flechas_panel, direction="izquierda", text="  Página\n  Anterior")
+        self.b_izquierda.configurar(command = lambda: self.configurar_pagina(-1))
+        self.b_izquierda.pack(side="left", anchor="w", expand=True)
 
-        self.button_menu = comp.Boton(button_panel, text="Ver Opciones\nde Menu")
+        self.b_derecha = comp.BotonFlecha(self.flechas_panel, direction="derecha", text="Página  \nSiguiente  ")
+        self.b_derecha.configurar(command = lambda: self.configurar_pagina(1))
+        self.b_derecha.pack(side="right", anchor="e", expand=True)
+
+        self.agregar_pagina_2()
+        self.ocultar_pagina()
+        self.agregar_pagina_1()
+
+    
+    def agregar_pagina_1(self):
+        self.pagina1 = tk.Frame(self, background=self.bgcolor)
+        self.pagina1.pack(fill="x", expand=True, after=self.flechas_panel, pady=10)
+
+        self.button_venta = comp.Boton(self.pagina1, text="Ver Opciones\nde Venta")
+        self.button_venta.config(command=lambda: self.cambiar_opciones("Ventas"))
+        self.button_venta.pack(side="left", expand=True)
+
+        self.button_menu = comp.Boton(self.pagina1, text="Ver Opciones\nde Menu")
         self.button_menu.config(command=lambda: self.cambiar_opciones("Menu"))
+        self.button_menu.pack(side="left", expand=True)
 
-        self.button_otros = comp.Boton(button_panel, text="Ver Opciones de\nOtros Datos")
+        self.button_inventario = comp.Boton(self.pagina1, text="Ver Opciones\nde Inventario")
+        self.button_inventario.config(command=lambda: self.cambiar_opciones("Inventario"))
+        self.button_inventario.pack(side="left", expand=True)
+
+
+    def agregar_pagina_2(self):
+        self.pagina2 = tk.Frame(self, background=self.bgcolor)
+        self.pagina2.pack(fill="x", expand=True, after=self.flechas_panel, pady=10)
+
+        self.button_otros = comp.Boton(self.pagina2, text="Ver Opciones de\nOtros Datos")
         self.button_otros.config(command=lambda: self.cambiar_opciones("Otros"))
-
-        self.button_ventas.pack(expand=True, side="left", padx=3)
-        self.button_menu.pack(expand=True, side="left", padx=3)
-        self.button_inventario.pack(expand=True, side="left", padx=3)
         self.button_otros.pack(expand=True, side="left", padx=3)
 
-        self.agregar_panel_opciones()
-
-        panel_opciones = tk.Frame(self, background=self.bgcolor)
-        panel_opciones.pack(expand=True, fill="x", pady=20)
-
-        self.button_perfil = comp.Boton(panel_opciones, text="Perfil")
-        self.button_perfil.config(command=self.abrir_menu_perfil)
-
-        self.button_cerrar_sesion = comp.Boton(panel_opciones, text="Cerrar\nSesión")
-        self.button_cerrar_sesion.config(command=self.cerrar_sesion)
-
-        self.button_salir = comp.Boton(panel_opciones, text="Salir")
-        self.button_salir.config(command=self.salir)
-
-        self.button_perfil.pack(side="left", expand=True)
-        self.button_cerrar_sesion.pack(side="left", expand=True)
-        self.button_salir.pack(side="left", expand=True)
-
         if self.rol_usuario != 3:
-            self.button_usuarios = comp.Boton(panel_opciones, text="Ver Opciones\nde Usuarios")
+            self.button_usuarios = comp.Boton(self.pagina2, text="Ver Opciones\nde Usuarios")
             self.button_usuarios.config(command=lambda: self.cambiar_opciones("Usuarios"))
-            self.button_usuarios.pack(side="left", expand=True, before=self.button_perfil)
+            self.button_usuarios.pack(expand=True, side="left", padx=3)
+
+        if self.rol_usuario == 1:
+            self.button_opciones = comp.Boton(self.pagina2, text="Ver Opciones\nde Local")
+            self.button_opciones.config(command=lambda: self.cambiar_opciones("Opciones"))
+            self.button_opciones.pack(expand=True, side="left", padx=3)
+
+
+    def ocultar_pagina(self):
+        if self.num_pagina == 2:
+            self.pagina1.pack_forget()
+        else:
+            self.pagina2.pack_forget()
+        
+
+    def mostrar_pagina(self):
+        if self.num_pagina == 2:
+            self.pagina2.pack(fill="x", expand=True, after=self.flechas_panel)
+        else:
+            self.pagina1.pack(fill="x", expand=True, after=self.flechas_panel)
 
 
     def agregar_panel_opciones(self):
         self.panel_opciones = tk.Frame(self, background=self.bgcolor, pady=50, borderwidth=5)
-        self.panel_opciones.pack(expand=True, fill="both")
+        self.panel_opciones.pack(expand=True, fill="both", pady=10)
 
         self.panel_opciones.grid_columnconfigure(0, weight=1)
         self.panel_opciones.grid_columnconfigure(1, weight=1)
@@ -106,6 +137,17 @@ class Inicio(ven.VentanaPrincipal):
         self.panel_opciones.grid_rowconfigure(1, weight=1)
 
         self.configurar_botones(self.panel_opciones)
+
+    
+    def configurar_pagina(self, num: int):
+        self.num_pagina += num
+        if self.num_pagina == 1:
+            self.ocultar_pagina()
+            self.mostrar_pagina()
+        else:
+            self.ocultar_pagina()
+            self.mostrar_pagina()
+        print(f"Ancho: {self.winfo_width()}\nAlto: {self.winfo_height()}\n")
 
 
     def configurar_botones(self, root: tk.Frame):
@@ -151,6 +193,15 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_agregar.config(command=self.abrir_agregar_usuario)
                 self.boton_eliminar.config(command=self.abrir_eliminar_usuario)
                 self.boton_ver.config(command=self.abrir_ver_usuarios)
+            case "Opciones":
+                logo = IMG_USUARIOS
+                agregar_text = ""
+                ver_text = ""
+                eliminar_text = ""
+                modificar_text = "Modificar Local\ndel Programa"
+                self.boton_agregar.config(command=self.abrir_agregar_usuario)
+                self.boton_eliminar.config(command=self.abrir_eliminar_usuario)
+                self.boton_ver.config(command=self.abrir_ver_usuarios)
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
@@ -189,6 +240,8 @@ class Inicio(ven.VentanaPrincipal):
             self.boton_ver.grid(row=0, column=2)
             self.boton_agregar.grid(row=0, column=1)
             self.boton_eliminar.grid(row=1, column=1, columnspan=2)
+        elif self.opciones_seleccionada == "Opciones":
+            self.boton_modificar.grid(row=1, column=1, columnspan=2)
         else:
             self.boton_ver.grid(row=0, column=2)
             self.boton_modificar.grid(row=1, column=2)
@@ -202,6 +255,20 @@ class Inicio(ven.VentanaPrincipal):
 
         self.opciones_seleccionada = tipo
         self.configurar_botones(self.panel_opciones)
+
+
+    def agregar_opciones(self):
+        panel = tk.Frame(self, background=self.bgcolor)
+        panel.pack(fill="both", expand=True, pady=10)
+
+        b_perfil = comp.Boton(panel, text="Perfil", command=self.abrir_menu_perfil)
+        b_perfil.pack(expand=True, side="left")
+
+        b_cerrar_sesion = comp.Boton(panel, text="Cerrar\nSesión", command=self.cerrar_sesion)
+        b_cerrar_sesion.pack(expand=True, side="left")
+        
+        b_salir = comp.Boton(panel, text="Salir", command=self.salir)
+        b_salir.pack(expand=True, side="left")
 
 
     def abrir_agregar_ventas(self):

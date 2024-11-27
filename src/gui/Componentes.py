@@ -81,6 +81,102 @@ class Boton(tk.Button):
         pass
 
 
+
+
+FLECHA_IZQUIERDA = "./img/botones/flecha-izquierda.png"
+FLECHA_DERECHA = "./img/botones/flecha-derecha.png"
+
+
+class BotonFlecha(tk.Button):
+    """
+    Esta clase configurará el tamaño y la imágen de un botón, asi como su fuente, 
+    tamaño de letra y otras configuraciones.
+    """
+    def __init__(self, master: tk.Widget, direction: str, text: str="", width: int=100, height: int=50, image: str=BUTTONACTIVEIMAGE, font: str=BUTTONFONT, font_size: int=10, command=None):
+        super().__init__(master=master)
+
+        self.master = master
+        self.text = text
+        self.width = width
+        self.height = height
+        self.image = image
+        self.font = font
+        self.font_size = font_size
+        self.command = command
+        self.direction = direction
+
+        self.is_active = True
+
+        self._configurar_boton()
+
+
+    def _configurar_boton(self):
+        if self.direction == "izquierda":
+            image_tk = self._configurar_imagen_fi()
+            self.config(compound="left")
+        else:
+            image_tk = self._configurar_imagen_fd()
+            self.config(compound="right")
+
+        self.config(command=self.command)
+        self.config(width=self.width, height=self.height)
+        self.config(image=image_tk, borderwidth=0, background=BUTTONBG, highlightthickness=0, activebackground=BUTTONBG)
+        self.config(cursor="hand2")
+        self.config(text=self.text, foreground="white", font=(self.font, self.font_size, "bold"))
+        self.image_tk = image_tk
+
+
+    def _configurar_imagen_fi(self):
+        imagen = Image.open(FLECHA_IZQUIERDA)
+        imagen_resized = imagen.resize((self.width - 75, self.height))
+        image_tk = ImageTk.PhotoImage(imagen_resized)
+        return image_tk
+    
+
+    def _configurar_imagen_fd(self):
+        imagen = Image.open(FLECHA_DERECHA)
+        imagen_resized = imagen.resize((self.width - 75, self.height))
+        image_tk = ImageTk.PhotoImage(imagen_resized)
+        return image_tk
+
+
+    def configurar(self, **kwargs):
+        for clave, valor in kwargs.items():
+            setattr(self, clave, valor)
+
+        self._configurar_boton()
+
+    
+    def deshabilitar_boton(self):
+        if self.direction == "izquierda":
+            self.image = BUTTONDISABLEIMAGE
+            self.image_tk = self._configurar_imagen_fi()
+        else:
+            self.image = BUTTONDISABLEIMAGE
+            self.image_tk = self._configurar_imagen_fd()
+
+        self.config(image=self.image_tk, command=self._funcion_vacia)
+        self.update()
+        self.is_active = False
+
+    
+    def habilitar_boton(self):
+        if self.direction == "izquierda":
+            self.image = BUTTONACTIVEIMAGE
+            self.image_tk = self._configurar_imagen_fi()
+        else:
+            self.image = BUTTONACTIVEIMAGE
+            self.image_tk = self._configurar_imagen_fd()
+
+        self.config(image=self.image_tk, command=self.command)
+        self.update()
+        self.is_active = True
+
+
+    def _funcion_vacia(self):
+        pass
+
+
 class CampoTexto(tk.Entry):
     """
     Subclase de tk.Entry que permite restringir
@@ -135,13 +231,6 @@ class CampoTexto(tk.Entry):
         return False
 
 
-class Lista(ttk.Combobox):
-    """
-    Clase en contrucción.
-    Subclase de ttk.Combobox que integra funcionalidades de busqueda.
-    """
-
-
 class CustomTreeview(ttk.Treeview):
     def __init__(self, parent=None, **kwargs):
         super().__init__(parent, **kwargs)
@@ -168,7 +257,7 @@ class CustomTreeview(ttk.Treeview):
 
     def add_data(self, data):
         for i, row in enumerate(data):
-            row_id = self.insert(parent='', index=tk.END, values=row)
+            row_id = self.insert(parent='', index=tk.END, values=tuple(row))
 
             tag = 'evenrow' if i % 2 == 0 else 'oddrow'
 
@@ -192,3 +281,5 @@ class CustomTreeview(ttk.Treeview):
             scrollbarh = tk.Scrollbar(self, orient='horizontal', command=self.xview)
             scrollbarh.place(relx=0, rely=1, relwidth=1, anchor='sw')
             self.configure(xscrollcommand=scrollbarh.set)
+
+
