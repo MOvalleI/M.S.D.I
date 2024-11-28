@@ -31,14 +31,9 @@ class VerVentas(ven.VentanaPrincipal):
     def agregar_tabla(self):
         encabezados = ["ID Venta", "Fecha de Realización", "Precio Total"]
 
-        data = []
-
-        for i, h in self.datos_ventas.Ventas.items():
-            data.append((i,)+tuple(h))
-
         self.tabla = comp.CustomTreeview(self)
         self.tabla.create_table(head=encabezados)
-        self.tabla.add_data(data)
+        self.tabla.add_data(self.datos_ventas.simple_complete_query("Ventas"))
 
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_venta)
 

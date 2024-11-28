@@ -107,9 +107,9 @@ class VisualizarMenu(v.VentanaPrincipal):
         
     def ver_ingredientes(self):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar ingredientes",
-                             titulo = self.datos_menu.Menu[self.id_seleccionado][0],
+                             titulo = self.label_nombre.cget("text"),
                              encabezados = ["ID producto","producto"],
-                             datos = [(x[0], self.datos_menu.Productos[x[0]][0]) for x in self.datos_menu.Ingredientes[0][self.id_seleccionado]])
+                             datos = self.datos_menu.inner_join_menu_to_ingredient(self.id_seleccionado))
         
 
         
@@ -117,13 +117,13 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar categorias",
                              titulo = "Categorias",
                              encabezados = ["ID Categoria","Categoria"],
-                             datos = self.datos_menu.Categoria.items())
+                             datos = self.datos_menu.simple_complete_query("Categorias"))
 
     def ver_tamaños(self):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar tamaños",
                              titulo = "Tamaños",
                              encabezados = ["ID Tamaños","Tamaños"],
-                             datos = self.datos_menu.Tamaños.items())
+                             datos = self.datos_menu.simple_complete_query("Tamaños"))
 
     def crear_sub_tabla(self, titulo_ventana, titulo, encabezados, datos):
         sub_tabla = v.VentanaTopLevel(parent = self,
@@ -173,7 +173,7 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.label_categoria.pack(pady=(10, 5))
 
         comobobox_categoria = ttk.Combobox(ventana,
-                                           values=[por_defecto] + [x[1] for x in self.datos_menu.Categoria.items()],
+                                           values=[por_defecto] + [x[1] for x in self.datos_menu.simple_complete_query("Categorias")],
                                            state='readonly')
         comobobox_categoria.set(por_defecto)
         comobobox_categoria.pack(pady=(0, 10))
@@ -182,7 +182,7 @@ class VisualizarMenu(v.VentanaPrincipal):
         label_tamaño.pack(pady=(10, 5))
 
         comobobox_tamaño = ttk.Combobox(ventana,
-                                        values=[por_defecto] + [x[1] for x in self.datos_menu.Tamaños.items()],
+                                        values=[por_defecto] + [x[1] for x in self.datos_menu.simple_complete_query("Tamaños")],
                                         state='readonly')
         comobobox_tamaño.set(por_defecto)
         comobobox_tamaño.pack(pady=(0, 10))
