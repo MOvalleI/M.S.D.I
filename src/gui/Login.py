@@ -89,7 +89,7 @@ class Login(tk.Tk):
             self.agregar_usuario(self.user_canvas, id, self.usuarios[id][0], square_size, yPos - 10, xPos)
             xPos += square_size + 10 
 
-            if (id + 1) % 7 == 0:  
+            if id % 7 == 0 and id > 1:  
                 print((id + 1))
                 xPos = 50  
                 yPos += square_size + 20

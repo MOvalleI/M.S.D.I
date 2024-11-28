@@ -16,6 +16,8 @@ import gui.Usuarios.VerUsuarios as vu
 import gui.Usuarios.EliminarUsuarios as eu
 import gui.Otros.AgregarDatos as ad
 import gui.Perfil.MenuPerfil as mp
+import gui.Menu.EliminarMenu as em
+import gui.Menu.ModificarMenu as mm
 
 
 IMG_VENTAS = "./img/iconos/ventas.png"
@@ -166,6 +168,8 @@ class Inicio(ven.VentanaPrincipal):
                 modificar_text = "Modificar\nMenu"
                 self.boton_ver.config(command=self.abrir_ver_menu)
                 self.boton_agregar.config(command=self.abrir_agregar_menu)
+                self.boton_eliminar.config(command=self.abrir_eliminar_menu)
+                self.boton_modificar.config(command=self.abrir_modificar_menu)
             case "Inventario": 
                 logo = IMG_INVENTARIO
                 agregar_text = "Agregar\nProducto"
@@ -312,6 +316,11 @@ class Inicio(ven.VentanaPrincipal):
         vm.VisualizarMenu(datos=self.datos)
 
 
+    def abrir_eliminar_menu(self):
+        self.destroy()
+        em.Eliminar(datos=self.datos)
+
+
     def abrir_ver_usuarios(self):
         self.destroy()
         vu.VerUsuarios(datos=self.datos)
@@ -334,6 +343,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_menu_perfil(self):
         self.destroy()
         mp.MenuPerfil(datos=self.datos)
+    
+    
+    def abrir_modificar_menu(self):
+        self.destroy()
+        mm.Modificar(datos=self.datos)
     
     
     def salir(self):
