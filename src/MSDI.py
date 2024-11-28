@@ -25,3 +25,5 @@ except:
     root = ven.VentanaAvisoRoot(titulo_ventana="¡Ha Ocurrido un Error!")
     root.configurar_texto("No se pudo conectar\na la base de datos")
     root.mainloop()
+
+# COMENTARIO RANDOM
