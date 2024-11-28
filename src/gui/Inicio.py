@@ -23,6 +23,7 @@ IMG_MENU = "./img/iconos/menu.png"
 IMG_INVENTARIO = "./img/iconos/inventario.png"
 IMG_OTROS = "./img/iconos/otros.png"
 IMG_USUARIOS = "./img/iconos/usuario.png"
+IMG_OPCIONES = "./img/iconos/opciones.png"
 
 BGBUTTON = "gray"
 FGBUTTON = "white"
@@ -194,7 +195,7 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_eliminar.config(command=self.abrir_eliminar_usuario)
                 self.boton_ver.config(command=self.abrir_ver_usuarios)
             case "Opciones":
-                logo = IMG_USUARIOS
+                logo = IMG_OPCIONES
                 agregar_text = ""
                 ver_text = ""
                 eliminar_text = ""
