@@ -90,6 +90,7 @@ class Login(tk.Tk):
             xPos += square_size + 10 
 
             if (id + 1) % 7 == 0:  
+                print((id + 1))
                 xPos = 50  
                 yPos += square_size + 20
 
@@ -109,7 +110,7 @@ class Login(tk.Tk):
         image_label.image = pfp_tk
         image_label.pack(expand=True)
 
-        name_label = tk.Label(panel, text=user, anchor="center", font=(ven.DEFAULT_FONT, 14))
+        name_label = tk.Label(panel, text=user.replace(" ", "\n"), anchor="center", font=(ven.DEFAULT_FONT, 12))
         name_label.config(background=ven.BGCOLOR, foreground="white")
         name_label.pack(expand=True, fill="x", pady=5, padx=25)
 

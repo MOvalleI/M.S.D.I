@@ -1,19 +1,26 @@
 import tkinter as tk
-from PIL import Image, ImageTk
+import textwrap
 
-FLECHA_IZQUIERDA = r".\src\img\botones\flecha-izquierda.png"
 
-class View(tk.Frame):
-    def __init__(self, *args, **kwargs):
-        tk.Frame.__init__(self, *args, **kwargs)
-        self.image = Image.open(FLECHA_IZQUIERDA)
-        resz = self.image.resize((50, 50))
-        self.image_tik = ImageTk.PhotoImage(resz)
-        b = tk.Button(self, text=" Página Anterior", image=self.image_tik, compound="left")
-        b.pack(side="top")
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    view = View(root)
-    view.pack(side="top", fill="both", expand=True)
-    root.mainloop()
+
+
+# Crear la ventana principal
+root = tk.Tk()
+root.title("Ejemplo con salto de línea")
+
+# Texto largo que quieres mostrar en el label
+texto_largo = "ahola ladsa"
+
+# Establece el ancho máximo de la línea
+ancho_maximo = 15
+
+# Usamos textwrap para envolver el texto
+texto_envuelto = texto_largo.replace(" ", "\n")
+
+# Crear un label y asignarle el texto envuelto
+label = tk.Label(root, text=texto_envuelto, font=("Arial", 12))
+label.pack(padx=10, pady=10)
+
+# Ejecutar la aplicación
+root.mainloop()
