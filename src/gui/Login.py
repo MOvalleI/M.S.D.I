@@ -318,21 +318,25 @@ class Login(tk.Tk):
             self.passwd_panel.pack_forget()
             self.patron_panel.pack(expand=True, after=self.user_panel, fill="both")
             self.b_iniciar.pack_forget()
+            self.b_modo.config(text="Escribir\nContraseña")
             self.modo = "patron"
         elif self.modo == "patron" and self.selected_panel is None:
             self.patron_panel.pack_forget()
             self.passwd_panel.pack(expand=True, fill="both", after=self.user_panel)
             self.b_iniciar.pack(expand=True, side="left", before=self.b_modo)
+            self.b_modo.config(text="Dibujar\nPatrón")
             self.modo = "passwd"
         elif self.modo == "passwd" and self.selected_panel is not None:
             self.passwd_panel.pack_forget()
             self.patron_panel.pack(expand=True, after=self.panel_pfp, fill="both")
             self.b_iniciar.pack_forget()
+            self.b_modo.config(text="Escribir\nContraseña")
             self.modo = "patron"
         else:
             self.patron_panel.pack_forget()
             self.passwd_panel.pack(expand=True, fill="both", after=self.panel_pfp)
             self.b_iniciar.pack(expand=True, side="left", before=self.b_modo)
+            self.b_modo.config(text="Dibujar\nPatrón")
             self.modo = "passwd"
 
 
@@ -343,7 +347,7 @@ class Login(tk.Tk):
         self.b_iniciar = comp.Boton(botones_panel, text="Iniciar\nSesión", command=lambda :self.iniciar_sesion(self.passwd_entry.get()))
         self.b_iniciar.pack(expand=True, side="left")
 
-        self.b_modo = comp.Boton(botones_panel, text="Cambiar Modo\nInicio de Sesión", command=self.cambiar_modo)
+        self.b_modo = comp.Boton(botones_panel, text="Dibujar\nPatrón", command=self.cambiar_modo)
         self.b_modo.pack(expand=True, side="left")
 
         self.b_volver = comp.Boton(botones_panel, text="Volver", command=self.volver)

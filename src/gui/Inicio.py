@@ -18,6 +18,7 @@ import gui.Otros.AgregarDatos as ad
 import gui.Perfil.MenuPerfil as mp
 import gui.Menu.EliminarMenu as em
 import gui.Menu.ModificarMenu as mm
+import gui.Opciones.ModificarLocal as ml
 
 
 IMG_VENTAS = "./img/iconos/ventas.png"
@@ -218,9 +219,7 @@ class Inicio(ven.VentanaPrincipal):
                 ver_text = ""
                 eliminar_text = ""
                 modificar_text = "Modificar Local\ndel Programa"
-                self.boton_agregar.config(command=self.abrir_agregar_usuario)
-                self.boton_eliminar.config(command=self.abrir_eliminar_usuario)
-                self.boton_ver.config(command=self.abrir_ver_usuarios)
+                self.boton_modificar.config(command=self.abrir_modificar_local)
             case _:
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
@@ -363,6 +362,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_modificar_menu(self):
         self.destroy()
         mm.Modificar(datos=self.datos)
+
+
+    def abrir_modificar_local(self):
+        self.destroy()
+        ml.ModificarLocal(datos=self.datos)
     
     
     def salir(self):
