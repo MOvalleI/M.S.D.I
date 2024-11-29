@@ -366,32 +366,9 @@ class Login(tk.Tk):
         self.panel_cuadro_usuarios.place_forget()
         self.agregar_ingresar_datos()
 
-    
-    def iniciar_sesion_patron(self, patron: str):
-        if not self.selected_panel:
-            self.id_usuario_seleccionado = self.datos_usuarios.buscar_id_por_nombre(self.user_entry.get())
-
-        if self.id_usuario_seleccionado == 0:
-            self.mensaje_user_incorrecto()
-        else:
-            self.label_not_user.config(text="")
-            if patron == self.patron.get_pattern():
-                self.destroy()
-                
-                self.datos["Usuario_Logueado"] = {
-                    "ID": self.id_usuario_seleccionado,
-                    "Nombre": self.usuario_seleccionado,
-                    "Rol": self.usuarios[self.id_usuario_seleccionado][2],
-                    "Pfp": self.usuarios[self.id_usuario_seleccionado][3]
-                }
-                
-                i.Inicio(datos=self.datos)
-            else:
-                self.mensaje_patron_incorrecto()
 
     def mensaje_patron_incorrecto(self):
         self.label_patron_error.config(text="* Patrón Incorrecto")
-
 
 
     def volver(self, event=None):
@@ -436,3 +413,25 @@ class Login(tk.Tk):
             else:
                 self.mensaje_passwd_incorrecto()
 
+
+    def iniciar_sesion_patron(self, patron: str):
+        if not self.selected_panel:
+            self.id_usuario_seleccionado = self.datos_usuarios.buscar_id_por_nombre(self.user_entry.get())
+
+        if self.id_usuario_seleccionado == 0:
+            self.mensaje_user_incorrecto()
+        else:
+            self.label_not_user.config(text="")
+            if patron == self.patron.get_pattern():
+                self.destroy()
+                
+                self.datos["Usuario_Logueado"] = {
+                    "ID": self.id_usuario_seleccionado,
+                    "Nombre": self.usuario_seleccionado,
+                    "Rol": self.usuarios[self.id_usuario_seleccionado][2],
+                    "Pfp": self.usuarios[self.id_usuario_seleccionado][3]
+                }
+                
+                i.Inicio(datos=self.datos)
+            else:
+                self.mensaje_patron_incorrecto()
