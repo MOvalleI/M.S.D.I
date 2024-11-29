@@ -39,7 +39,12 @@ class Inicio(ven.VentanaPrincipal):
         self.usuario_logueado = datos["Usuario_Logueado"]["Nombre"]
         self.rol_usuario = datos["Usuario_Logueado"]["Rol"]
 
-        self.opciones_seleccionada = "Ventas"
+        if "Opcion_Inicio" in self.datos:
+            self.opciones_seleccionada = self.datos["Opcion_Inicio"]
+        else:
+            self.opciones_seleccionada = "Ventas"
+            self.datos["Opcion_Inicio"] = self.opciones_seleccionada
+
 
         self.num_pagina = 1
 
@@ -51,11 +56,11 @@ class Inicio(ven.VentanaPrincipal):
         self.protocol("WM_DELETE_WINDOW", self.salir)
         self.geometry("600x600")
 
+        self.centrar_ventana()
         self.agregar_titulo()
         self.agregar_botones_paginas()
         self.agregar_panel_opciones()
         self.agregar_opciones()
-        self.centrar_ventana()
 
     
     def agregar_botones_paginas(self):
@@ -68,11 +73,15 @@ class Inicio(ven.VentanaPrincipal):
             
         self.b_izquierda = comp.BotonFlecha(self.flechas_panel, direction="izquierda", text="  Página\n  Anterior")
         self.b_izquierda.configurar(command = lambda: self.configurar_pagina(-1))
+        self.b_izquierda.deshabilitar_boton()
         self.b_izquierda.pack(side="left", anchor="w", expand=True)
+
+        self.label_pagina = tk.Label(self.flechas_panel, text=f"Página {self.num_pagina}", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 18))
+        self.label_pagina.pack(expand=True, side="left", anchor="center")
 
         self.b_derecha = comp.BotonFlecha(self.flechas_panel, direction="derecha", text="Página  \nSiguiente  ")
         self.b_derecha.configurar(command = lambda: self.configurar_pagina(1))
-        self.b_derecha.pack(side="right", anchor="e", expand=True)
+        self.b_derecha.pack(side="left", anchor="e", expand=True)
 
         self.agregar_pagina_2()
         self.ocultar_pagina()
@@ -124,9 +133,25 @@ class Inicio(ven.VentanaPrincipal):
 
     def mostrar_pagina(self):
         if self.num_pagina == 2:
-            self.pagina2.pack(fill="x", expand=True, after=self.flechas_panel)
+            self.pagina2.pack(fill="x", expand=True, after=self.flechas_panel, pady=10)
         else:
-            self.pagina1.pack(fill="x", expand=True, after=self.flechas_panel)
+            self.pagina1.pack(fill="x", expand=True, after=self.flechas_panel, pady=10)
+
+
+    def configurar_pagina(self, num: int):
+        self.num_pagina += num
+        if self.num_pagina == 1:
+            self.ocultar_pagina()
+            self.mostrar_pagina()
+            self.b_izquierda.deshabilitar_boton()
+            self.b_derecha.habilitar_boton()
+        else:
+            self.ocultar_pagina()
+            self.mostrar_pagina()
+            self.b_izquierda.habilitar_boton()
+            self.b_derecha.deshabilitar_boton()
+        self.label_pagina.config(text=f"Página {self.num_pagina}")
+        print(f"Ancho: {self.winfo_width()}\nAlto: {self.winfo_height()}\n")
 
 
     def agregar_panel_opciones(self):
@@ -140,17 +165,6 @@ class Inicio(ven.VentanaPrincipal):
         self.panel_opciones.grid_rowconfigure(1, weight=1)
 
         self.configurar_botones(self.panel_opciones)
-
-    
-    def configurar_pagina(self, num: int):
-        self.num_pagina += num
-        if self.num_pagina == 1:
-            self.ocultar_pagina()
-            self.mostrar_pagina()
-        else:
-            self.ocultar_pagina()
-            self.mostrar_pagina()
-        print(f"Ancho: {self.winfo_width()}\nAlto: {self.winfo_height()}\n")
 
 
     def configurar_botones(self, root: tk.Frame):
@@ -259,6 +273,7 @@ class Inicio(ven.VentanaPrincipal):
             widget.destroy()  # Elimina cada widget del canvas
 
         self.opciones_seleccionada = tipo
+        self.datos["Opcion_Inicio"] = self.opciones_seleccionada
         self.configurar_botones(self.panel_opciones)
 
 

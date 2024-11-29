@@ -85,6 +85,8 @@ class Boton(tk.Button):
 
 FLECHA_IZQUIERDA = "./img/botones/flecha-izquierda.png"
 FLECHA_DERECHA = "./img/botones/flecha-derecha.png"
+FLECHA_IZQUIERDA_DESHAB = "./img/botones/flecha_izquierda_deshab.png"
+FLECHA_DERECHA_DESHAB = "./img/botones/flecha_derecha_deshab.png"
 
 
 class BotonFlecha(tk.Button):
@@ -133,8 +135,22 @@ class BotonFlecha(tk.Button):
         return image_tk
     
 
+    def _configurar_imagen_fid(self):
+        imagen = Image.open(FLECHA_IZQUIERDA_DESHAB)
+        imagen_resized = imagen.resize((self.width - 75, self.height))
+        image_tk = ImageTk.PhotoImage(imagen_resized)
+        return image_tk
+    
+    
     def _configurar_imagen_fd(self):
         imagen = Image.open(FLECHA_DERECHA)
+        imagen_resized = imagen.resize((self.width - 75, self.height))
+        image_tk = ImageTk.PhotoImage(imagen_resized)
+        return image_tk
+    
+    
+    def _configurar_imagen_fdd(self):
+        imagen = Image.open(FLECHA_DERECHA_DESHAB)
         imagen_resized = imagen.resize((self.width - 75, self.height))
         image_tk = ImageTk.PhotoImage(imagen_resized)
         return image_tk
@@ -149,11 +165,11 @@ class BotonFlecha(tk.Button):
     
     def deshabilitar_boton(self):
         if self.direction == "izquierda":
-            self.image = BUTTONDISABLEIMAGE
-            self.image_tk = self._configurar_imagen_fi()
+            self.image = FLECHA_IZQUIERDA_DESHAB
+            self.image_tk = self._configurar_imagen_fid()
         else:
-            self.image = BUTTONDISABLEIMAGE
-            self.image_tk = self._configurar_imagen_fd()
+            self.image = FLECHA_DERECHA_DESHAB
+            self.image_tk = self._configurar_imagen_fdd()
 
         self.config(image=self.image_tk, command=self._funcion_vacia)
         self.update()
@@ -162,10 +178,10 @@ class BotonFlecha(tk.Button):
     
     def habilitar_boton(self):
         if self.direction == "izquierda":
-            self.image = BUTTONACTIVEIMAGE
+            self.image = FLECHA_IZQUIERDA
             self.image_tk = self._configurar_imagen_fi()
         else:
-            self.image = BUTTONACTIVEIMAGE
+            self.image = FLECHA_DERECHA
             self.image_tk = self._configurar_imagen_fd()
 
         self.config(image=self.image_tk, command=self.command)
@@ -229,6 +245,15 @@ class CampoTexto(tk.Entry):
         if texto == "" or re.match(r"^[0-9]+(\.[0-9]*)?$", texto):
             return True
         return False
+    
+
+    def set(self, texto):
+        """
+        Establece el texto que se muestra en el Campo de Texto.
+        """
+
+        self.delete('0', 'end')
+        self.insert('0', texto)
 
 
 class CustomTreeview(ttk.Treeview):
@@ -264,6 +289,7 @@ class CustomTreeview(ttk.Treeview):
             self.tag_configure(tag, background='#d3d3d3' if tag == 'evenrow' else '#ffffff')
 
             self.item(row_id, tags=(tag,))
+
 
     def recharge_data(self, data):
         for item in self.get_children():
