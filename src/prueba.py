@@ -1,17 +1,5 @@
 import tkinter as tk
 
-class prueba(tk.Tk):
-    def __init__(self):
-        super().__init__()
-
-        self.agregar_pin()
-
-
-    def agregar_pin(self):
-        self.pin = PatternUnlockApp(self)
-        self.pin.pack(expand=True)
-
-
 
 class PatternUnlockApp(tk.Frame):
     def __init__(self, parent, pattern = None, **kwargs):
@@ -93,6 +81,8 @@ class PatternUnlockApp(tk.Frame):
                 print(False)
         else:
             self.pattern = selected_pattern
+
+        print(self.pattern)
             
         self.selected_points.clear()
         self.lines.clear()
@@ -105,6 +95,10 @@ class PatternUnlockApp(tk.Frame):
         self.pattern = None
         
 if __name__ == "__main__":
-    root = prueba()
+    root = tk.Tk()
+    root.title("Patrón de Desbloqueo")
+
+    frame = PatternUnlockApp(root)
+    frame.pack(fill="both", expand=True)
 
     root.mainloop()

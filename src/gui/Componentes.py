@@ -310,7 +310,7 @@ class CustomTreeview(ttk.Treeview):
 
 
 class PatternUnlockApp(tk.Frame):
-    def __init__(self, parent, pattern = None, **kwargs):
+    def __init__(self, parent, command, pattern = None, **kwargs):
         super().__init__(parent, **kwargs)
         self.parent = parent
 
@@ -319,12 +319,14 @@ class PatternUnlockApp(tk.Frame):
 
         self.pattern = pattern
 
+        self.command = command
+
         self.points = []
         self.lines = []
         self.selected_points = []
         self.current_line = None
 
-        self.canvas = tk.Canvas(self, width=300, height=300, bg="black")
+        self.canvas = tk.Canvas(self, width=215, height=215, bg="black")
         self.canvas.pack(fill="both", expand=True)
 
         self.draw_grid()
@@ -383,10 +385,7 @@ class PatternUnlockApp(tk.Frame):
         selected_pattern = str(self.selected_points)
 
         if self.pattern:
-            if selected_pattern == self.pattern:
-                print(True)
-            else:
-                print(False)
+            self.command(selected_pattern)
         else:
             self.pattern = selected_pattern
             
