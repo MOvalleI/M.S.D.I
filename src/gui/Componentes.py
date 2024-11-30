@@ -384,10 +384,7 @@ class PatternUnlockApp(tk.Frame):
         
         selected_pattern = str(self.selected_points)
 
-        if self.pattern:
-            self.command(selected_pattern)
-        else:
-            self.pattern = selected_pattern
+        self.command(selected_pattern)
             
         self.selected_points.clear()
         self.lines.clear()

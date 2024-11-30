@@ -111,6 +111,17 @@ class UsuariosDB:
         return False
     
 
+    def verificar_patron(self, id_usuario: int, patron: str) -> bool:
+        h = hashlib.new("SHA256")
+        h.update(patron.encode())
+
+        patron_hash = h.hexdigest()
+
+        if patron_hash==self._datos_usuarios[id_usuario][4]:
+            return True
+        return False
+    
+
     def buscar_id_por_nombre(self, nombre_usuario: str) -> int:
         "Devuelve el id dado un nombre. Devuelve 0 si no encuentra el id"
         for ids in self._datos_tipo_usuario.keys():

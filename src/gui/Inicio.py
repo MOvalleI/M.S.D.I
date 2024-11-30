@@ -153,7 +153,6 @@ class Inicio(ven.VentanaPrincipal):
             self.b_izquierda.habilitar_boton()
             self.b_derecha.deshabilitar_boton()
         self.label_pagina.config(text=f"Página {self.num_pagina}")
-        print(f"Ancho: {self.winfo_width()}\nAlto: {self.winfo_height()}\n")
 
 
     def agregar_panel_opciones(self):

@@ -151,7 +151,7 @@ class CambiarPasswdUsuario(ven.VentanaTopLevel):
         panel.grid_columnconfigure(0, weight=1)
         panel.grid_rowconfigure((0,1,2,3), weight=1)
 
-        label = tk.Label(panel, text="Ingresar Contraseña Actual:", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 16))
+        label = tk.Label(panel, text="Ingresar Contraseña Nueva:", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 16))
         label.grid(column=0, row=0)
 
         self.new_passwd_entry = comp.CampoTexto(panel)

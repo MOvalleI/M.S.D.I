@@ -4,10 +4,10 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import gui.Inicio as i
 
-class VisualizarMenu(v.VentanaPrincipal):
+class Eliminar(v.VentanaPrincipal):
     def __init__(self, datos: dict,**kwargs):
-        super().__init__(titulo_ventana="VisualizarMenu",
-                         titulo="Menu",
+        super().__init__(titulo_ventana="Eliminar Menu",
+                         titulo="Eliminar\nMenu",
                          **kwargs)
         self.agregar_titulo()
 
@@ -32,8 +32,8 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.label_nombre = tk.Label(self, text="", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 14))
         self.label_nombre.pack(pady=10)
 
-        self.boton_ingredientes = comp.Boton(self, text="Ver ingredientes")
-        self.boton_ingredientes.config(command=self.ver_ingredientes, state="disable")
+        self.boton_ingredientes = comp.Boton(self, text="Ver ingredientes", command=self.ver_ingredientes)
+        self.boton_ingredientes.deshabilitar_boton()
         self.boton_ingredientes.pack(pady=10)
 
         self.agregar_botones_otros_datos()
@@ -76,7 +76,7 @@ class VisualizarMenu(v.VentanaPrincipal):
     def seleccionar_menu(self, event):
         selection = self.tabla_menu.selection()
         if selection:
-            self.boton_ingredientes.config(state="active")
+            self.boton_ingredientes.habilitar_boton()
             item = self.tabla_menu.item(selection[0], "values")
             self.label_nombre.config(text=item[1])
             self.id_seleccionado = int(item[0])

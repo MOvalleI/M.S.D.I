@@ -6,8 +6,8 @@ import gui.Inicio as i
 
 class VisualizarMenu(v.VentanaPrincipal):
     def __init__(self, datos: dict,**kwargs):
-        super().__init__(titulo_ventana="VisualizarMenu",
-                         titulo="Menu",
+        super().__init__(titulo_ventana="Ver Menu",
+                         titulo="Ver Menu",
                          **kwargs)
         self.agregar_titulo()
 
@@ -32,8 +32,8 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.label_nombre = tk.Label(self, text="", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 14))
         self.label_nombre.pack(pady=10)
 
-        self.boton_ingredientes = comp.Boton(self, text="Ver ingredientes")
-        self.boton_ingredientes.config(command=self.ver_ingredientes, state="disable")
+        self.boton_ingredientes = comp.Boton(self, text="Ver ingredientes", command=self.ver_ingredientes)
+        self.boton_ingredientes.deshabilitar_boton()
         self.boton_ingredientes.pack(pady=10)
 
         self.agregar_botones_otros_datos()
@@ -76,7 +76,7 @@ class VisualizarMenu(v.VentanaPrincipal):
     def seleccionar_menu(self, event):
         selection = self.tabla_menu.selection()
         if selection:
-            self.boton_ingredientes.config(state="active")
+            self.boton_ingredientes.habilitar_boton()
             item = self.tabla_menu.item(selection[0], "values")
             self.label_nombre.config(text=item[1])
             self.id_seleccionado = int(item[0])
@@ -107,9 +107,9 @@ class VisualizarMenu(v.VentanaPrincipal):
         
     def ver_ingredientes(self):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar ingredientes",
-                             titulo = self.datos_menu.Menu[self.id_seleccionado][0],
+                             titulo = self.label_nombre.cget("text"),
                              encabezados = ["ID producto","producto"],
-                             datos = [(x[0], self.datos_menu.Productos[x[0]][0]) for x in self.datos_menu.Ingredientes[0][self.id_seleccionado]])
+                             datos = self.datos_menu.inner_join_menu_to_ingredient(self.id_seleccionado))
         
 
         
@@ -117,13 +117,13 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar categorias",
                              titulo = "Categorias",
                              encabezados = ["ID Categoria","Categoria"],
-                             datos = self.datos_menu.Categoria.items())
+                             datos = self.datos_menu.simple_complete_query("Categorias"))
 
     def ver_tamaños(self):
         self.crear_sub_tabla(titulo_ventana = "Vizualizar tamaños",
                              titulo = "Tamaños",
                              encabezados = ["ID Tamaños","Tamaños"],
-                             datos = self.datos_menu.Tamaños.items())
+                             datos = self.datos_menu.simple_complete_query("Tamaños"))
 
     def crear_sub_tabla(self, titulo_ventana, titulo, encabezados, datos):
         sub_tabla = v.VentanaTopLevel(parent = self,
@@ -176,7 +176,7 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.label_categoria.pack(pady=(10, 5))
 
         comobobox_categoria = ttk.Combobox(ventana,
-                                           values=[por_defecto] + [x[1] for x in self.datos_menu.Categoria.items()],
+                                           values=[por_defecto] + [x[1] for x in self.datos_menu.simple_complete_query("Categorias")],
                                            state='readonly')
         comobobox_categoria.set(por_defecto)
         comobobox_categoria.pack(pady=(0, 10))
@@ -185,7 +185,7 @@ class VisualizarMenu(v.VentanaPrincipal):
         label_tamaño.pack(pady=(10, 5))
 
         comobobox_tamaño = ttk.Combobox(ventana,
-                                        values=[por_defecto] + [x[1] for x in self.datos_menu.Tamaños.items()],
+                                        values=[por_defecto] + [x[1] for x in self.datos_menu.simple_complete_query("Tamaños")],
                                         state='readonly')
         comobobox_tamaño.set(por_defecto)
         comobobox_tamaño.pack(pady=(0, 10))
@@ -225,17 +225,3 @@ class VisualizarMenu(v.VentanaPrincipal):
 
         boton_cancelar = comp.Boton(panel, text="Cancelar", command=ventana.destroy)
         boton_cancelar.pack(expand=True, side="left")
-
-if __name__ == "__main__":
-    import data.InventarioDB as idb
-
-    datos_inventario = idb.InventarioDB()
-
-    datosDB = {
-        "Inventario": datos_inventario,
-    }
-
-    root = VisualizarMenu(datos=datosDB, logo="./logo_128x128.png")
-    root.mainloop()
-
-    datos_inventario.cerrar()

@@ -297,7 +297,7 @@ class Login(tk.Tk):
         self.label_patron_error = tk.Label(self.patron_panel, background=ven.BGCOLOR, foreground="red", font=(ven.DEFAULT_FONT, 14), text="")
         self.label_patron_error.pack(pady=5)
 
-        self.patron = comp.PatternUnlockApp(self.patron_panel, self.iniciar_sesion_patron, pattern="[1, 5, 9, 6, 3, 7]")
+        self.patron = comp.PatternUnlockApp(self.patron_panel, self.iniciar_sesion_patron)
         self.patron.pack(pady=5)
 
     
@@ -432,7 +432,7 @@ class Login(tk.Tk):
         else:
             if self.label_not_user: 
                 self.label_not_user.config(text="")
-            if patron == self.patron.get_pattern():
+            if self.datos_usuarios.verificar_patron(self.id_usuario_seleccionado, patron):
                 self.destroy()
                 
                 self.crear_diccionario()
