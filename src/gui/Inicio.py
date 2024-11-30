@@ -230,7 +230,7 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)
                 self.boton_ver.config(command=self.abrir_ver_ventas)
                 self.boton_eliminar.config(command=self.abrir_generar_reporte_dia)
-                self.boton_modificar.config(command=self.abrir_generar_reporte_dia)
+                self.boton_modificar.config(command=self.abrir_generar_reporte_mes)
                 
 
         icono = Image.open(logo)
@@ -375,7 +375,11 @@ class Inicio(ven.VentanaPrincipal):
 
     def abrir_generar_reporte_dia(self):
         self.destroy()
-        gr.Generar(datos=self.datos)
+        gr.Generar(datos=self.datos, tipo="dia")
+    
+    def abrir_generar_reporte_mes(self):
+        self.destroy()
+        gr.Generar(datos=self.datos, tipo="mes")
     
     
     def salir(self):

@@ -5,11 +5,13 @@ import gui.Inicio as i
 import data.PDF as pdf
 
 class Generar(ven.VentanaPrincipal):
-    def __init__(self, datos: dict):
+    def __init__(self, datos: dict, tipo: str):
         super().__init__(titulo_ventana = "Generar Reporte", titulo = "Generar\nReporte")
 
         self.datos = datos
         self.datos_inventario = self.datos["Inventario"]
+
+        self.tipo = tipo
 
         self.configurar_ventana()
 
