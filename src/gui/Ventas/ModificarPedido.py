@@ -14,7 +14,6 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.nombre = values[0]
         self.precio = values[1]
         self.cantidad = values[2]
-        self.tamaño = values[3]
 
         self.precio_individual = int(self.precio / self.cantidad)
 
@@ -52,12 +51,12 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.cantidad_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Cantidad: {self.cantidad}")
         self.cantidad_label.pack(side="left", expand=True)
 
-        self.b_aumentar = comp.Boton(panel, text="/\\")
-        self.b_aumentar.config(command=self.aumentar_cantidad)
+        self.b_aumentar = comp.Boton(panel, text="/\\", command=self.aumentar_cantidad)
         self.b_aumentar.pack(side="left", expand=True)
 
-        self.b_disminuir = comp.Boton(panel, text="\\/")
-        self.b_disminuir.config(command=self.dismiunir_cantidad, state="disabled")
+        self.b_disminuir = comp.Boton(panel, text="\\/", command=self.dismiunir_cantidad)
+        if self.cantidad == 1:
+            self.b_disminuir.deshabilitar_boton()
         self.b_disminuir.pack(side="left", expand=True)
 
     
@@ -89,7 +88,7 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.cantidad_label.config(text=f"Cantidad: {self.cantidad}")
         self.precio_label.config(text=f"Precio: ${self.precio}")
 
-        self.b_disminuir.config(state="active")
+        self.b_disminuir.habilitar_boton()
 
 
     def dismiunir_cantidad(self):
@@ -99,7 +98,7 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.precio_label.config(text=f"Precio: ${self.precio}")
         
         if self.cantidad == 1:
-            self.b_disminuir.config(state="disabled")
+            self.b_disminuir.deshabilitar_boton()
 
     
     def activar_boton_disminuir(self):
@@ -110,7 +109,7 @@ class ModificarPedido(ven.VentanaTopLevel):
     def salir_y_modificar(self):
         self.parent.precio_modificado = True
 
-        values = (self.nombre, self.precio, self.cantidad, self.tamaño)
+        values = (self.nombre, self.precio, self.cantidad)
 
         self.destroy()
         self.parent.actualizar_pedido(id=self.id, values=values)

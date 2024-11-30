@@ -11,6 +11,9 @@ class MSDI:
 
         if self.datos_inventario is not None: 
             self.datos_inventario.cerrar()
+
+        if self.datos_usuarios is not None: 
+            self.datos_inventario.cerrar_conexion()
         
 
     def ventana_cargando(self):
@@ -25,7 +28,7 @@ class MSDI:
 
             self.loading.aumentar_progreso(33)
             self.loading.configurar_texto("Conectando con la base de\ndatos de 'Usuario'")
-            datos_usuarios = u.Usuarios()
+            datos_usuarios = u.UsuariosDB()
 
             datosDB = {
                 "Inventario": datos_inventario,
@@ -45,5 +48,3 @@ class MSDI:
 if __name__ == "__main__":
     MSDI()
 
-
-# COMENTARIO RANDOM

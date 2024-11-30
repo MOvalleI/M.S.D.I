@@ -150,26 +150,3 @@ class DibujarFirma(tk.Frame):
         image_buffer.seek(0)
         
         PDF_Boleta(consultor = self.datosDB["Inventario"], imagen = ImageReader(image_buffer), dimensiones_imagen = (width, height))
-
-if __name__ == "__main__":
-    import data.InventarioDB as idb
-
-    datos_inventario = idb.InventarioDB()
-
-    datosDB = {
-        "Inventario": datos_inventario,
-    }
-
-    root = tk.Tk()
-    root.title("Dibujo")
-
-    frame = DibujarFirma(root, datosDB)
-    frame.pack(fill="both", expand=True)
-
-    boton = tk.Button(root, text="Borrar", command=frame.draw_delete)
-    boton.pack(pady=20)
-
-    boton = tk.Button(root, text="PDF", command=frame.pasar_al_PDF)
-    boton.pack(pady=20)
-
-    root.mainloop()

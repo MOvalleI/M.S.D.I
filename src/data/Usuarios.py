@@ -1,6 +1,7 @@
 import hashlib
 import pyodbc
 import json
+from datetime import datetime
 
 def obtener_info_db(file: str = "./db/db_info.json") -> str:
     with open(file, 'r') as archivo:
@@ -19,24 +20,27 @@ def obtener_info_db(file: str = "./db/db_info.json") -> str:
 QUERYUSERS = "EXEC obtener_usuarios"
 QUERYROL = "EXEC obtener_roles"
 QUERYIMAGES = "EXEC obtener_fotos"
+QUERYTABLES = "EXEC obtener_tablas"
+QUERYACTIONS = "EXEC obtener_acciones"
 
-class Usuarios:
+
+class UsuariosDB:
     def __init__(self):
         self._datos_usuarios = None
         self._datos_tipo_usuario = None
         self._datos_imagenes = None
+        self._datos_tablas = None
         self._usuario_logueado = None
 
-        conn = pyodbc.connect(obtener_info_db())
+        self.conn = pyodbc.connect(obtener_info_db())
         
-        self.cursor = conn.cursor()
+        self.cursor = self.conn.cursor()
         
         self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)
         self._datos_tipo_usuario = self.obtener_datos(consulta=QUERYROL)
         self._datos_imagenes = self.obtener_datos(consulta=QUERYIMAGES)
-
-        self.cursor.close()
-        conn.close()
+        self._datos_tablas = self.obtener_datos(consulta=QUERYTABLES)
+        self._datos_acciones = self.obtener_datos(consulta=QUERYACTIONS)
     
 
     def obtener_datos(self, consulta: str) -> dict:
@@ -168,17 +172,17 @@ class Usuarios:
     def obtener_datos_fotos(self) -> dict:
         return self._datos_imagenes
     
+    def obtener_datos_tablas(self) -> dict:
+        return self._datos_tablas
+    
 
     def recargar_datos(self):
-        conn = pyodbc.connect(obtener_info_db())
-        
-        self.cursor = conn.cursor()
-        
         self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)
         self._datos_tipo_usuario = self.obtener_datos(consulta=QUERYROL)
         self._datos_imagenes = self.obtener_datos(consulta=QUERYIMAGES)
 
-        self.cursor.close()
-        conn.close()
     
-
+    def cerrar_conexion(self):
+        self.cursor.close()
+        self.conn.close()
+    

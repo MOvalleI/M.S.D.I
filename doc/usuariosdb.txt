@@ -1,0 +1,91 @@
+CREATE TABLE Rol (
+	id_rol INTEGER PRIMARY KEY,
+	nombre_rol NCHAR(20),
+	descripcion VARCHAR(MAX)
+);
+
+CREATE TABLE Foto_Perfil (
+	id_foto_perfil INTEGER PRIMARY KEY,
+	foto_perfil VARBINARY(MAX)
+);
+
+CREATE TABLE Accion (
+	id_accion INTEGER PRIMARY KEY,
+	nombre_accion NCHAR(10),
+);
+
+CREATE TABLE Tabla (
+	id_tabla INTEGER PRIMARY KEY,
+	nombre_tabla NCHAR(25)
+)
+
+CREATE TABLE Usuarios (
+	id_usuario INTEGER IDENTITY(1,1) PRIMARY KEY,
+	nombre_usuario NCHAR(25),
+	contraseña VARCHAR(MAX),
+	patron_desbloqueo VARCHAR(MAX),
+	id_rol INTEGER REFERENCES Rol,
+	id_foto_perfil INTEGER REFERENCES Foto_Perfil
+);
+
+CREATE TABLE Ejecuta (
+	id_usuario INTEGER REFERENCES Usuarios,
+	id_accion INTEGER REFERENCES Accion,
+	id_tabla INTEGER REFERENCES Tabla,
+	fecha_realizacion DATE,
+	hora_realizacion TIME
+)
+
+CREATE TABLE Sesion (
+	id_sesion INTEGER IDENTITY(1,1) PRIMARY KEY,
+	id_usuario INTEGER REFERENCES Usuarios
+	fecha_inicio_sesion DATE,
+	hora_inicio_sesion TIME,
+	fecha_cierre_sesion DATE,
+	hora_cierre_sesion TIME
+)
+
+INSERT INTO Rol VALUES
+(1,'Administrador','El usuario posee control total tanto de la base de datos del local como de los usuarios existentes'),
+(2,'Jefe','El usuario posee control total solo de la base de datos del local (Ver, Agregar, Eliminar y Modificar), pero solo puede crear/eliminar usuarios de tipo Empleados'),
+(3,'Empleado','El usuario solo puede registrar ventas, modificar el stock disponible de un producto y ver tanto las ventas registradas, el menú existente y los productos existentes, junto con su información correspondiente. Solo puede modificar sus propios datos de usuario');
+
+INSERT INTO Foto_Perfil VALUES
+(1,(SELECT * FROM OPENROWSET(BULK 'C:\Program Files\Microsoft SQL Server\11.png', SINGLE_BLOB) AS VARBINARY(MAX))),
+(2,(SELECT * FROM OPENROWSET(BULK 'C:\Program Files\Microsoft SQL Server\ham.png', SINGLE_BLOB) AS VARBINARY(MAX))),
+(3,(SELECT * FROM OPENROWSET(BULK 'C:\Program Files\Microsoft SQL Server\Diablito256x2.png', SINGLE_BLOB) AS VARBINARY(MAX))),
+(4,(SELECT * FROM OPENROWSET(BULK 'C:\Program Files\Microsoft SQL Server\Papas256.png', SINGLE_BLOB) AS VARBINARY(MAX)));
+
+INSERT INTO Tabla VALUES
+(1, 'Unidades'),
+(2, 'Lugares'),
+(3, 'Clases'),
+(4, 'Categorias'),
+(5, 'Tamaños'),
+(6, 'Menu'),
+(7, 'Productos'),
+(8, 'Ventas');
+
+INSERT INTO Accion VALUES
+(1,'Agregar'),
+(2,'Modificar'),
+(3,'Eliminar'),
+(4,'Ver');
+
+INSERT INTO Usuarios VALUES
+('admin','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',1,1),
+('jefazo','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',2,2),
+('pepe','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('juan','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('eustacio','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepo','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('yo','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('Leandro Fernandez','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('Eustacio Anaconda','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepito1','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepito2','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepito3','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepito4','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepito5','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3),
+('pepito6','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3','d2c972403e92cd168ad8c692c40d4af7238b6434766de3651ce04f7eb5d82752',3,3);
+

@@ -118,7 +118,7 @@ class VerInventario(ven.VentanaPrincipal):
         tabla.pack()
 
         b_volver = comp.Boton(sub_tabla, text="Cerrar", command=sub_tabla.destroy)
-        b_volver.pack(expand=True)
+        b_volver.pack(expand=True, pady=10)
 
     def seleccionar_producto(self, event):
         selection = self.tabla.selection()

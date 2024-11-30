@@ -19,6 +19,7 @@ import gui.Perfil.MenuPerfil as mp
 import gui.Menu.EliminarMenu as em
 import gui.Menu.ModificarMenu as mm
 import gui.Opciones.ModificarLocal as ml
+import gui.Ventas.GenerarReporte as gr
 
 
 IMG_VENTAS = "./img/iconos/ventas.png"
@@ -224,12 +225,13 @@ class Inicio(ven.VentanaPrincipal):
                 logo = IMG_VENTAS
                 agregar_text = "Registrar\nVenta"
                 ver_text = "Ver Ventas\nRegistradas"
-                eliminar_text = ""
-                modificar_text = ""
+                eliminar_text = "Generar Reporte\ndel Día"
+                modificar_text = "Generar Reporte\ndel Mes"
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)
                 self.boton_ver.config(command=self.abrir_ver_ventas)
-                self.boton_agregar.grid(row=0, column=1, rowspan=2)
-                self.boton_ver.grid(row=0, column=2, rowspan=2)
+                self.boton_eliminar.config(command=self.abrir_generar_reporte_dia)
+                self.boton_modificar.config(command=self.abrir_generar_reporte_dia)
+                
 
         icono = Image.open(logo)
         icono_resized = icono.resize((128, 128))
@@ -250,8 +252,10 @@ class Inicio(ven.VentanaPrincipal):
         elif self.rol_usuario==3 and self.opciones_seleccionada == "Menu":
             self.boton_ver.grid(row=0, column=1, columnspan=2, rowspan=2)
         elif self.opciones_seleccionada == "Ventas":
-            self.boton_agregar.grid(row=0, column=1, rowspan=2)
-            self.boton_ver.grid(row=0, column=2, rowspan=2)
+            self.boton_agregar.grid(row=0, column=1)
+            self.boton_ver.grid(row=0, column=2)
+            self.boton_eliminar.grid(row=1, column=1)
+            self.boton_modificar.grid(row=1, column=2)
         elif self.rol_usuario==3 and self.opciones_seleccionada == "Otros":
             self.boton_ver.grid(row=0, column=1, rowspan=2, columnspan=2)
         elif self.opciones_seleccionada == "Usuarios":
@@ -367,6 +371,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_modificar_local(self):
         self.destroy()
         ml.ModificarLocal(datos=self.datos)
+
+
+    def abrir_generar_reporte_dia(self):
+        self.destroy()
+        gr.Generar(datos=self.datos)
     
     
     def salir(self):
@@ -379,6 +388,10 @@ class Inicio(ven.VentanaPrincipal):
             self.destroy()
             self.datos.pop("Usuario_Logueado", None)
             gui.Login.Login(datos=self.datos)
+
+        
+    def actualizar_datos_usuario(self):
+        pass
 
     
 if __name__ == "__main__":

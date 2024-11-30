@@ -1,10 +1,11 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 import gui.Componentes as comp
 import gui.Ventanas as ven
 import gui.Inicio as i
 from PIL import Image, ImageTk
 import io
+import data.Registro as r
+import datetime
 
 
 BG_IMAGE = "./img/logos/Imagen fondo para login.png"
@@ -25,10 +26,14 @@ class Login(tk.Tk):
 
         self.selected_panel = None
 
+        self.paneles = []
+
         self.num_pagina = 1
         self.ids_usuarios = []
 
         self.modo = "passwd" # Valores Posibles: 'passwd' - 'patron'
+
+        self.label_not_user = None
 
         self.configurar_ventana()
 
@@ -131,8 +136,12 @@ class Login(tk.Tk):
     def cambiar_pagina(self, num: int):
         self.num_pagina += num
 
-        self.user_canvas.delete("all")
-        
+        for panel_id in self.paneles:
+            self.user_canvas.delete(panel_id)
+
+        # Limpiar la lista de identificadores de paneles
+        self.paneles.clear()
+
         self.pintar_pagina(self.num_pagina)
 
         if self.num_pagina == 1:
@@ -147,8 +156,7 @@ class Login(tk.Tk):
 
 
     def agregar_usuario(self, root: tk.Canvas, id: int, user: str, size: int, yPos: int, xPos: int) -> None:
-        panel = tk.Frame(self.panel_cuadro_usuarios, background=ven.BGCOLOR)
-
+        panel = tk.Frame(self.panel_cuadro_usuarios, background=ven.BGCOLOR, width=size, height=size)
         panel.id = id
 
         blob = self.datos_usuarios.buscar_imagen_por_id(self.usuarios[id][3])
@@ -161,9 +169,9 @@ class Login(tk.Tk):
         image_label.image = pfp_tk
         image_label.pack(expand=True)
 
-        name_label = tk.Label(panel, text=user.replace(" ", "\n"), anchor="center", font=(ven.DEFAULT_FONT, 12))
+        name_label = tk.Label(panel, text=user.replace(" ", "\n"), font=(ven.DEFAULT_FONT, 12))
         name_label.config(background=ven.BGCOLOR, foreground="white")
-        name_label.pack(expand=True, fill="x", pady=5, padx=25)
+        name_label.pack(fill="x", pady=5, padx=25)
 
         panel.username = user
 
@@ -172,7 +180,9 @@ class Login(tk.Tk):
         panel.bind("<Button-1>", lambda e: self.on_panel_click(e, panel))
 
         panel.place(width=size, height=size, x=50)
-        root.create_window(xPos, yPos, anchor="nw", window=panel)
+        panel_id = root.create_window(xPos, yPos, anchor="nw", window=panel)
+
+        self.paneles.append(panel_id)
 
 
     def agregar_botones(self):
@@ -406,12 +416,7 @@ class Login(tk.Tk):
             if self.datos_usuarios.verificar_passwd(self.id_usuario_seleccionado, passwd):
                 self.destroy()
                 
-                self.datos["Usuario_Logueado"] = {
-                    "ID": self.id_usuario_seleccionado,
-                    "Nombre": self.usuario_seleccionado,
-                    "Rol": self.usuarios[self.id_usuario_seleccionado][2],
-                    "Pfp": self.usuarios[self.id_usuario_seleccionado][3]
-                }
+                self.crear_diccionario()
                 
                 i.Inicio(datos=self.datos)
             else:
@@ -425,17 +430,33 @@ class Login(tk.Tk):
         if self.id_usuario_seleccionado == 0:
             self.mensaje_user_incorrecto()
         else:
-            self.label_not_user.config(text="")
+            if self.label_not_user: 
+                self.label_not_user.config(text="")
             if patron == self.patron.get_pattern():
                 self.destroy()
                 
-                self.datos["Usuario_Logueado"] = {
-                    "ID": self.id_usuario_seleccionado,
-                    "Nombre": self.usuario_seleccionado,
-                    "Rol": self.usuarios[self.id_usuario_seleccionado][2],
-                    "Pfp": self.usuarios[self.id_usuario_seleccionado][3]
-                }
+                self.crear_diccionario()
                 
                 i.Inicio(datos=self.datos)
             else:
                 self.mensaje_patron_incorrecto()
+
+    
+    def crear_diccionario(self):
+        sesion = r.Sesion()
+
+        fecha_inicio = datetime.datetime.now().strftime("%Y-%m-%d")
+        hora_inicio = datetime.datetime.now().strftime("%H:%M:%S")
+
+        sesion.registrar_inicio_sesion(fecha_inicio, hora_inicio)
+
+        registro = r.ArbolAcciones()
+
+        self.datos["Usuario_Logueado"] = {
+            "ID": self.id_usuario_seleccionado,
+            "Nombre": self.usuario_seleccionado,
+            "Rol": self.usuarios[self.id_usuario_seleccionado][2],
+            "Pfp": self.usuarios[self.id_usuario_seleccionado][3],
+            "Registro": registro,
+            "Sesion": sesion
+        }

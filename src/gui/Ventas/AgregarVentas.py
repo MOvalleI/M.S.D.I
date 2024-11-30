@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 import tkinter.messagebox as msg
 import gui.Inicio as i
 import gui.Ventas.ModificarPedido as mp
@@ -20,10 +19,11 @@ class AgregarVentas(ven.VentanaPrincipal):
         self.menu_seleccionado = None
         self.cantidad_seleccionada = None
         self.precio_seleccionado = None
-        self.tamaño_seleccionado = None
         self.id_seleccionado = None
 
         self.precio_modificado = False
+
+        self.datos_venta = []
 
         self.configurar_ventana()
 
@@ -51,22 +51,13 @@ class AgregarVentas(ven.VentanaPrincipal):
         panel_tabla.grid_rowconfigure(0, weight=1)
         panel_tabla.grid_columnconfigure(0, weight=1)
 
-        self.tabla = ttk.Treeview(panel_tabla, columns=("Nombre", "Precio", "Cantidad", "Tamaño"), show="headings")
-        self.tabla.heading("Nombre", text="Nombre")
-        self.tabla.heading("Precio", text="Precio")
-        self.tabla.heading("Cantidad", text="Cantidad")
-        self.tabla.heading("Tamaño", text="Tamaño")
+        encabezados = ("Nombre", "Precio", "Cantidad")
 
-        self.tabla.column("Nombre", width=100)
-        self.tabla.column("Precio", width=50)
-        self.tabla.column("Cantidad", width=50)
-        self.tabla.column("Tamaño", width=50)
-
-        self.scrollbar = ttk.Scrollbar(panel_tabla, orient="vertical", command=self.tabla.yview)
-        self.tabla.configure(yscrollcommand=self.scrollbar.set)
+        self.tabla = comp.CustomTreeview(panel_tabla)
+        self.tabla.create_table(head=encabezados)
+        self.tabla.add_data(self.datos_venta)
 
         self.tabla.grid(row=0, column=0, sticky="nsew")
-        self.scrollbar.grid(row=0, column=1, sticky="ns")
 
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_menu)
 
@@ -84,8 +75,8 @@ class AgregarVentas(ven.VentanaPrincipal):
         self.b_modificar.deshabilitar_boton()
         self.b_modificar.pack(expand=True, side="left")
 
-        self.b_eliminar = comp.Boton(button_panel, text="Eliminar Pedido\nSeleccionado")
-        self.b_eliminar.config(state="disabled")
+        self.b_eliminar = comp.Boton(button_panel, text="Eliminar Pedido\nSeleccionado", command=self.eliminar_menu)
+        self.b_eliminar.deshabilitar_boton()
         self.b_eliminar.pack(expand=True, side="left")
 
     
@@ -108,12 +99,11 @@ class AgregarVentas(ven.VentanaPrincipal):
 
     def abrir_modificar_pedido(self):
         self.precio_total -= self.precio_seleccionado
-        mp.ModificarPedido(parent=self, id=self.id_seleccionado, values=(self.menu_seleccionado, self.precio_seleccionado, self.cantidad_seleccionada, self.tamaño_seleccionado))
+        mp.ModificarPedido(parent=self, id=self.id_seleccionado, values=(self.menu_seleccionado, self.precio_seleccionado, self.cantidad_seleccionada))
         
 
     def registrar_venta(self):
-        if msg.askyesno(title="¿Registrar Venta?", message="¿Está seguro de registrar esta venta?"):
-            self.datos["Inventario"] = self.datos_inventario
+        if ven.VentanaConfirmacion(self, texto="¿Está seguro de registrar esta venta?", titulo_ventana="Registrar Venta").obtener_respuesta():
             self.volver()
 
 
@@ -152,16 +142,27 @@ class AgregarVentas(ven.VentanaPrincipal):
             self.menu_seleccionado = valores[0]
             self.precio_seleccionado = valores[1]
             self.cantidad_seleccionada = valores[2]
-            self.tamaño_seleccionado = valores[3]
         else:
             self.id_seleccionado = None
-
             self.menu_seleccionado = None
             self.precio_seleccionado = None
             self.cantidad_seleccionada = None
-            self.tamaño_seleccionado = None
 
         self.activar_botones()
+
+
+    def eliminar_menu(self):
+        self.tabla.delete(self.id_seleccionado)
+        self.precio_total -= self.precio_seleccionado
+        self.label_precio.config(text=f"Precio Total: {self.precio_total}")
+
+        self.menu_seleccionado = None
+        self.cantidad_seleccionada = None
+        self.precio_seleccionado = None
+        self.id_seleccionado = None
+
+        self.activar_botones()
+
 
     
     def actualizar_precio_total(self):

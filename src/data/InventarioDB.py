@@ -64,6 +64,26 @@ class InventarioDB:
         ON p.ID_producto = pl.ID_producto"""
 
         return self.query_execute(query)
+    
+    def inner_join_menu_venta(self, like = None, order = "ID_Menu", where = None):
+        query = "SELECT M.ID_menu, M.nombre_menu, M.precio FROM Menu AS M"
+
+        query_list = []
+
+        if like:
+            query_list.append("M.nombre_menu LIKE ?")
+
+        if where:
+            query_list += where
+
+        if like or where:
+            query += " WHERE " + " AND ".join(query_list)
+
+        if like:
+            self.cursor.execute(query, (f"%{like}%",))
+        else:
+            self.cursor.execute(query)
+        return self.cursor.fetchall()
 
     def query_execute(self, query):
         self.cursor.execute(query)

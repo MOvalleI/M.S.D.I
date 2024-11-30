@@ -17,9 +17,8 @@ class Pedido(ven.VentanaTopLevel):
         self.cantidad = 1
         self.precio_individual = 0
         self.precio = 0
-        self.id_seleccionado = None
+        self.id_menu_seleccionado = None
         self.menu_seleccionado = ""
-        self.tamaño_seleccionado = None
 
         self.is_selected = False
 
@@ -45,7 +44,7 @@ class Pedido(ven.VentanaTopLevel):
         label = tk.Label(panel, text="Buscar Menu por Nombre", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16))
         label.pack()
 
-        self.buscador_entry = tk.Entry(panel)
+        self.buscador_entry = comp.CampoTexto(panel)
         self.buscador_entry.bind("<KeyRelease>", self.actualizar_tabla)
         self.buscador_entry.pack(expand=True)
 
@@ -57,24 +56,16 @@ class Pedido(ven.VentanaTopLevel):
         panel_tabla.grid_rowconfigure(0, weight=1)
         panel_tabla.grid_columnconfigure(0, weight=1)
 
-        self.tabla = ttk.Treeview(panel_tabla, columns=("Nombre", "Precio", "Tamaño"), show="headings")
-        self.tabla.heading("Nombre", text="Nombre")
-        self.tabla.heading("Precio", text="Precio")
-        self.tabla.heading("Tamaño", text="Tamaño")
+        encabezados = ("ID Menu", "Nombre", "Precio")
 
-        self.tabla.column("Nombre", width=100)
-        self.tabla.column("Precio", width=50)
-        self.tabla.column("Tamaño", width=50)
-
-        self.scrollbar = ttk.Scrollbar(panel_tabla, orient="vertical", command=self.tabla.yview)
-        self.tabla.configure(yscrollcommand=self.scrollbar.set)
+        self.tabla = comp.CustomTreeview(panel_tabla)
+        self.tabla.create_table(head=encabezados)
+        self.tabla.add_data(data=self.datos_inventario.inner_join_menu_venta())
+        self.tabla.añadir_scrollbarv(1)
 
         self.tabla.grid(row=0, column=0, sticky="nsew")
-        self.scrollbar.grid(row=0, column=1, sticky="ns")
 
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_elemento)
-
-        self.actualizar_tabla(event=None)
 
     
     def agregar_menu_seleccionado(self):
@@ -92,12 +83,12 @@ class Pedido(ven.VentanaTopLevel):
         self.cantidad_label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=f"Cantidad: {self.cantidad}")
         self.cantidad_label.pack(side="left", expand=True, padx=5)
 
-        self.b_aumentar = comp.Boton(panel, text="/\\")
-        self.b_aumentar.config(command=self.aumentar_cantidad)
+        self.b_aumentar = comp.Boton(panel, text="/\\", command=self.aumentar_cantidad)
+        self.b_aumentar.deshabilitar_boton()
         self.b_aumentar.pack(side="left", expand=True, padx=5)
 
-        self.b_disminuir = comp.Boton(panel, text="\\/")
-        self.b_disminuir.config(command=self.dismiunir_cantidad, state="disabled")
+        self.b_disminuir = comp.Boton(panel, text="\\/", command=self.dismiunir_cantidad)
+        self.b_disminuir.deshabilitar_boton()
         self.b_disminuir.pack(side="left", expand=True, padx=5)
 
     
@@ -113,8 +104,8 @@ class Pedido(ven.VentanaTopLevel):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=10)
 
-        self.b_agregar = comp.Boton(panel, text="Agregar\nPedido")
-        self.b_agregar.config(state="disabled", command=self.salir_y_agregar)
+        self.b_agregar = comp.Boton(panel, text="Agregar\nPedido", command=self.salir_y_agregar)
+        self.b_agregar.deshabilitar_boton()
         self.b_agregar.pack(side="left", expand=True)
 
         self.b_cancelar = comp.Boton(panel, text="Cancelar")
@@ -123,51 +114,49 @@ class Pedido(ven.VentanaTopLevel):
 
 
     def actualizar_tabla(self, event):
-        self.tabla.delete(*self.tabla.get_children())
+        self.id_menu_seleccionado = None
+        self.menu_seleccionado = ""
+        self.precio_individual = 0
+        self.menu_seleccionado_label.config(text=f"Menu Seleccionado: {self.menu_seleccionado}")
 
-        if self.buscador_entry.get() == "":
-            for id_menu in self.datos_inventario.Menu.keys():
-                nombre = self.datos_inventario.Menu[id_menu][0]
-                precio = self.datos_inventario.Menu[id_menu][1]
-                tamaño = bi.BuscadorDB.buscar_tamano_por_id(self.datos_inventario.Tamaños, self.datos_inventario.Menu[id_menu][3])
+        self.b_aumentar.deshabilitar_boton()
+        self.b_disminuir.deshabilitar_boton()
+        self.b_agregar.deshabilitar_boton()
 
-                self.tabla.insert("", tk.END, iid=id_menu, values=(nombre, precio, tamaño))
+        if self.buscador_entry.get() != "":
+            self.tabla.recharge_data(self.datos_inventario.inner_join_menu_venta(like=self.buscador_entry.get()))
         else:
-            for id_menu in self.datos_inventario.Menu.keys():
-                nombre = self.datos_inventario.Menu[id_menu][0]
-                if self.buscador_entry.get().lower() in nombre.lower():
-                    precio = self.datos_inventario.Menu[id_menu][1]
-                    tamaño = bi.BuscadorDB.buscar_tamano_por_id(self.datos_inventario.Tamaños, self.datos_inventario.Menu[id_menu][3])
-
-                    self.tabla.insert("", tk.END, iid=id_menu, values=(nombre, precio, tamaño))
+            self.tabla.recharge_data(self.datos_inventario.inner_join_menu_venta())
 
 
     def seleccionar_elemento(self, event):
-        self.id_seleccionado = self.tabla.selection()[0]  
+        curItem = self.tabla.focus()
+        valores = self.tabla.item(curItem)["values"]
 
-        
-        item = self.tabla.item(self.id_seleccionado)
-        valores = item['values']
+        if valores:
+            self.id_menu_seleccionado = valores[0]
+            self.menu_seleccionado = valores[1]
+            self.precio_individual = valores[2]
 
-        self.menu_seleccionado = valores[0]
-        self.precio_individual = valores[1]
-        self.tamaño_seleccionado = valores[2]
+            self.cantidad = 1
+            self.precio = self.precio_individual
 
-        self.cantidad = 1
-        self.precio = self.precio_individual
+            if not self.is_selected:
+                self.is_selected = True
+                self.b_agregar.habilitar_boton()
+                self.b_aumentar.habilitar_boton()
 
-        if not self.is_selected:
-            self.is_selected = True
-            self.b_agregar.config(state="active")
-
-        self.menu_seleccionado_label.config(text=f"Menu Seleccionado: {self.menu_seleccionado}")
-        self.cantidad_label.config(text=f"Cantidad: {self.cantidad}")
-        self.precio_label.config(text=f"Precio: ${self.precio}")
+            self.b_disminuir.deshabilitar_boton()
+            self.menu_seleccionado_label.config(text=f"Menu Seleccionado: {self.menu_seleccionado}")
+            self.cantidad_label.config(text=f"Cantidad: {self.cantidad}")
+            self.precio_label.config(text=f"Precio: ${self.precio}") 
+        else:
+            self.is_selected = False
 
 
     def aumentar_cantidad(self):
         if self.cantidad == 1:
-            self.b_disminuir.config(state="active")
+            self.b_disminuir.habilitar_boton()
         
         self.cantidad += 1
         self.precio += self.precio_individual
@@ -183,11 +172,11 @@ class Pedido(ven.VentanaTopLevel):
         self.precio_label.config(text=f"Precio: ${self.precio}")
         
         if self.cantidad == 1:
-            self.b_disminuir.config(state="disabled")
+            self.b_disminuir.deshabilitar_boton()
 
 
     def salir_y_agregar(self):
-        values = (self.menu_seleccionado, self.precio, self.cantidad, self.tamaño_seleccionado)
+        values = (self.menu_seleccionado, self.precio, self.cantidad)
 
         self.destroy()
-        self.parent.agregar_pedido_a_tabla(id=self.id_seleccionado, values=values)
+        self.parent.agregar_pedido_a_tabla(id=self.id_menu_seleccionado, values=values)

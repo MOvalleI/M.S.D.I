@@ -138,6 +138,9 @@ class VisualizarMenu(v.VentanaPrincipal):
         tabla_menu.añadir_scrollbarv(1)
         tabla_menu.pack()
 
+        b_volver = comp.Boton(sub_tabla, text="Cerrar", command=sub_tabla.destroy)
+        b_volver.pack(expand=True, pady=10)
+
     def ventana_filtro(self):
         ventana = v.VentanaTopLevel(parent = self,
                                     titulo = "Filtros",
