@@ -282,7 +282,7 @@ class VentanaAvisoRoot(tk.Tk):
         if self.tipo == TIPO_AVISO_1:
             self._agregar_opciones()
         else:
-            self._agregar_rueda_progreso()
+            self._agregar_barra_progreso()
 
         self._centrar_ventana()
 
@@ -318,26 +318,28 @@ class VentanaAvisoRoot(tk.Tk):
         boton2.pack(expand=True)
 
     
-    def _agregar_rueda_progreso(self):
+    def _agregar_barra_progreso(self):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both")
         
         self.texto_barra = ""
         
-        self.label_barra = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text=self.texto_barra, anchor="center")
+        self.label_barra = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 16), text="Cargando...", anchor="center")
         self.label_barra.pack(expand=True, pady=5)
 
         self.pb = ttk.Progressbar(self,orient=tk.HORIZONTAL,length=300,mode="determinate",takefocus=True,maximum=100)
         self.pb.pack(expand=True, pady=5)    
 
 
-    def configurar_texto_barra(self):
-        self
+    def configurar_texto_barra(self, texto: str):
+        self.texto_barra = texto
+        self.label_barra.config(text=self.texto_barra)
 
 
     def configurar_texto(self, texto: str):
         self.texto = texto
         self.label_texto.config(text=self.texto)
+        self.label_texto.update_idletasks()
 
     
     def aumentar_progreso(self, valor: int):
