@@ -5,7 +5,12 @@ import gui.Ventanas as ven
 
 class MSDI:
     def __init__(self):
+        self.datos_inventario = None
+        self.datos_usuarios = None
         self.ventana_cargando()
+
+        if self.datos_inventario is not None: 
+            self.datos_inventario.cerrar()
         
 
     def ventana_cargando(self):
@@ -14,8 +19,6 @@ class MSDI:
         self.loading.mainloop()
 
     def inicializar(self):
-        datos_inventario = None
-        datos_usuarios = None
         try:
             self.loading.aumentar_progreso(33)
             datos_inventario = idb.InventarioDB()
@@ -37,10 +40,7 @@ class MSDI:
             self.loading.destroy()
             root = ven.VentanaAvisoRoot(titulo_ventana="¡Ha Ocurrido un Error!")
             root.configurar_texto("No se pudo conectar\na la base de datos")
-        finally:
-            if datos_inventario is not None: 
-                datos_inventario.cerrar()
-
+            
 
 if __name__ == "__main__":
     MSDI()

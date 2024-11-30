@@ -343,7 +343,7 @@ class VentanaAvisoRoot(tk.Tk):
 
     
     def aumentar_progreso(self, valor: int):
-        self.pb["value"] += valor
+        self.pb.step(valor)
 
 
     def _centrar_ventana(self):
