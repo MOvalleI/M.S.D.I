@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 import gui.Componentes as comp
 import gui.Ventanas as ven
 import data.LocalInfo as li
@@ -46,7 +45,7 @@ class ModificarLocal(ven.VentanaPrincipal):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=10)
 
-        self.b_establecer = comp.Boton(panel, text="Establecer\ncomo Local", command=None)
+        self.b_establecer = comp.Boton(panel, text="Establecer\ncomo Local", command=self.cambiar_local)
         self.b_establecer.deshabilitar_boton()
         self.b_establecer.pack(expand=True, side="left")
 
@@ -58,6 +57,16 @@ class ModificarLocal(ven.VentanaPrincipal):
         self.local_seleccionado = self.tabla.item(self.tabla.focus())["values"][0]
         self.b_establecer.habilitar_boton()
         print(self.local_seleccionado)
+
+    
+    def cambiar_local(self):
+        if li.cambiar_info_local(self.local_seleccionado):
+            texto = "¡Cambio Realizado con Exito!"
+            ven.VentanaAvisoTL(self, texto=texto, titulo_ventana="Cambio Realizado")
+            self.volver()
+        else:
+            texto = "¡No se pudo realizar el Cambio!"
+            ven.VentanaAvisoTL(self, texto=texto, titulo_ventana="Error")
 
 
     def volver(self):
