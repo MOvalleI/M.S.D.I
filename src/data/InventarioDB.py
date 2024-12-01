@@ -167,7 +167,50 @@ class InventarioDB:
     def obtener_total_vendido_dia(self, local: int):
         query = f"SELECT dbo.SF_total_vendido_hoy_por_local({local})"
         return self.query_execute(query)
-        
+    
+
+    def obtener_columna_tablas(self, tabla, columna):
+        query = f"SELECT {columna} FROM {tabla}"
+        return self.query_execute(query)
+    
+
+    def obtener_id_por_nombre(self, tabla, columna1, columna2, nombre):
+        query = f"SELECT {columna1} FROM {tabla} WHERE {columna2} = ?"
+        self.cursor.execute(query, (nombre,))
+        res = self.cursor.fetchone()
+
+        return int(res[0])
+    
+
+    def existe_menu(self, nombre_menu):
+        query = f"SELECT dbo.existe_menu(?)"
+        self.cursor.execute(query, (nombre_menu,))
+        res = self.cursor.fetchone()
+
+        return int(res[0])
+    
+
+    def obtener_ingredientes(self, nombre: str):
+        query = f"EXEC obtener_ingredientes ?"
+        self.cursor.execute(query, (nombre,))
+        return self.cursor.fetchall()
+    
+    def obtener_id_ingredientes_por_nombre(self, nombre: str):
+        query = f"SELECT ID_producto FROM Productos WHERE nombre_producto = ?"
+        self.cursor.execute(query, (nombre,))
+        return self.cursor.fetchone()
+    
+
+    def agregar_menu(self, id, nombre, precio, id_categoria, id_tamaño, ingredientes: list):
+        query_menu = "INSERT INTO Menu VALUES (?,?,?,?,?)"
+        self.cursor.execute(query_menu, (id,nombre,precio,id_categoria,id_tamaño))
+
+        lista_transformada = [(int(id), int(item)) for item in ingredientes]
+        query_ingredientes = "INSERT INTO Ingredientes VALUES (?,?)"
+        self.cursor.executemany(query_ingredientes, lista_transformada)
+
+        self.conn.commit()
+
         
     def query_insert(self, query):
         self.cursor.execute(query)
