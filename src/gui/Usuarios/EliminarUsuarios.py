@@ -15,6 +15,8 @@ class EliminarUsuarios(ven.VentanaPrincipal):
 
         self.usuario_logueado = self.datos["Usuario_Logueado"]
 
+        self.usuario_seleccionado = None
+
         self.configurar_ventana()
 
     
@@ -38,6 +40,8 @@ class EliminarUsuarios(ven.VentanaPrincipal):
         self.tabla = comp.CustomTreeview(panel)
         self.tabla.create_table(head=["Nombre de Usuario", "Rol"])
         self.agregar_datos()
+
+        self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
         
         self.tabla.pack(expand=True)
 
@@ -62,7 +66,7 @@ class EliminarUsuarios(ven.VentanaPrincipal):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=10)
 
-        self.b_eliminar = comp.Boton(panel, text="Eliminar Usuario\nSeleccionado", command=None)
+        self.b_eliminar = comp.Boton(panel, text="Eliminar Usuario\nSeleccionado", command=self.eliminar_usuario)
         self.b_eliminar.deshabilitar_boton()
         self.b_eliminar.pack(expand=True, side="left")
 
@@ -71,6 +75,37 @@ class EliminarUsuarios(ven.VentanaPrincipal):
 
         b_volver = comp.Boton(panel, text="Volver", command=self.volver)
         b_volver.pack(expand=True, side="left")
+
+
+    def seleccionar_usuario(self, event):
+        curItem = self.tabla.focus()
+        valores = self.tabla.item(curItem)["values"]
+
+        self.usuario_seleccionado = valores[0]
+        self.b_eliminar.habilitar_boton()
+
+
+    def eliminar_usuario(self):
+        if ven.VentanaConfirmacion(self, texto="¿Seguro que desea\nEliminar este Usuario?", titulo_ventana="Eliminar Usuario").obtener_respuesta():
+            self.datos_usuarios.eliminar_usuario_existente(self.usuario_seleccionado)
+            self.actualizar_tabla()
+            self.datos["Usuarios"] = self.datos_usuarios
+
+        
+    def actualizar_tabla(self):
+        usuarios = []
+
+        for id_usuario in self.usuarios.keys():
+            if self.usuarios[id_usuario][2] != 1 and self.usuario_logueado["Rol"] == 1 :
+                usuarios.append([])
+                usuarios[-1].append(self.usuarios[id_usuario][0])
+                usuarios[-1].append(self.datos_usuarios.buscar_nombre_tipo_por_id(self.usuarios[id_usuario][2]))
+            elif self.usuarios[id_usuario][2] == 3 and self.usuario_logueado["Rol"] == 2:
+                usuarios.append([])
+                usuarios[-1].append(self.usuarios[id_usuario][0])
+                usuarios[-1].append(self.datos_usuarios.buscar_nombre_tipo_por_id(self.usuarios[id_usuario][2]))
+
+        self.tabla.recharge_data(usuarios)
 
     
     def volver(self):

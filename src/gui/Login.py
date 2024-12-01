@@ -28,7 +28,7 @@ class Login(tk.Tk):
 
         self.paneles = []
 
-        self.num_pagina = 1
+        self.num_pagina = 0
         self.ids_usuarios = []
 
         self.modo = "passwd" # Valores Posibles: 'passwd' - 'patron'
@@ -106,7 +106,7 @@ class Login(tk.Tk):
         for id in self.usuarios.keys():
             self.ids_usuarios.append(id)
 
-        self.pintar_pagina(self.num_pagina)
+        self.cambiar_pagina(1)
             
 
     def pintar_pagina(self, num_pagina):
@@ -152,7 +152,11 @@ class Login(tk.Tk):
         if ((len(self.ids_usuarios) + 12 - 1) // 12) == self.num_pagina:
             self.b_derecha.deshabilitar_boton()
         else:
-            self.b_derecha.habilitar_boton()
+            if self.num_pagina != 1:
+                self.b_derecha.habilitar_boton()
+            else:
+                self.b_derecha.deshabilitar_boton()
+
 
 
     def agregar_usuario(self, root: tk.Canvas, id: int, user: str, size: int, yPos: int, xPos: int) -> None:

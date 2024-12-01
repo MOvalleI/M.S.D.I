@@ -390,6 +390,7 @@ class Inicio(ven.VentanaPrincipal):
         if ven.VentanaConfirmacion(self, texto="¿Seguro que deseas cerrar sesión?", titulo_ventana="Cerrar Sesión", opcion1="Cerrar Sesión").obtener_respuesta():
             self.destroy()
             self.datos.pop("Usuario_Logueado", None)
+            self.datos.pop("Opcion_Inicio", None)
             gui.Login.Login(datos=self.datos)
 
         

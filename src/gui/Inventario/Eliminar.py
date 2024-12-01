@@ -1,91 +1,98 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import gui.Componentes as comp
 import gui.Ventanas as ven
 import gui.Inicio as i
-import data.BuscadorDB as bi
-import gui.Componentes as comp
 
 class Eliminar(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
-        super().__init__(titulo_ventana="Eliminar Producto", titulo="Eliminar\nProducto")
+        super().__init__(titulo_ventana = "Ventana Principal", titulo = "Ventana")
 
         self.datos = datos
-        self.datos_inventario = self.datos["Inventario"]
-
-        self.producto_seleccionado = None
+        self.inventario = self.datos["Inventario"]
 
         self.configurar_ventana()
 
-    
-    def configurar_ventana(self):
-        self.protocol("WM_DELETE_WINDOW", self.volver)
-        self.bind('<Escape>', lambda event: self.volver)
 
+    def configurar_ventana(self):
         self.resizable(False, False)
+        self.protocol("WM_DELETE_WINDOW", self.volver)
 
         self.agregar_titulo()
-        self.agregar_tabla_productos()
-        self.agregar_botones_opciones()
+        self.agregar_tabla()
+        self.agregar_opciones()
 
         self.centrar_ventana()
 
-        
-    def agregar_lista_productos(self):
-        panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both", pady=10)
 
-        label = tk.Label(panel, text="Selecciona un Producto:", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
+    def agregar_tabla(self):
+        panel = tk.Frame(self, background=self.bgcolor)
+        panel.pack(expand=True, fill="both", pady=20)
+
+        label = tk.Label(panel, text="Buscar Producto por Nombre", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 14))
         label.pack(expand=True)
 
-        values = ["(no seleccionado)"]
+        self.producto_entry = comp.CampoTexto(panel)
+        self.producto_entry.config(width=25)
+        self.producto_entry.pack(pady=5)
 
-        for id_prod in self.datos_inventario.Productos.keys():
-                nombre = self.datos_inventario.Productos[id_prod][0]
-                values.append(nombre)
+        encabezados = ["ID producto", "Nombre", "Stock Mínimo", "Stock Deseado", "Stock Disponible"]
 
-        self.prod_list = ttk.Combobox(panel, values=values)
-        self.prod_list.current(0)
-        self.prod_list.pack(expand=True)
-        
+        self.tabla = comp.CustomTreeview(panel)
+        self.tabla.create_table(head=encabezados)
+        self.tabla.add_data(self.inventario.inner_join_productos())
+        self.tabla.añadir_scrollbarv(1)
+        self.tabla.pack(pady=5)
 
-    def agregar_tabla_productos(self):
+        self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_producto)
+
+
+    def agregar_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, pady=10)
+        panel.pack(expand=True, fill="both", pady=20)
 
-        label = tk.Label(panel, text="Busca un Producto por Nombre:", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
-        label.pack(side="left")
+        # Ver Detalles
+        self.b_detalles = comp.Boton(panel, command=None, text="Ver Detalles\ndel Producto")
+        self.b_detalles.deshabilitar_boton()
+        self.b_detalles.pack(expand=True)
 
-        self.nombre_entry = comp.CampoTexto(panel)
-        self.nombre_entry.pack(side="left")
+        # Opciones
+        panel_opciones = tk.Frame(self, background=self.bgcolor)
+        panel_opciones.pack(expand=True, fill="both", pady=20)
 
-        encabezados = ["Nombre", "Clase", "Lugar de Compra", "Unidad", "Precio", "Stock Mínimo", "Stock Deseado", "Stock Disponible"]
-
-        self.tabla = comp.CustomTreeview(self)
-        self.tabla.create_table(head=encabezados, width=100)
-
-        self.tabla.pack(expand=True)
-
-
-    def agregar_botones_opciones(self):
-        panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both", pady=10)
-
-        self.b_eliminar = comp.Boton(panel, text="Eliminar", command=self.confirmar_eliminar)
-        #self.b_eliminar.deshabilitar_boton()
+        self.b_eliminar = comp.Boton(panel_opciones, text="Eliminar")
+        self.b_eliminar.deshabilitar_boton()
         self.b_eliminar.pack(expand=True, side="left")
 
-        self.b_volver = comp.Boton(panel, text="Volver", command=self.volver)
-        self.b_volver.pack(expand=True, side="left")
+        b_filtrar = comp.Boton(panel_opciones, text="Filtrar")
+        b_filtrar.pack(expand=True, side="left")
+
+        b_volver = comp.Boton(panel_opciones, text="Volver", command=self.volver)
+        b_volver.pack(expand=True, side="left")
 
 
-    def confirmar_eliminar(self):
-        op = ven.VentanaConfirmacion(self, texto="¿Está seguro de eliminar\n este producto?")
-        if op.obtener_respuesta():
-            print("Objeto Eliminado")
-        else:
-            print("El objeto no se elimino")
-
-
-    def volver(self, e=None):
+    def volver(self):
         self.destroy()
         i.Inicio(datos=self.datos)
+
+    def crear_sub_tabla(self, titulo_ventana, titulo, encabezados, datos):
+        sub_tabla = ven.VentanaTopLevel(parent = self,
+                                      titulo = titulo,
+                                      titulo_ventana = titulo_ventana)
+        sub_tabla.agregar_titulo()
+        sub_tabla.grab_set()
+
+        tabla = comp.CustomTreeview(sub_tabla)
+        tabla.create_table(encabezados)
+        tabla.add_data(datos)
+        tabla.añadir_scrollbarv(1)
+        tabla.pack()
+
+        b_volver = comp.Boton(sub_tabla, text="Cerrar", command=sub_tabla.destroy)
+        b_volver.pack(expand=True, pady=10)
+
+    def seleccionar_producto(self, event):
+        selection = self.tabla.selection()
+        if selection:
+            self.b_detalles.habilitar_boton()
+            self.b_eliminar.habilitar_boton()

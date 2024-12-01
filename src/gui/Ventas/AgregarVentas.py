@@ -163,11 +163,6 @@ class AgregarVentas(ven.VentanaPrincipal):
 
         self.activar_botones()
 
-
-    
-    def actualizar_precio_total(self):
-        pass
-
     
     def activar_botones(self):
         if self.menu_seleccionado:

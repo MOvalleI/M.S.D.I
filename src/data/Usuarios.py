@@ -64,6 +64,13 @@ class UsuariosDB:
         return h.hexdigest()
     
 
+    def convertir_patron(self, patron: str) -> str:
+        h = hashlib.new("SHA256")
+        h.update(patron.encode())
+
+        return h.hexdigest()
+
+
     def buscar_datos_usuario(self, regex: str) -> dict:
         """
         Devuelve un diccionario con los usuarios cuyo nombre contiene regex.
@@ -90,8 +97,10 @@ class UsuariosDB:
 
     def buscar_id_tipo_por_nombre(self, nombre_tipo: str) -> int:
         for id_tipo, valores in self._datos_tipo_usuario.items():
-            if nombre_tipo in valores:
+            if valores[0] == nombre_tipo:  # Compara directamente con el nombre
                 return id_tipo
+        return 0  # Devuelve un valor por defecto si no se encuentra
+
            
             
     def buscar_nombre_tipo_por_id(self, id_tipo: int) -> str:
@@ -130,14 +139,15 @@ class UsuariosDB:
         return 0 
             
     
-    def agregar_nuevo_usuario(self, nombre: str, passwd: str, tipo: str) -> bool:
+    def agregar_nuevo_usuario(self, nombre: str, passwd: str, patron: str, tipo: str, foto: int) -> bool:
         id_usuario = int(list(self._datos_usuarios.keys())[-1]) + 1
 
         for valores in self._datos_usuarios.values():
             if nombre not in valores:
                 hashed_passwd = self.convertir_passwd(passwd)
+                hashed_patron = self.convertir_patron(patron)
                 id_tipo = self.buscar_id_tipo_por_nombre(tipo)
-                self._datos_usuarios[id_usuario] = [nombre, hashed_passwd, id_tipo]
+                self._datos_usuarios[id_usuario] = [nombre, hashed_passwd, id_tipo, foto, hashed_patron]
                 return True
         return False
     

@@ -59,6 +59,10 @@ class Eliminar(v.VentanaPrincipal):
         panel = tk.Frame(self, bg=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
 
+        self.boton_eliminar = comp.Boton(panel, text="Eliminar", command=None)
+        self.boton_eliminar.deshabilitar_boton()
+        self.boton_eliminar.pack(expand=True, side="left")
+
         self.boton_filtrar = comp.Boton(panel, text="Filtrar")
         self.boton_filtrar.config(command=self.ventana_filtro)
         self.boton_filtrar.pack(expand=True, side="left")
@@ -77,6 +81,7 @@ class Eliminar(v.VentanaPrincipal):
         selection = self.tabla_menu.selection()
         if selection:
             self.boton_ingredientes.habilitar_boton()
+            self.boton_eliminar.habilitar_boton()
             item = self.tabla_menu.item(selection[0], "values")
             self.label_nombre.config(text=item[1])
             self.id_seleccionado = int(item[0])
@@ -85,6 +90,7 @@ class Eliminar(v.VentanaPrincipal):
     def buscar_nombre(self):
         self.like = self.entry_busqueda.get().strip().lower()
         self.actualizar_tabla()
+        self.boton_eliminar.deshabilitar_boton()
         
 
     def inicializar_tabla(self):
@@ -161,6 +167,7 @@ class Eliminar(v.VentanaPrincipal):
             
             self.where = filtros if filtros else None
             ventana.destroy()
+            self.boton_eliminar.deshabilitar_boton()
             self.actualizar_tabla()
 
         def command_vaciar():

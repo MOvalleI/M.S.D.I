@@ -383,7 +383,7 @@ class PatternUnlockApp(tk.Frame):
             self.canvas.delete(self.current_line)
         
         selected_pattern = str(self.selected_points)
-
+    
         self.command(selected_pattern)
             
         self.selected_points.clear()
