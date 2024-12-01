@@ -18,7 +18,9 @@ class Eliminar(v.VentanaPrincipal):
         self.like = None
         self.orden = "ID Menu"
         self.id_seleccionado = None
-        self.where = None
+        self.where = [f"id_local = {self.datos["Local"]}", "ML.menu_disponible = 1"]
+
+        self.where_principal = [f"id_local = {self.datos["Local"]}", "ML.menu_disponible = 1"]
 
         self.protocol("WM_DELETE_WINDOW", self.volver)
 
@@ -59,7 +61,7 @@ class Eliminar(v.VentanaPrincipal):
         panel = tk.Frame(self, bg=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
 
-        self.boton_eliminar = comp.Boton(panel, text="Eliminar", command=None)
+        self.boton_eliminar = comp.Boton(panel, text="Eliminar", command=self.eliminar_menu)
         self.boton_eliminar.deshabilitar_boton()
         self.boton_eliminar.pack(expand=True, side="left")
 
@@ -97,7 +99,7 @@ class Eliminar(v.VentanaPrincipal):
         self.encabezados = {"ID Menu": "ID_menu", "Nombre del Menu": "nombre_menu", "Precio":"precio", "Categoria":"ID_categoria", "Tamaño":"ID_tamaño"}
         self.tabla_menu = comp.CustomTreeview(self)
         self.tabla_menu.create_table(list(self.encabezados.keys()))
-        self.tabla_menu.add_data(self.datos_menu.inner_join_menu())
+        self.tabla_menu.add_data(self.datos_menu.inner_join_menu(where=self.where_principal))
         self.tabla_menu.añadir_scrollbarv(1)
         self.tabla_menu.pack()
 
@@ -164,8 +166,10 @@ class Eliminar(v.VentanaPrincipal):
             if comobobox_precio.get() != por_defecto:
                 simbolo = {"Mayor que": ">", "Mayor o igual que": ">=", "Igual que": "=", "Menor o igual que": "<=", "Menor que": "<"}
                 filtros.append(f"M.precio {simbolo[comobobox_precio.get()]} {int(precio_entry.get())}")
-            
-            self.where = filtros if filtros else None
+            if filtros:
+                filtros.append(self.where_principal[0])
+                filtros.append(self.where_principal[1])
+            self.where = filtros if filtros else self.where_principal
             ventana.destroy()
             self.boton_eliminar.deshabilitar_boton()
             self.actualizar_tabla()
@@ -232,3 +236,9 @@ class Eliminar(v.VentanaPrincipal):
 
         boton_cancelar = comp.Boton(panel, text="Cancelar", command=ventana.destroy)
         boton_cancelar.pack(expand=True, side="left")
+
+
+    def eliminar_menu(self):
+        if v.VentanaConfirmacion(self, texto="¿Esta seguro que desea\nEliminarlo este Menu?\nDespues se no puede\ndeshacer el cambio", titulo_ventana="Eliminar del Menu").obtener_respuesta():
+            self.datos_menu.eliminar_menu(self.id_seleccionado)
+            self.actualizar_tabla()

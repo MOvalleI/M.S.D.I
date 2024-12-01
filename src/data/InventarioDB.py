@@ -25,7 +25,10 @@ class InventarioDB:
         self.conn.close()
 
     def inner_join_menu(self, like = None, order = "ID_Menu", where = None):
-        query = "SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M INNER JOIN Categorias C ON M.ID_categoria = C.ID_categoria INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño "
+        query = """SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M 
+                    INNER JOIN Categorias C ON M.ID_categoria = C.ID_categoria 
+                    INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño
+                    INNER JOIN MenuLocales ML ON ML.id_menu = M.id_menu """
 
         query_list = []
 
@@ -209,6 +212,12 @@ class InventarioDB:
         query_ingredientes = "INSERT INTO Ingredientes VALUES (?,?)"
         self.cursor.executemany(query_ingredientes, lista_transformada)
 
+        self.conn.commit()
+
+    
+    def eliminar_menu(self, id_menu):
+        query = "DELETE FROM Menu WHERE id_menu = ?"
+        self.cursor.execute(query, (id_menu,))
         self.conn.commit()
 
         
