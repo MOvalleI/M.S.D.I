@@ -10,6 +10,7 @@ class AgregarDatos(ven.VentanaPrincipal):
         super().__init__(titulo="Agregar Otros\nDatos", titulo_ventana="Agregar Otros Datos")
             
         self.datos = datos
+        self.datos_inventario = self.datos["Inventario"]
 
         self.tabla_seleccionada = ""
 
@@ -35,9 +36,17 @@ class AgregarDatos(ven.VentanaPrincipal):
         label = tk.Label(panel, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12), text="Selecciona una Tabla:")
         label.pack()
 
-        valores = ["Clase","Lugar de Compra","Unidad","Categoria","Tamaño"]
+        self.valores = {"Clases":["ID_Clase", "nombre_clase"] ,
+                        "Lugares": ["ID_Lugar", "nombre_lugar", "direccion"],
+                        "Unidades": ["ID_Unidad", "nombre_unidad"],
+                        "Categorias":["ID_categoria", "nombre_categoria"],
+                        "Tamaños":["ID_tamaño", "nombre_tamaño"]}
+        val = []
 
-        self.lista = ttk.Combobox(panel, values=valores)
+        for key in self.valores.keys():
+            val.append(key) 
+
+        self.lista = ttk.Combobox(panel, values=val)
         self.lista.config(state="readonly")
         self.lista.current(0)
         self.tabla_seleccionada = self.lista.get()
@@ -58,7 +67,7 @@ class AgregarDatos(ven.VentanaPrincipal):
         self.tabla_seleccionada = texto
         self.nombre_label.config(text=f"Agregar\n{self.tabla_seleccionada}")
 
-        if self.tabla_seleccionada == "Lugar de Compra":
+        if self.tabla_seleccionada == "Lugares":
             self.mostrar_direccion_panel()
         else:
             self.ocultar_direccion_panel()
@@ -76,6 +85,9 @@ class AgregarDatos(ven.VentanaPrincipal):
         self.nombre_entry.config(width=25)
         self.nombre_entry.pack()
 
+        self.label_nombre_error = tk.Label(panel_nombre, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_nombre_error.pack()
+
         # Direccion (Solo aparece cuando se selecciona "Lugares")
         self.panel_direccion = tk.Frame(self, background=self.bgcolor)
         self.panel_direccion.pack_forget()
@@ -87,12 +99,15 @@ class AgregarDatos(ven.VentanaPrincipal):
         self.direccion_entry.config(width=25)
         self.direccion_entry.pack()
 
+        self.label_direccion_error = tk.Label(self.panel_direccion, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_direccion_error.pack()
+
 
     def agregar_opciones(self):
         self.panel_opciones = tk.Frame(self, background=self.bgcolor)
         self.panel_opciones.pack(expand=True, fill="both", pady=10)
 
-        b_agregar = comp.Boton(self.panel_opciones, text="Agregar", command=None)
+        b_agregar = comp.Boton(self.panel_opciones, text="Agregar", command=self.agregar_otros_datos)
         b_agregar.pack(side="left", expand=True)
 
         b_volver = comp.Boton(self.panel_opciones, text="Volver", command=self.volver)
@@ -105,6 +120,34 @@ class AgregarDatos(ven.VentanaPrincipal):
 
     def ocultar_direccion_panel(self):
         self.panel_direccion.pack_forget()
+        self.label_direccion_error.config(text="")
+
+    
+    def agregar_otros_datos(self):
+        if self.nombre_entry.get() == "":
+            self.label_nombre_error.config(text="* Campo Obligatorio")
+        else:
+            self.label_nombre_error.config(text="")
+
+        direccion = None
+        if self.tabla_seleccionada == "Lugares":
+            direccion == self.direccion_entry.get()
+
+        if self.tabla_seleccionada == "Lugares" and self.direccion_entry.get() == "":
+            self.label_direccion_error.config(text="* Campo Obligatorio")
+        elif self.tabla_seleccionada == "Lugares" and self.direccion_entry.get() != "":
+            self.label_direccion_error.config(text="")
+
+        if self.nombre_entry.get() != "":
+            if self.datos_inventario.existe_otro_dato(self.lista.get(), self.valores[self.lista.get()][1], self.nombre_entry.get()) == 0:
+                if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Agregar\nEstos Datos?", titulo_ventana="Agregar Datos").obtener_respuesta():
+                    pk = self.datos_inventario.obtener_pk(self.lista.get(), self.valores[self.lista.get()][0])
+                    self.datos_inventario.insertar_otros_datos(self.lista.get(), pk, self.nombre_entry.get(),direccion)
+                    self.volver()
+            else:
+                self.label_nombre_error.config(text="* Ya existe un valor con este nombre")
+
+
 
 
     def volver(self):

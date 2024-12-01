@@ -38,13 +38,23 @@ class VerDatos(ven.VentanaPrincipal):
         label = tk.Label(panel, text="Selecciona una tabla:", background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 12))
         label.pack()
 
-        valores = ["Clases","Lugares","Unidades","Categorias","Tamaños"]
-        self.lista = ttk.Combobox(panel, values=valores)
+        self.valores = {"Clases":["ID_Clase", "nombre_clase"] ,
+                        "Lugares": ["ID_Lugar", "nombre_lugar", "direccion"],
+                        "Unidades": ["ID_Unidad", "nombre_unidad"],
+                        "Categorias":["ID_categoria", "nombre_categoria"],
+                        "Tamaños":["ID_tamaño", "nombre_tamaño"]}
+
+        val = []
+
+        for key in self.valores.keys():
+            val.append(key)
+
+        self.lista = ttk.Combobox(panel, values=val)
         self.lista.config(state="readonly")
         self.lista.current(0)
         self.lista.pack()
 
-        self.selected_table = valores[0]
+        self.selected_table = val[0]
 
         self.lista.bind("<<ComboboxSelected>>", self.cambiar_tabla)
 
@@ -57,8 +67,6 @@ class VerDatos(ven.VentanaPrincipal):
         self.tabla.create_table(head=["ID", "Nombre"])
 
         self.tabla.pack(expand=True)
-
-        self.cambiar_tabla()
 
         self.tabla.bind("<<TreeviewSelect>>", self.on_selected)
 
@@ -82,6 +90,9 @@ class VerDatos(ven.VentanaPrincipal):
         else:
             self.b_volver.pack(expand=True, fill="both")
 
+        # Esto esta aqui para evitar errores de que no se hayan creado los botones
+        self.cambiar_tabla()
+
 
     def cambiar_tabla(self, event=None):
         self.selected_table = self.lista.get()
@@ -98,6 +109,9 @@ class VerDatos(ven.VentanaPrincipal):
 
         self.tabla.create_table(head=encabezados)
         self.tabla.add_data(self.datos_inventario.simple_complete_query(self.selected_table))
+
+        if self.accion != "Ver": 
+            self.b_accion.deshabilitar_boton()
 
     
     def on_selected(self, event):
@@ -126,8 +140,13 @@ class Modificar(ven.VentanaTopLevel):
     def __init__(self, parent, tabla, datos):
         super().__init__(parent, titulo_ventana = "Modificar Dato", titulo = f"Modificar {tabla}")
 
+        self.parent = parent
+
         self.tabla = tabla
         self.datos = datos
+
+        self.direccion_entry = None
+        self.nombre_entry = None
 
         self.configurar_ventana()
 
@@ -150,7 +169,12 @@ class Modificar(ven.VentanaTopLevel):
         self.nombre_entry.config(width=50)
         self.nombre_entry.set(self.datos[1])
         self.nombre_entry.pack(pady=5)
+
+        print(self.nombre_entry.get())
     
+        self.label_nombre_error = tk.Label(panel, text="", background=self.bgcolor, foreground="red", font=(self.font, 14))
+        self.label_nombre_error.pack(pady=5)
+
     
     def agregar_entry_direccion(self):
         panel = tk.Frame(self, background=self.bgcolor)
@@ -163,6 +187,9 @@ class Modificar(ven.VentanaTopLevel):
         self.direccion_entry.config(width=50)
         self.direccion_entry.set(self.datos[2])
         self.direccion_entry.pack(pady=5)
+
+        self.label_direccion_error = tk.Label(panel, text="", background=self.bgcolor, foreground="red", font=(self.font, 14))
+        self.label_direccion_error.pack(pady=5)
 
     
     def agregar_opciones(self):
@@ -177,8 +204,36 @@ class Modificar(ven.VentanaTopLevel):
 
     
     def modificar(self):
-        if ven.VentanaConfirmacion(self, texto="¿Está seguro de\nmodificar estos datos?", titulo_ventana=f"Modificar {self.tabla}", opcion1="Aceptar").obtener_respuesta():
-            self.destroy()
-            self.parent.cambiar_tabla()
+        if self.nombre_entry.get() == "":
+            self.label_nombre_error.config(text="* Campo Obligatorio")
+        else:
+            self.label_nombre_error.config(text="")
+
+        direccion = None
+        columna_direccion = None
+        if self.parent.selected_table == "Lugares":
+            direccion = self.direccion_entry.get()
+            columna_direccion = self.parent.valores[self.parent.selected_table][2]
+
+        if self.parent.selected_table == "Lugares" and self.direccion_entry.get() == "":
+            self.label_direccion_error.config(text="* Campo Obligatorio")
+        elif self.parent.selected_table == "Lugares" and self.direccion_entry.get() != "":
+            self.label_direccion_error.config(text="")
+
+        if self.nombre_entry.get() != "":
+            if self.parent.selected_table != "Lugares" and self.parent.datos_inventario.existe_otro_dato(self.parent.selected_table, self.parent.valores[self.parent.selected_table][1], self.nombre_entry.get()) == 0:
+                if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Modificar\nEstos Datos?", titulo_ventana="Modificar Datos").obtener_respuesta():
+                    pk = self.parent.selected_value[0]
+                    self.parent.datos_inventario.modificar_otros_datos(self.parent.selected_table, self.parent.valores[self.parent.selected_table][0], self.parent.valores[self.parent.selected_table][1], pk, self.nombre_entry.get(), direccion=direccion, columna_direccion=columna_direccion)
+                    self.destroy()
+                    self.parent.cambiar_tabla()
+            elif self.parent.selected_table == "Lugares":
+                if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Modificar\nEstos Datos?", titulo_ventana="Modificar Datos").obtener_respuesta():
+                    pk = self.parent.selected_value[0]
+                    self.parent.datos_inventario.modificar_otros_datos(self.parent.selected_table, self.parent.valores[self.parent.selected_table][0], self.parent.valores[self.parent.selected_table][1], pk, self.nombre_entry.get(), direccion=direccion, columna_direccion=columna_direccion)
+                    self.destroy()
+                    self.parent.cambiar_tabla()
+            else:
+                self.label_nombre_error.config(text="* Ya existe un valor con este nombre")
 
     

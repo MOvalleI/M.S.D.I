@@ -2,3 +2,4 @@ Pillow==11.0.0
 pyodbc
 cryptography
 reportlab
+tkcalendar

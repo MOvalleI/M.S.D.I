@@ -196,7 +196,7 @@ class Filtrar(ven.VentanaTopLevel):
     
     def vaciar(self):
         self.fecha = None
-        self.label_fecha.config(text="Buscar por Precio:")
+        self.label_fecha.config(text="Buscar a Partir de: ")
         self.cb.current(0)
         self.precio_entry.delete(0, tk.END)
         self.precio_entry.insert(0, "")

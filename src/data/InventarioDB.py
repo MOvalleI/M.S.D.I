@@ -233,7 +233,46 @@ class InventarioDB:
         self.conn.commit()
 
 
-        
+    def existe_otro_dato(self, tabla, columna, nombre):
+        query = f"SELECT * FROM {tabla} WHERE LOWER({columna}) = LOWER('{nombre}')"
+
+        self.cursor.execute(query)
+        res = self.cursor.fetchall()
+
+        if not res:
+            return 0
+        return 1
+    
+    def insertar_otros_datos(self, tabla, id, nombre, direccion=None):
+        if direccion is not None:
+            query = f"INSERT INTO {tabla} VALUES (?, ?, ?)"
+            self.cursor.execute(query, (id, nombre, direccion))
+        else:
+            query = f"INSERT INTO {tabla} VALUES (?, ?)"
+            self.cursor.execute(query, (id, nombre))
+
+        self.conn.commit()
+
+    def modificar_otros_datos(self, tabla, columna_id, columna_nombre, id, nombre, columna_direccion=None, direccion=None):
+        if direccion is not None:
+            query = f"""UPDATE {tabla} 
+                        SET {columna_nombre} = ?,
+                            {columna_direccion} = ?
+                        WHERE {columna_id} = ?"""
+            self.cursor.execute(query, (nombre, direccion, id))
+        else:
+            query = f"""UPDATE {tabla} 
+                        SET {columna_nombre} = ?
+                        WHERE {columna_id} = ?"""
+            self.cursor.execute(query, (nombre, id))
+
+        self.conn.commit()
+
+    
+    def eliminar_otros_datos(self, tabla, columna, id):
+        pass
+
+
     def query_insert(self, query):
         self.cursor.execute(query)
         self.conn.commit()
