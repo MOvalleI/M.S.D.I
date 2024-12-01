@@ -220,6 +220,19 @@ class InventarioDB:
         self.cursor.execute(query, (id_menu,))
         self.conn.commit()
 
+
+    def actualizar_menu(self, id, nombre, precio, id_categoria, id_tamaño):
+        query = """UPDATE Menu 
+                SET nombre_menu = ?,
+                    precio = ?,
+                    id_categoria = ?,
+                    id_tamaño = ?
+                WHERE id_menu = ?"""
+        
+        self.cursor.execute(query, (nombre, precio, id_categoria, id_tamaño, id))
+        self.conn.commit()
+
+
         
     def query_insert(self, query):
         self.cursor.execute(query)
