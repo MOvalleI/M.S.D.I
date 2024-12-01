@@ -104,7 +104,31 @@ class AgregarVentas(ven.VentanaPrincipal):
 
     def registrar_venta(self):
         if ven.VentanaConfirmacion(self, texto="¿Está seguro de registrar esta venta?", titulo_ventana="Registrar Venta").obtener_respuesta():
+            self.agregar_venta()
+            ven.VentanaAvisoTL(self, texto="¡Venta Registrada con Exito!", titulo_ventana="Venta Registrada")
             self.volver()
+
+        
+    def agregar_venta(self):
+        pk = self.datos_inventario.obtener_pk("Ventas", "ID_venta")
+
+        self.datos_inventario.insertar_venta(pk, self.datos["Local"])
+
+        contenido = []
+
+        for iid in self.tabla.get_children():
+            # Obtener los valores de la fila (iid es el identificador de la fila)
+            valores_fila = self.tabla.item(iid)['values']
+            
+            # Tomar el valor del iid y el valor de la segunda columna
+            iid_valor = iid
+            segunda_columna_valor = valores_fila[2]  # Suponiendo que la segunda columna está en el índice 1
+            
+            # Almacenar el iid y el valor de la segunda columna en la lista
+            contenido.append((iid_valor, segunda_columna_valor))
+    
+        self.datos_inventario.insertar_contenido_venta(pk, contenido)
+        
 
 
     def agregar_pedido_a_tabla(self, id: int, values: tuple):

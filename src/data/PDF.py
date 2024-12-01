@@ -7,16 +7,16 @@ from PIL import ImageGrab
 from io import BytesIO
 
 class PDF_Boleta():
-    def __init__(self, consultor, imagen, dimensiones_imagen):
+    def __init__(self, local, consultor, imagen, dimensiones_imagen, name):
         self.datos = consultor
         self.imagen = imagen
         self.dimensiones = dimensiones_imagen
+
+        self.local = local
         
         encabezados = ['Nombre', 'Cantidad Vendida', 'Ganancia']
 
-        name = "Boleta.pdf"
-
-        data = [["Hola","Hola","Hola"],["Hola","Hola","Hola"],["Hola","Hola","Hola"]]
+        data = self.datos.obtener_ventas_dia(self.local)
 
         self.generar_pdf(data, encabezados, name)
         
@@ -33,7 +33,7 @@ class PDF_Boleta():
 
         # Dibujar el título centrado
         c.setFont("Helvetica-Bold", 24)
-        title = "Boleta del dia " + str(datetime.now().strftime("%d/%m/%Y"))
+        title = "Reporte del dia " + str(datetime.now().strftime("%d/%m/%Y"))
         title_width = c.stringWidth(title, "Helvetica-Bold", 24)
         c.drawString((letter[0] - title_width) / 2, 750, title)
     
@@ -95,7 +95,7 @@ class PDF_Boleta():
         c.save()
 
     def precio_total(self):
-        return 10
+        return (self.datos.obtener_total_vendido_dia(self.local))[0][0]
     
     
 class DibujarFirma(tk.Frame):
@@ -107,6 +107,8 @@ class DibujarFirma(tk.Frame):
         
         self.last_x = 0
         self.last_y = 0
+
+        self.directorio = None
 
         self.canvas = tk.Canvas(self, width=300, height=150, bg="white")
         self.canvas.pack(fill="both", expand=True)
@@ -135,6 +137,11 @@ class DibujarFirma(tk.Frame):
         self.canvas.delete("all")
         self.lines.clear()
 
+
+    def configurar_directorio(self, directorio):
+        self.directorio = directorio
+
+
     def pasar_al_PDF(self):
         x = self.canvas.winfo_rootx()
         y = self.canvas.winfo_rooty()
@@ -149,4 +156,4 @@ class DibujarFirma(tk.Frame):
 
         image_buffer.seek(0)
         
-        PDF_Boleta(consultor = self.datosDB["Inventario"], imagen = ImageReader(image_buffer), dimensiones_imagen = (width, height))
+        PDF_Boleta(self.datosDB["Local"], consultor = self.datosDB["Inventario"], imagen = ImageReader(image_buffer), dimensiones_imagen = (width, height), name=self.directorio)

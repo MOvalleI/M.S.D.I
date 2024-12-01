@@ -38,6 +38,7 @@ class VerVentas(ven.VentanaPrincipal):
         self.tabla = comp.CustomTreeview(self)
         self.tabla.create_table(head=encabezados)
         self.tabla.add_data(self.datos_ventas.obtener_ventas(1))
+        self.tabla.añadir_scrollbarv(1)
 
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_venta)
 
@@ -77,6 +78,11 @@ class VerVentas(ven.VentanaPrincipal):
     def abrir_filtrar(self):
         Filtrar(self)
 
+    
+    def actualizar_tabla(self, datos: list):
+        data = self.datos_ventas.generar_query_con_filtros(datos[0],datos[1],datos[2],datos[3])
+        self.tabla.recharge_data(data)
+
 
     def volver(self, e=None):
         self.destroy()
@@ -99,7 +105,7 @@ class VerContenido(ven.VentanaTopLevel):
         self.agregar_titulo()
         self.agregar_tabla()
 
-        label = tk.Label(self, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 18), text=f"Precio Total: {self.precio}")
+        label = tk.Label(self, background=self.bgcolor, foreground=self.fgcolor, font=(self.font, 18), text=f"Precio Total: ${self.precio}")
         label.pack(expand=True, pady=10)
 
         b_volver = comp.Boton(self, text="Cerrar", command=self.destroy)
@@ -113,6 +119,7 @@ class VerContenido(ven.VentanaTopLevel):
         self.tabla = comp.CustomTreeview(panel)
         self.tabla.create_table(head=("Menu", "Cantidad", "Precio x Cantidad"))
         self.tabla.add_data(self.parent.datos_ventas.obtener_contenido_venta(self.venta, self.local))
+        self.tabla.añadir_scrollbarv(1)
         self.tabla.pack(expand=True, pady=10)
 
 
@@ -121,6 +128,7 @@ class Filtrar(ven.VentanaTopLevel):
         super().__init__(parent,titulo_ventana = "Filtrar", titulo = "Filtrar")
 
         self.fecha = None
+        self.parent = parent
 
         self.configurar_ventana()
 
@@ -179,7 +187,7 @@ class Filtrar(ven.VentanaTopLevel):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=10)
 
-        b_aplicar = comp.Boton(panel, text="Aplicar\nFiltro", command=None)
+        b_aplicar = comp.Boton(panel, text="Aplicar\nFiltro", command=self.filtrar)
         b_aplicar.pack(expand=True, side="left")
 
         b_cancelar = comp.Boton(panel, text="Cancelar", command=self.destroy)
@@ -193,3 +201,26 @@ class Filtrar(ven.VentanaTopLevel):
         self.precio_entry.delete(0, tk.END)
         self.precio_entry.insert(0, "")
 
+    def filtrar(self):
+        datos = []
+
+        if self.precio_entry.get() != "" and self.cb.get() != "(nada)":
+            match self.cb.get():
+                case "Mayor que":
+                    datos.append(">")
+                case "Mayor igual que":
+                    datos.append(">=")
+                case "Menor que":
+                    datos.append("<")
+                case "Menor igual que":
+                    datos.append("<=")
+            datos.append(int(self.precio_entry.get()))
+        else:
+            datos.append(None)
+            datos.append(None)
+
+        datos.append(self.fecha)
+        datos.append(int(self.parent.datos["Local"]))
+
+        self.destroy()
+        self.parent.actualizar_tabla(datos)

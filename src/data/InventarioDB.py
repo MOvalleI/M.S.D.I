@@ -96,28 +96,38 @@ class InventarioDB:
         return self.query_execute(query)
     
 
-    def inner_join_filtro_venta(self, like = None, order = "ID_Menu", where = None):
-        query = "SELECT M.ID_menu, M.nombre_menu, M.precio, C.nombre_categoria, t.nombre_tamaño FROM Menu M INNER JOIN Categorias C ON M.ID_categoria = C.ID_categoria INNER JOIN Tamaños T ON M.ID_tamaño = T.ID_tamaño "
+    def generar_query_con_filtros(self, operador_precio: str, precio: int, 
+                               fecha: str, id_local: int):
+        # Lista para guardar las condiciones de filtro WHERE
+        condiciones = []
 
-        query_list = []
-
-        if like:
-            query_list.append("M.nombre_menu LIKE ?")
-
-        if where:
-            query_list += where
-
-        if like or where:
-            query += " WHERE " + " AND ".join(query_list)
+        condiciones.append(f"WHERE ven.ID_local = {id_local}")
         
-        ordering_options = {"ID_categoria": "C.nombre_categoria","ID_tamaño": "T.nombre_tamaño"}
-        tabla = ordering_options.get(order, (f"M.{order}"))
-        query += f" ORDER BY {tabla};"
+        # Comprobar si el segundo operador de fecha es válido
+        if fecha is not None:
+            condiciones.append(f"ven.fecha >= '{fecha}'")
+        
+        # Generar la parte de WHERE
+        where_clause = " AND ".join(condiciones)
 
-        if like:
-            self.cursor.execute(query, (f"%{like}%",))
-        else:
-            self.cursor.execute(query)
+        print(where_clause)
+        
+        # Generar el query
+        query = f"""
+            SELECT ven.ID_venta, ven.fecha, SUM(men.precio * cv.cantidad) as precio
+            FROM Ventas AS ven
+            INNER JOIN ContenidoVenta AS cv ON cv.ID_venta = ven.ID_venta
+            INNER JOIN Menu AS men ON men.ID_menu = cv.ID_menu
+            {where_clause}
+            GROUP BY ven.ID_venta, ven.fecha
+        """
+        
+        # Añadir la cláusula HAVING si se está filtrando por precio
+        if operador_precio and precio is not None:
+            query += f" HAVING SUM(men.precio * cv.cantidad) {operador_precio} {precio};"
+
+        # Ejecutar el query
+        self.cursor.execute(query)
         return self.cursor.fetchall()
 
 
@@ -125,6 +135,40 @@ class InventarioDB:
         self.cursor.execute(query)
 
         return self.cursor.fetchall()
+    
 
+    def obtener_pk(self, tabla, columna) -> int:
+        query = f"""SELECT TOP 1 {columna} FROM {tabla}
+                    ORDER BY {columna} DESC"""
         
-            
+        self.cursor.execute(query)
+        datos = self.cursor.fetchone()
+        return (int(datos[0])+1)
+    
+    def insertar_venta(self, id_venta, id_local):
+        query = "INSERT INTO Ventas(ID_venta, ID_local) VALUES (?, ?)"
+        self.cursor.execute(query, (id_venta, id_local))
+        self.conn.commit()
+
+
+    def insertar_contenido_venta(self, id_venta, menu: list):
+        query = "INSERT INTO ContenidoVenta VALUES (?, ?, ?)"
+
+        datos_para_insertar = [(id_venta, datos_menu[0], datos_menu[1]) for datos_menu in menu]
+        self.cursor.executemany(query, datos_para_insertar)
+        self.conn.commit()
+
+    
+    def obtener_ventas_dia(self, local: int):
+        query = f"EXEC SP_Ventas_hoy_por_local {local}"
+        return self.query_execute(query)
+    
+
+    def obtener_total_vendido_dia(self, local: int):
+        query = f"SELECT dbo.SF_total_vendido_hoy_por_local({local})"
+        return self.query_execute(query)
+        
+        
+    def query_insert(self, query):
+        self.cursor.execute(query)
+        self.conn.commit()

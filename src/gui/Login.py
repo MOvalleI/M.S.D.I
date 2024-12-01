@@ -6,6 +6,7 @@ from PIL import Image, ImageTk
 import io
 import data.Registro as r
 import datetime
+import data.LocalInfo as li
 
 
 BG_IMAGE = "./img/logos/Imagen fondo para login.png"
@@ -464,3 +465,4 @@ class Login(tk.Tk):
             "Registro": registro,
             "Sesion": sesion
         }
+        self.datos["Local"] = li.obtener_info_local()

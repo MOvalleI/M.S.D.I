@@ -229,7 +229,6 @@ class Inicio(ven.VentanaPrincipal):
                 self.boton_agregar.config(command=self.abrir_agregar_ventas)
                 self.boton_ver.config(command=self.abrir_ver_ventas)
                 self.boton_eliminar.config(command=self.abrir_generar_reporte_dia)
-                self.boton_modificar.config(command=self.abrir_generar_reporte_mes)
                 
 
         icono = Image.open(logo)
@@ -253,8 +252,7 @@ class Inicio(ven.VentanaPrincipal):
         elif self.opciones_seleccionada == "Ventas":
             self.boton_agregar.grid(row=0, column=1)
             self.boton_ver.grid(row=0, column=2)
-            self.boton_eliminar.grid(row=1, column=1)
-            self.boton_modificar.grid(row=1, column=2)
+            self.boton_eliminar.grid(row=1, column=1, columnspan=2)
         elif self.rol_usuario==3 and self.opciones_seleccionada == "Otros":
             self.boton_ver.grid(row=0, column=1, rowspan=2, columnspan=2)
         elif self.opciones_seleccionada == "Usuarios":
