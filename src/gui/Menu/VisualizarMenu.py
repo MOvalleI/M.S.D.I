@@ -6,7 +6,7 @@ import gui.Inicio as i
 
 class VisualizarMenu(v.VentanaPrincipal):
     def __init__(self, datos: dict,**kwargs):
-        super().__init__(titulo_ventana="Ver Menu",
+        super().__init__(titulo_ventana="MSDI | Micro Sistema de Inventario | Ver Menu",
                          titulo="Ver Menu",
                          **kwargs)
         self.agregar_titulo()
@@ -143,8 +143,8 @@ class VisualizarMenu(v.VentanaPrincipal):
 
     def ventana_filtro(self):
         ventana = v.VentanaTopLevel(parent = self,
-                                    titulo = "Filtros",
-                                    titulo_ventana = "Ventana filtros",
+                                    titulo = "Filtrar",
+                                    titulo_ventana = "Filtrar",
                                     logo=self.logo)
         ventana.agregar_titulo()
         ventana.grab_set()

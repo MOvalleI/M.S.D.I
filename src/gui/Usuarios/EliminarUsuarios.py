@@ -39,6 +39,7 @@ class EliminarUsuarios(ven.VentanaPrincipal):
 
         self.tabla = comp.CustomTreeview(panel)
         self.tabla.create_table(head=["Nombre de Usuario", "Rol"])
+        self.tabla.añadir_scrollbarv(1)
         self.agregar_datos()
 
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_usuario)
@@ -81,15 +82,22 @@ class EliminarUsuarios(ven.VentanaPrincipal):
         curItem = self.tabla.focus()
         valores = self.tabla.item(curItem)["values"]
 
+        print(valores)
+
         self.usuario_seleccionado = valores[0]
         self.b_eliminar.habilitar_boton()
 
 
     def eliminar_usuario(self):
         if ven.VentanaConfirmacion(self, texto="¿Seguro que desea\nEliminar este Usuario?", titulo_ventana="Eliminar Usuario").obtener_respuesta():
-            self.datos_usuarios.eliminar_usuario_existente(self.usuario_seleccionado)
-            self.actualizar_tabla()
-            self.datos["Usuarios"] = self.datos_usuarios
+            if self.datos_usuarios.eliminar_usuario_existente(self.usuario_seleccionado):
+                self.actualizar_tabla()
+                self.datos_usuarios.recargar_datos()
+                self.datos["Usuarios"] = self.datos_usuarios
+                ven.VentanaAvisoTL(self, texto="¡Usuario Eliminado Exitosamente!", titulo_ventana="Eliminar Usuario").wait_window()
+                self.volver()
+            else:
+                ven.VentanaAvisoTL(self, texto="¡No se pudo Eliminar el Usuario!", titulo_ventana="Error").wait_window()
 
         
     def actualizar_tabla(self):

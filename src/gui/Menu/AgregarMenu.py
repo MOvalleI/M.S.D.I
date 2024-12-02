@@ -7,7 +7,7 @@ import gui.Componentes as comp
 
 class AgregarMenu(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
-        super().__init__(titulo="Agregar\nMenu",titulo_ventana="Agregar Menu")
+        super().__init__(titulo="Agregar\nMenu",titulo_ventana="MSDI | Micro Sistema de Inventario | Agregar Nuevo Menu")
 
         self.datos = datos
         self.datos_inventario = self.datos["Inventario"]

@@ -311,10 +311,13 @@ class AgregarUsuario(ven.VentanaPrincipal):
 
     def agregar_usuario(self):
         if ven.VentanaConfirmacion(self, texto="¿Esta Seguro que desea\nAgregar al Usuario?", titulo_ventana="Agregar Usuario").obtener_respuesta():
-            self.datos_usuarios.agregar_nuevo_usuario(self.nombre_usuario, self.passwd, self.patron, self.rol, self.pfp)
-            self.datos["Usuarios"] = self.datos_usuarios
-            print(self.datos_usuarios.obtener_datos_usuarios()[7])
-            self.volver()
+            if self.datos_usuarios.agregar_nuevo_usuario(self.nombre_usuario, self.passwd, self.patron, self.rol, self.pfp):
+                ven.VentanaAvisoTL(self, texto="¡Usuario Creado Exitosamente!", titulo_ventana="Usuario Creado").wait_window()
+                self.datos_usuarios.recargar_datos()
+                self.datos["Usuarios"] = self.datos_usuarios
+                self.volver()
+            else:
+                ven.VentanaAvisoTL(self, texto="¡No se pudo crear el usuario!", titulo_ventana="Error").wait_window()
 
 
     def volver(self):

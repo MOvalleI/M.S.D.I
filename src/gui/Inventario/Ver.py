@@ -6,7 +6,7 @@ import gui.Inicio as i
 
 class VerInventario(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
-        super().__init__(titulo_ventana = "Ventana Principal", titulo = "Ventana")
+        super().__init__(titulo_ventana = "MSDI | Micro Sistema de Inventario | Ver Inventario", titulo = "Ver\nInventario")
 
         self.datos = datos
         self.inventario = self.datos["Inventario"]

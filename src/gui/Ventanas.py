@@ -3,8 +3,21 @@ import tkinter.ttk as ttk
 from PIL import Image, ImageTk
 import gui.Componentes as comp
 import io
+import ctypes
+import sys
+from pathlib import Path
 
-LOGO = "./img/logos/logo_128x128.png"
+
+def fetch_resource(rsrc_path):
+        try:
+            base_path = Path(sys._MEIPASS)
+        except AttributeError:
+            return rsrc_path  # No es un exe, devuelve la ruta sin modificar
+        else:
+            return base_path / rsrc_path  # Retorna la ruta completa usando '/'
+        
+
+LOGO = fetch_resource("./img/logos/logo_128x128.png")
 BGCOLOR = "#1e1e1e"
 FGCOLOR = "white"
 DEFAULT_FONT = "Impact"
@@ -27,6 +40,11 @@ class VentanaPrincipal(tk.Tk):
 
         self.title(self.titulo_ventana)
         self.config(background=self.bgcolor)
+
+        self.iconbitmap(fetch_resource(".\\img\\logos\\logo.ico"))
+
+        myappid = 'Rincon4Diablitos.MSDI.2.0' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
         
 
     def agregar_titulo(self):
@@ -110,6 +128,12 @@ class VentanaTopLevel(tk.Toplevel):
     def _configurar_ventana(self):
         self.config(background=self.bgcolor)
         self.resizable(False, False)
+
+        self.iconbitmap(fetch_resource(".\\img\\logos\\logo.ico"))
+
+        myappid = 'Rincon4Diablitos.MSDI.2.0' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
         self.grab_set()
 
 
@@ -193,6 +217,11 @@ class VentanaConfirmacion(tk.Toplevel):
         self.title(self.titulo_ventana)
         self.resizable(False, False)
 
+        self.iconbitmap(fetch_resource(".\\img\\logos\\logo.ico"))
+
+        myappid = 'Rincon4Diablitos.MSDI.2.0' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
         self.geometry("450x250")
 
         self.grab_set()
@@ -266,6 +295,11 @@ class VentanaAvisoRoot(tk.Tk):
         self.bgcolor = BGCOLOR
         self.fgcolor = FGCOLOR
         self.font = DEFAULT_FONT
+
+        self.iconbitmap(fetch_resource(".\\img\\logos\\logo.ico"))
+
+        myappid = 'Rincon4Diablitos.MSDI.2.0' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         self._configurar_ventana()
     
@@ -375,6 +409,11 @@ class VentanaAvisoTL(tk.Toplevel):
         self.bgcolor = BGCOLOR
         self.fgcolor = FGCOLOR
         self.font = DEFAULT_FONT
+
+        self.iconbitmap(fetch_resource(".\\img\\logos\\logo.ico"))
+
+        myappid = 'Rincon4Diablitos.MSDI.2.0' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         self._configurar_ventana()
     

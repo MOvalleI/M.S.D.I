@@ -7,6 +7,7 @@ import io
 import data.Registro as r
 import datetime
 import data.LocalInfo as li
+import ctypes
 
 
 BG_IMAGE = "./img/logos/Imagen fondo para login.png"
@@ -48,7 +49,14 @@ class Login(tk.Tk):
         y = (pantalla_alto - alto) // 2
         self.geometry(f"{ancho}x{alto}+{x}+{y}")
 
+        self.title("M.S.D.I | Micro Sistema de Inventario | Iniciar Sesión")
+
         self.resizable(False, False)
+
+        self.iconbitmap(ven.fetch_resource(".\\img\\logos\\logo.ico"))
+
+        myappid = 'Rincon4Diablitos.MSDI.2.0' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
         self.agregar_fondo()
         self.agregar_cuadro_usuarios()
@@ -150,13 +158,16 @@ class Login(tk.Tk):
         else:
             self.b_izquierda.habilitar_boton()
 
-        if ((len(self.ids_usuarios) + 12 - 1) // 12) == self.num_pagina:
+        total_paginas = (len(self.ids_usuarios) + 12 - 1) // 12
+
+        if total_paginas <= 1:
             self.b_derecha.deshabilitar_boton()
         else:
-            if self.num_pagina != 1:
-                self.b_derecha.habilitar_boton()
-            else:
+            if self.num_pagina == total_paginas:
                 self.b_derecha.deshabilitar_boton()
+            else:
+                self.b_derecha.habilitar_boton()
+
 
 
 
@@ -394,6 +405,7 @@ class Login(tk.Tk):
         self.panel_ingresar_datos.destroy()
         self.panel_cuadro_usuarios.place(x=100, y=50)
         self.selected_panel = None
+        self.label_not_user = None
 
     
     def on_panel_click(self, event, panel):

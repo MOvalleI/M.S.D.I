@@ -34,7 +34,7 @@ FGBUTTON = "white"
 
 class Inicio(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
-        super().__init__(titulo="Inicio", titulo_ventana="Inicio")
+        super().__init__(titulo="Inicio", titulo_ventana="M.S.D.I | Micro Sistema de Inventario | Inicio")
 
         self.datos = datos
 
@@ -60,6 +60,7 @@ class Inicio(ven.VentanaPrincipal):
 
         self.centrar_ventana()
         self.agregar_titulo()
+        self.configurar_titulo(f"Bienvenido\n{self.usuario_logueado}")
         self.agregar_botones_paginas()
         self.agregar_panel_opciones()
         self.agregar_opciones()

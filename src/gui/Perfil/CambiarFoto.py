@@ -1,9 +1,9 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 import gui.Componentes as comp
 import gui.Ventanas as ven
 import io
 from PIL import Image, ImageTk
+import gui.Login as l
 
 
 
@@ -11,17 +11,23 @@ class CambiarFoto(ven.VentanaTopLevel):
     def __init__(self, parent, datos):
         super().__init__(parent, titulo="Cambiar Foto\nde Perfil", titulo_ventana="Cambiar Foto de Perfil")
 
+        self.parent = parent
+
         self.datos = datos
+        self.datos_usuarios = self.datos["Usuarios"]
         self.pfp = self.datos["Usuarios"].obtener_datos_fotos()
         self.usuario_logueado = self.datos["Usuario_Logueado"]
 
         self.selected_panel = None
+
+        self.id_foto_seleccionada = None
 
         self.configurar_ventana()
 
 
     def configurar_ventana(self):
         self.resizable(False, False)
+        
 
         self.agregar_titulo()
         self.panel_fotos()
@@ -108,3 +114,19 @@ class CambiarFoto(ven.VentanaTopLevel):
         self.id_foto_seleccionada = panel.id
 
         self.b_aplicar.habilitar_boton()
+
+
+    def cambiar_foto(self):
+        if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Cambiar\nsu Foto de Perfil?", titulo_ventana="Cambiar Foto Perfil").obtener_respuesta():
+            if self.datos_usuarios.modificar_pfp_usuario(self.usuario_logueado["ID"], self.id_foto_seleccionada):
+                ven.VentanaAvisoTL(self, titulo_ventana="Foto de Perfil Actualizada", texto="Foto de Perfil Actualizada.\nCerrando Sesión...").wait_window()
+                self.datos_usuarios.recargar_datos()
+                self.datos["Usuarios"] = self.datos_usuarios
+                self.datos.pop("Usuario_Logueado", None)
+                self.datos.pop("Opcion_Inicio", None)
+                self.destroy()
+                self.parent.destroy()
+                l.Login(datos=self.datos)
+            else:
+                ven.VentanaAvisoTL(self, titulo_ventana="Error", texto="No se pudo actualizar la Foto.\nIntentelo de nuevo Más Tarde.").wait_window()
+                self.destroy()

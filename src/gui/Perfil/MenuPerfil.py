@@ -4,6 +4,7 @@ import gui.Ventanas as ven
 import gui.Inicio as i
 import gui.Perfil.CambiarFoto as cf
 import gui.Perfil.CambiarDatos as cd
+import gui.Perfil.CambiarPatron as cpatron
 
 class MenuPerfil(ven.VentanaPrincipal):
     def __init__(self, datos: dict):
@@ -56,17 +57,23 @@ class MenuPerfil(ven.VentanaPrincipal):
 
     
     def agregar_opciones(self):
-        panel = tk.Frame(self, background=self.bgcolor)
-        panel.pack(expand=True, fill="both", pady=20)
+        panel1 = tk.Frame(self, background=self.bgcolor)
+        panel1.pack(expand=True, fill="both", pady=20)
 
-        b_cambiar_nombre = comp.Boton(panel, text="Cambiar\nNombre", command=self.abrir_cambiar_nombre)
+        panel2 = tk.Frame(self, background=self.bgcolor)
+        panel2.pack(expand=True, fill="both", pady=20)
+
+        b_cambiar_nombre = comp.Boton(panel1, text="Cambiar\nNombre", command=self.abrir_cambiar_nombre)
         b_cambiar_nombre.pack(expand=True, side="left")
 
-        b_cambiar_passwd = comp.Boton(panel, text="Cambiar\nContraseña", command=self.abrir_cambiar_passwd)
+        b_cambiar_passwd = comp.Boton(panel1, text="Cambiar\nContraseña", command=self.abrir_cambiar_passwd)
         b_cambiar_passwd.pack(expand=True, side="left")
 
-        b_cambiar_pfp = comp.Boton(panel, text="Cambiar Foto\nde Perfil", command=self.abrir_cambiar_foto)
+        b_cambiar_pfp = comp.Boton(panel2, text="Cambiar Foto\nde Perfil", command=self.abrir_cambiar_foto)
         b_cambiar_pfp.pack(expand=True, side="left")
+
+        b_cambiar_patron = comp.Boton(panel2, text="Cambiar Patrón\nDesbloqueo", command=self.abrir_cambiar_patron)
+        b_cambiar_patron.pack(expand=True, side="left")
 
 
     def abrir_cambiar_foto(self):
@@ -79,6 +86,11 @@ class MenuPerfil(ven.VentanaPrincipal):
 
     def abrir_cambiar_passwd(self):
         cd.CambiarPasswdUsuario(self, datos=self.datos)
+
+    
+    def abrir_cambiar_patron(self):
+        self.destroy()
+        cpatron.Patron(datos=self.datos)
 
 
     def volver(self):

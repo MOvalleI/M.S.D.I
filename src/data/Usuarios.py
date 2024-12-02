@@ -137,27 +137,6 @@ class UsuariosDB:
             if self._datos_usuarios[ids][0] == nombre_usuario:
                 return ids
         return 0 
-            
-    
-    def agregar_nuevo_usuario(self, nombre: str, passwd: str, patron: str, tipo: str, foto: int) -> bool:
-        id_usuario = int(list(self._datos_usuarios.keys())[-1]) + 1
-
-        for valores in self._datos_usuarios.values():
-            if nombre not in valores:
-                hashed_passwd = self.convertir_passwd(passwd)
-                hashed_patron = self.convertir_patron(patron)
-                id_tipo = self.buscar_id_tipo_por_nombre(tipo)
-                self._datos_usuarios[id_usuario] = [nombre, hashed_passwd, id_tipo, foto, hashed_patron]
-                return True
-        return False
-    
-        
-    def eliminar_usuario_existente(self, usuario: str) -> bool:
-        for id_usuario, valores in self._datos_usuarios.items():
-            if usuario == valores[0]:
-                self._datos_usuarios.pop(id_usuario, None)
-                return True
-        return False
     
 
     def modificar_nombre_usuario(self, nombre_anterior: str, nuevo_nombre: str) -> bool:
@@ -175,6 +154,34 @@ class UsuariosDB:
                 return True
         return False
     
+
+    def modificar_patron_usuario(self, id_usuario: int, nuevo_patron: str) -> bool:
+        try:    
+            hashed_patron = self.convertir_patron(patron=nuevo_patron)
+
+            query = """UPDATE Usuarios
+                    SET patron_desbloqueo = ?
+                    WHERE id_usuario = ?"""
+            
+            self.cursor.execute(query, (hashed_patron, id_usuario))
+            self.conn.commit()
+            return True
+        except:
+            return False
+        
+    
+    def modificar_pfp_usuario(self, id_usuario: int, id_nueva_foto: int) -> bool:
+        try:    
+            query = """UPDATE Usuarios
+                    SET id_foto_perfil = ?
+                    WHERE id_usuario = ?"""
+            
+            self.cursor.execute(query, (id_nueva_foto, id_usuario))
+            self.conn.commit()
+            return True
+        except:
+            return False
+
 
     def buscar_imagen_por_id(self, id: int):
         for id_pfp in self._datos_imagenes.keys():
@@ -201,8 +208,43 @@ class UsuariosDB:
         self._datos_usuarios = self.obtener_datos(consulta=QUERYUSERS)
         self._datos_tipo_usuario = self.obtener_datos(consulta=QUERYROL)
         self._datos_imagenes = self.obtener_datos(consulta=QUERYIMAGES)
+        self._datos_tablas = self.obtener_datos(consulta=QUERYTABLES)
+        self._datos_acciones = self.obtener_datos(consulta=QUERYACTIONS)
 
     
+    def agregar_nuevo_usuario(self, nombre: str, passwd: str, patron: str, tipo: str, foto: int) -> bool:
+        try:
+            query = "INSERT INTO Usuarios Values (?, ?, ?, ?, ?, ?)"
+
+            hashed_passwd = self.convertir_passwd(passwd)
+            hashed_patron = self.convertir_patron(patron)
+            id_tipo = self.buscar_id_tipo_por_nombre(tipo)
+
+            self.cursor.execute(query, (nombre, hashed_passwd, hashed_patron, id_tipo, foto, 1))
+            self.conn.commit()
+            return True
+        except:
+            return False
+    
+
+    def eliminar_usuario_existente(self, usuario: str) -> bool:
+        try:
+            query = "EXEC eliminar_usuario ?"
+
+            self.cursor.execute(query, (usuario,))
+            self.conn.commit()
+            return True
+        except:
+            return False
+        
+    
+    def obtener_usuarios_filtro(self, nombre=None, id_rol=None):
+        query = "EXEC obtener_usuarios_filtro ?, ?"
+
+        self.cursor.execute(query, (nombre, id_rol))
+        return self.cursor.fetchall()
+    
+
     def cerrar_conexion(self):
         self.cursor.close()
         self.conn.close()
