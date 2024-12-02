@@ -27,13 +27,22 @@ class CambiarFoto(ven.VentanaTopLevel):
 
     def configurar_ventana(self):
         self.resizable(False, False)
+
+        ancho = 410
+        alto = 565
+
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+
+        self.geometry(f"{ancho}x{alto}+{x}+{y}")
         
 
         self.agregar_titulo()
         self.panel_fotos()
         self.agregar_opciones()
-
-        self.centrar_ventana()
 
 
     def panel_fotos(self):
@@ -93,7 +102,7 @@ class CambiarFoto(ven.VentanaTopLevel):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, fill="both", pady=20)
 
-        self.b_aplicar = comp.Boton(panel, text="Cambiar Foto", command=None)
+        self.b_aplicar = comp.Boton(panel, text="Cambiar Foto", command=self.cambiar_foto)
         self.b_aplicar.deshabilitar_boton()
         self.b_aplicar.pack(expand=True, side="left")
 
@@ -117,6 +126,7 @@ class CambiarFoto(ven.VentanaTopLevel):
 
 
     def cambiar_foto(self):
+        print(f"Ancho: {self.winfo_width()}, Alto: {self.winfo_height()}")
         if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Cambiar\nsu Foto de Perfil?", titulo_ventana="Cambiar Foto Perfil").obtener_respuesta():
             if self.datos_usuarios.modificar_pfp_usuario(self.usuario_logueado["ID"], self.id_foto_seleccionada):
                 ven.VentanaAvisoTL(self, titulo_ventana="Foto de Perfil Actualizada", texto="Foto de Perfil Actualizada.\nCerrando Sesión...").wait_window()

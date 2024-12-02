@@ -463,7 +463,7 @@ class Login(tk.Tk):
         sesion = r.Sesion()
 
         fecha_inicio = datetime.datetime.now().strftime("%Y-%m-%d")
-        hora_inicio = datetime.datetime.now().strftime("%H:%M:%S")
+        hora_inicio = datetime.datetime.now().strftime("%H:%M:%S.%f")
 
         sesion.registrar_inicio_sesion(fecha_inicio, hora_inicio)
 

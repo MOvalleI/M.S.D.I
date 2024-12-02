@@ -147,14 +147,51 @@ class UsuariosDB:
         return False
     
 
-    def modificar_passwd_usuario(self, usuario: str, nuevo_passwd: str) -> bool:
-        for id_usuario, valores in self._datos_usuarios.items():
-            if usuario == valores[0]:
-                self._datos_usuarios[id_usuario][1] = self.convertir_passwd(nuevo_passwd)
-                return True
-        return False
+    def modificar_passwd_usuario(self, id_usuario: str, nuevo_passwd: str) -> bool:
+        try:    
+            hashed_passwd = self.convertir_patron(patron=nuevo_passwd)
+
+            query = """UPDATE Usuarios
+                    SET contraseña = ?
+                    WHERE id_usuario = ?"""
+            
+            self.cursor.execute(query, (hashed_passwd, id_usuario))
+            self.conn.commit()
+            return True
+        except:
+            return False
+    
+    
+    def modificar_nombre_usuario(self, id_usuario: str, nuevo_nombre: str) -> bool:
+        try:    
+            query = """UPDATE Usuarios
+                    SET nombre_usuario = ?
+                    WHERE id_usuario = ?"""
+            
+            self.cursor.execute(query, (nuevo_nombre, id_usuario))
+            self.conn.commit()
+            return True
+        except:
+            return False
+    
+    
     
 
+    def modificar_patron_usuario(self, id_usuario: int, nuevo_patron: str) -> bool:
+        try:    
+            hashed_patron = self.convertir_patron(patron=nuevo_patron)
+
+            query = """UPDATE Usuarios
+                    SET patron_desbloqueo = ?
+                    WHERE id_usuario = ?"""
+            
+            self.cursor.execute(query, (hashed_patron, id_usuario))
+            self.conn.commit()
+            return True
+        except:
+            return False
+        
+    
     def modificar_patron_usuario(self, id_usuario: int, nuevo_patron: str) -> bool:
         try:    
             hashed_patron = self.convertir_patron(patron=nuevo_patron)
@@ -243,6 +280,50 @@ class UsuariosDB:
 
         self.cursor.execute(query, (nombre, id_rol))
         return self.cursor.fetchall()
+    
+
+    def registrar_auditoria(self, id_usuario: int, lista_acciones: list):
+        for i in range(len(lista_acciones)):
+            acciones = lista_acciones[i]
+
+            id_accion = self.obtener_id_accion_por_nombre(acciones[0])
+            id_tabla = self.obtener_id_tabla_por_nombre(acciones[3])
+
+            query = "INSERT INTO Ejecuta VALUES (?, ?, ?, ?, ?)"
+
+            self.cursor.execute(query, (id_usuario, id_accion, id_tabla, acciones[1], acciones[2]))
+            self.conn.commit()
+
+
+    def registrar_sesion(self, id_usuario: int, fechas: list):
+        try:
+            query = "INSERT INTO Sesion VALUES (?, ?, ?, ?, ?)"
+
+            self.cursor.execute(query, (id_usuario, fechas[0],fechas[1],fechas[2],fechas[3]))
+            self.conn.commit()
+        except:
+            pass
+    
+
+    def obtener_id_tabla_por_nombre(self, tabla: str) -> int:
+        query = "SELECT id_tabla FROM Tabla WHERE nombre_tabla = ?"
+
+        self.cursor.execute(query, (tabla,))
+        return self.cursor.fetchone()[0] if not None else 0
+    
+
+    def obtener_id_accion_por_nombre(self, accion: str) -> int:
+        query = "SELECT id_accion FROM Accion WHERE nombre_accion = ?"
+
+        self.cursor.execute(query, (accion,))
+        resultado = self.cursor.fetchone()
+
+        # Verificar si no hay resultado
+        if resultado is None:
+            return 0  # Si no se encuentra la acción, devolver 0 o un valor que indique que no se encontró
+        else:
+            return resultado[0]  # Devolver el id_accion si se encuentra
+
     
 
     def cerrar_conexion(self):

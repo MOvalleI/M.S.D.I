@@ -269,8 +269,15 @@ class InventarioDB:
         self.conn.commit()
 
     
-    def eliminar_otros_datos(self, tabla, columna, id):
-        pass
+    def eliminar_otros_datos(self, tabla, id):
+        try:
+            query = f"EXEC borrar_de_{tabla} ?"
+            self.cursor.execute(query, (id,))
+            self.conn.commit()
+            return True
+        except:
+            self.conn.rollback()
+            return False
 
 
     def query_insert(self, query):

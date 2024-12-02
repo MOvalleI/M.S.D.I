@@ -128,6 +128,7 @@ class VerDatos(ven.VentanaPrincipal):
 
     def eliminar(self):
         if ven.VentanaConfirmacion(self, texto="¿Está seguro que desea\nELIMINAR este dato?\n¡Este cambio no se puede deshacer!", titulo_ventana=f"Eliminar de {self.selected_table}", opcion1="Eliminar").obtener_respuesta():
+            self.datos_inventario.eliminar_otros_datos(self.selected_table, self.selected_value[0])
             self.cambiar_tabla()
 
 

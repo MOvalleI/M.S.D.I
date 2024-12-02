@@ -20,6 +20,7 @@ import gui.Menu.EliminarMenu as em
 import gui.Menu.ModificarMenu as mm
 import gui.Opciones.ModificarLocal as ml
 import gui.Ventas.GenerarReporte as gr
+import datetime
 
 
 IMG_VENTAS = "./img/iconos/ventas.png"
@@ -56,9 +57,18 @@ class Inicio(ven.VentanaPrincipal):
     def configurar_ventana(self):
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.salir)
-        self.geometry("600x600")
 
-        self.centrar_ventana()
+        ancho = 600
+        alto = 600
+
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+
+        self.geometry(f"{ancho}x{alto}+{x}+{y}")
+
         self.agregar_titulo()
         self.configurar_titulo(f"Bienvenido\n{self.usuario_logueado}")
         self.agregar_botones_paginas()
@@ -382,11 +392,13 @@ class Inicio(ven.VentanaPrincipal):
     
     def salir(self):
         if ven.VentanaConfirmacion(self, texto="¿Seguro que deseas salir?", titulo_ventana="Salir", opcion1="Salir").obtener_respuesta():
+            self.actualizar_datos_usuario()
             self.destroy()
 
     
     def cerrar_sesion(self):
         if ven.VentanaConfirmacion(self, texto="¿Seguro que deseas cerrar sesión?", titulo_ventana="Cerrar Sesión", opcion1="Cerrar Sesión").obtener_respuesta():
+            self.actualizar_datos_usuario()
             self.destroy()
             self.datos.pop("Usuario_Logueado", None)
             self.datos.pop("Opcion_Inicio", None)
@@ -394,7 +406,14 @@ class Inicio(ven.VentanaPrincipal):
 
         
     def actualizar_datos_usuario(self):
-        pass
+        # Información relacionada a los tiempos de sesión del usuario
+        fecha_cierre = datetime.datetime.now().strftime("%Y-%m-%d")
+        hora_cierre = datetime.datetime.now().strftime("%H:%M:%S.%f")
+        self.datos["Usuario_Logueado"]["Sesion"].registrar_cierre_sesion(fecha_cierre, hora_cierre)
+        self.datos["Usuarios"].registrar_sesion(self.datos["Usuario_Logueado"]["ID"], self.datos["Usuario_Logueado"]["Sesion"].obtener_datos())
+
+        # Información relacionada con las acciones realizadas por el usuario
+        self.datos["Usuarios"].registrar_auditoria(self.datos["Usuario_Logueado"]["ID"], self.datos["Usuario_Logueado"]["Registro"].recorrer_inorden())
 
     
 if __name__ == "__main__":

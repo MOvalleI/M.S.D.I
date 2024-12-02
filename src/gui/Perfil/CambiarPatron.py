@@ -22,8 +22,20 @@ class Patron(ven.VentanaPrincipal):
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.volver)
 
+        ancho = 550
+        alto = 565
+
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+
+        self.geometry(f"{ancho}x{alto}+{x}+{y}")
+
         self.agregar_titulo()
         self.agregar_patron()
+        self.agregar_opciones()
 
     
     def agregar_patron(self):
@@ -66,6 +78,7 @@ class Patron(ven.VentanaPrincipal):
 
 
     def cambiar_patron(self):
+        print(f"Ancho: {self.winfo_width()}, Alto: {self.winfo_height()}")
         if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Cambiar\nsu Patrón de Desbloqueo?", titulo_ventana="Cambiar Patrón").obtener_respuesta():
             if self.datos_usuarios.modificar_patron_usuario(self.usuario_logueado["ID"], self.nuevo_patron):
                 ven.VentanaAvisoTL(self, titulo_ventana="Patrón Actualizado", texto="Patrón de Desbloqueo Actualizado\nCerrando Sesión...").wait_window()

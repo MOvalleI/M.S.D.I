@@ -13,6 +13,8 @@ class VerVentas(ven.VentanaPrincipal):
         self.datos = datos
         self.datos_ventas = self.datos["Inventario"]
 
+        self.datos["Usuario_Logueado"]["Registro"].insertar("Ver", "Ventas")
+
         self.nombre_seleccionado = None
 
         self.venta_seleccionada = None

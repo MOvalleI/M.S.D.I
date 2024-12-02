@@ -2,12 +2,15 @@
 .vscode/
 venv/
 __pycache__/
+**/dist/
+**/build/
 
 # Ingora estas extensiones de archivo
 *.pyc
 
 # Ingora estos archivos especificos
 **/prueba.py
+**/MSDI.spec
 
 # Información no publica de la base de datos
 **/db_info.json

@@ -1,3 +1,5 @@
+import datetime
+
 "Clase que almacena tanto el inicio como el cierre de sesión de un usuario"
 class Sesion:
     def __init__(self):
@@ -34,7 +36,10 @@ class ArbolAcciones:
     def __init__(self):
         self.raiz = None
 
-    def insertar(self, accion, fecha, hora, objeto):
+    def insertar(self, accion, objeto):
+        fecha = datetime.datetime.now().strftime("%Y-%m-%d")
+        hora = datetime.datetime.now().strftime("%H:%M:%S.%f")
+
         nuevo_nodo = Accion(accion, fecha, hora, objeto)
         if self.raiz is None:
             self.raiz = nuevo_nodo

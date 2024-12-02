@@ -46,7 +46,7 @@ class AgregarVentas(ven.VentanaPrincipal):
 
     def agregar_tabla(self):
         panel_tabla = tk.Frame(self, background=self.bgcolor)
-        panel_tabla.pack(expand=True, fill="both")
+        panel_tabla.pack(expand=True, fill="both", pady=10)
 
         panel_tabla.grid_rowconfigure(0, weight=1)
         panel_tabla.grid_columnconfigure(0, weight=1)
@@ -64,7 +64,7 @@ class AgregarVentas(ven.VentanaPrincipal):
 
     def botones_modificar_tabla(self):
         button_panel = tk.Frame(self, background=self.bgcolor)
-        button_panel.pack(expand=True, fill="x")
+        button_panel.pack(expand=True, fill="x", pady=10)
 
         b_agregar = comp.Boton(button_panel, text="Agregar\nPedido")
         b_agregar.config(command=self.abrir_agregar_pedido)
@@ -82,7 +82,7 @@ class AgregarVentas(ven.VentanaPrincipal):
     
     def botones_confirmacion(self):
         button_panel = tk.Frame(self, background=self.bgcolor)
-        button_panel.pack(expand=True, fill="x")
+        button_panel.pack(expand=True, fill="x", pady=10)
 
         b_confirmar = comp.Boton(button_panel, text="Registrar Venta")
         b_confirmar.config(command=self.registrar_venta)
@@ -106,6 +106,7 @@ class AgregarVentas(ven.VentanaPrincipal):
         if ven.VentanaConfirmacion(self, texto="¿Está seguro de registrar esta venta?", titulo_ventana="Registrar Venta").obtener_respuesta():
             self.agregar_venta()
             ven.VentanaAvisoTL(self, texto="¡Venta Registrada con Exito!", titulo_ventana="Venta Registrada")
+            self.datos["Usuario_Logueado"]["Registro"].insertar("Agregar", "Ventas")
             self.volver()
 
         

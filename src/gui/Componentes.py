@@ -2,9 +2,21 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import re
 from PIL import Image, ImageTk
+from pathlib import Path
+import sys
 
-BUTTONACTIVEIMAGE = "./img/botones/botonsalchicha.png"
-BUTTONDISABLEIMAGE = "./img/botones/botonsalchicha5.png"
+
+def fetch_resource(rsrc_path):
+        try:
+            base_path = Path(sys._MEIPASS)
+        except AttributeError:
+            return rsrc_path  # No es un exe, devuelve la ruta sin modificar
+        else:
+            return base_path / rsrc_path  # Retorna la ruta completa usando '/'
+
+
+BUTTONACTIVEIMAGE = fetch_resource("./img/botones/botonsalchicha.png")
+BUTTONDISABLEIMAGE = fetch_resource("./img/botones/botonsalchicha5.png")
 BUTTONBG = "#1e1e1e"
 BUTTONFG = "#3a110c"
 BUTTONFONT = "Segoe UI"
@@ -81,12 +93,10 @@ class Boton(tk.Button):
         pass
 
 
-
-
-FLECHA_IZQUIERDA = "./img/botones/flecha-izquierda.png"
-FLECHA_DERECHA = "./img/botones/flecha-derecha.png"
-FLECHA_IZQUIERDA_DESHAB = "./img/botones/flecha_izquierda_deshab.png"
-FLECHA_DERECHA_DESHAB = "./img/botones/flecha_derecha_deshab.png"
+FLECHA_IZQUIERDA = fetch_resource("./img/botones/flecha-izquierda.png")
+FLECHA_DERECHA = fetch_resource("./img/botones/flecha-derecha.png")
+FLECHA_IZQUIERDA_DESHAB = fetch_resource("./img/botones/flecha_izquierda_deshab.png")
+FLECHA_DERECHA_DESHAB = fetch_resource("./img/botones/flecha_derecha_deshab.png")
 
 
 class BotonFlecha(tk.Button):

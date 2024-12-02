@@ -62,11 +62,12 @@ class ModificarLocal(ven.VentanaPrincipal):
     def cambiar_local(self):
         if li.cambiar_info_local(self.local_seleccionado):
             texto = "¡Cambio Realizado con Exito!"
-            ven.VentanaAvisoTL(self, texto=texto, titulo_ventana="Cambio Realizado")
+            self.datos["Local"] = li.obtener_info_local()
+            ven.VentanaAvisoTL(self, texto=texto, titulo_ventana="Cambio Realizado").wait_window()
             self.volver()
         else:
             texto = "¡No se pudo realizar el Cambio!"
-            ven.VentanaAvisoTL(self, texto=texto, titulo_ventana="Error")
+            ven.VentanaAvisoTL(self, texto=texto, titulo_ventana="Error").wait_window()
 
 
     def volver(self):
