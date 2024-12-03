@@ -84,7 +84,6 @@ class Modificar(v.VentanaPrincipal):
         selection = self.tabla_menu.selection()
         if selection:
             self.boton_ingredientes.habilitar_boton()
-            self.boton_modificar_ingredientes.habilitar_boton()
             self.boton_modificar_detalles.habilitar_boton()
             item = self.tabla_menu.item(selection[0], "values")
             print(item)
@@ -101,7 +100,6 @@ class Modificar(v.VentanaPrincipal):
     def buscar_nombre(self):
         self.like = self.entry_busqueda.get().strip().lower()
         self.actualizar_tabla()
-        self.boton_modificar_ingredientes.deshabilitar_boton()
         self.boton_modificar_detalles.deshabilitar_boton()
         
 
@@ -181,7 +179,6 @@ class Modificar(v.VentanaPrincipal):
                 filtros.append(self.where_principal[1])
             self.where = filtros if filtros else self.where_principal
             ventana.destroy()
-            self.boton_modificar_ingredientes.deshabilitar_boton()
             self.boton_modificar_detalles.deshabilitar_boton()
             self.actualizar_tabla()
 
