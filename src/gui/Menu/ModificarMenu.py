@@ -391,6 +391,7 @@ class Detalles(v.VentanaTopLevel):
                     id_tamaño = self.parent.datos_menu.obtener_id_por_nombre("Tamaños", "ID_tamaño", "nombre_tamaño", self.tamaños_cb.get())
 
                     self.parent.datos_menu.actualizar_menu(self.parent.id_seleccionado, self.nombre_entry.get(), self.precio_entry.get(), id_categoria, id_tamaño)
+                    self.parent.datos["Usuario_Logueado"]["Registro"].insertar("Modificar", "Menu")
                     self.destroy()
                     self.parent.actualizar_tabla()
             else:

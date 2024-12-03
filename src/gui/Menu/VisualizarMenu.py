@@ -20,6 +20,8 @@ class VisualizarMenu(v.VentanaPrincipal):
         self.id_seleccionado = None
         self.where = None
 
+        self.datos["Usuario_Logueado"]["Registro"].insertar("Ver", "Menu")
+
         self.protocol("WM_DELETE_WINDOW", self.volver)
 
         self.entry_busqueda = ttk.Entry(self)

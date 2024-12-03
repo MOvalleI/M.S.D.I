@@ -241,4 +241,5 @@ class Eliminar(v.VentanaPrincipal):
     def eliminar_menu(self):
         if v.VentanaConfirmacion(self, texto="¿Esta seguro que desea\nEliminarlo este Menu?\nDespues se no puede\ndeshacer el cambio", titulo_ventana="Eliminar del Menu").obtener_respuesta():
             self.datos_menu.eliminar_menu(self.id_seleccionado)
+            self.datos["Usuario_Logueado"]["Registro"].insertar("Eliminar", "Menu")
             self.actualizar_tabla()

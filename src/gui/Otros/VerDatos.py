@@ -14,6 +14,9 @@ class VerDatos(ven.VentanaPrincipal):
 
         self.accion = accion
 
+        if self.accion == "Ver":
+            self.datos["Usuario_Logueado"]["Registro"].insertar("Ver", "Otros")
+
         self.selected_table = None
         self.selected_value = None
 
@@ -129,6 +132,7 @@ class VerDatos(ven.VentanaPrincipal):
     def eliminar(self):
         if ven.VentanaConfirmacion(self, texto="¿Está seguro que desea\nELIMINAR este dato?\n¡Este cambio no se puede deshacer!", titulo_ventana=f"Eliminar de {self.selected_table}", opcion1="Eliminar").obtener_respuesta():
             self.datos_inventario.eliminar_otros_datos(self.selected_table, self.selected_value[0])
+            self.datos["Usuario_Logueado"]["Registro"].insertar("Eliminar", self.selected_table)
             self.cambiar_tabla()
 
 
@@ -227,6 +231,7 @@ class Modificar(ven.VentanaTopLevel):
                     pk = self.parent.selected_value[0]
                     self.parent.datos_inventario.modificar_otros_datos(self.parent.selected_table, self.parent.valores[self.parent.selected_table][0], self.parent.valores[self.parent.selected_table][1], pk, self.nombre_entry.get(), direccion=direccion, columna_direccion=columna_direccion)
                     self.destroy()
+                    self.parent.datos["Usuario_Logueado"]["Registro"].insertar("Modificar", self.parent.selected_table)
                     self.parent.cambiar_tabla()
             elif self.parent.selected_table == "Lugares":
                 if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Modificar\nEstos Datos?", titulo_ventana="Modificar Datos").obtener_respuesta():

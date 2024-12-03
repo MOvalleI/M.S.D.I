@@ -224,8 +224,8 @@ class AgregarMenu(ven.VentanaPrincipal):
                 self.ingredientes[i] = self.datos_inventario.obtener_id_ingredientes_por_nombre(self.ingredientes[i])[0]
             pk = self.datos_inventario.obtener_pk("Menu", "ID_menu")
             self.datos_inventario.agregar_menu(pk, self.nombre, self.precio, self.categoria, self.tamaño, self.ingredientes)
-            self.destroy()
-
+            self.datos["Usuario_Logueado"]["Registro"].insertar("Agregar", "Menu")
+            self.volver()
 
     def volver(self):
         self.destroy()

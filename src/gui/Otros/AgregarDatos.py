@@ -143,6 +143,7 @@ class AgregarDatos(ven.VentanaPrincipal):
                 if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Agregar\nEstos Datos?", titulo_ventana="Agregar Datos").obtener_respuesta():
                     pk = self.datos_inventario.obtener_pk(self.lista.get(), self.valores[self.lista.get()][0])
                     self.datos_inventario.insertar_otros_datos(self.lista.get(), pk, self.nombre_entry.get(),direccion)
+                    self.datos["Usuario_Logueado"]["Registro"].insertar("Agregar", self.tabla_seleccionada)
                     self.volver()
             else:
                 self.label_nombre_error.config(text="* Ya existe un valor con este nombre")
