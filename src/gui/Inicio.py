@@ -4,7 +4,6 @@ import gui.Login
 import gui.Ventas.AgregarVentas as av
 import gui.Ventanas as ven
 import gui.Inventario.Agregar as iai
-import gui.Inventario.Eliminar as iei
 import gui.Inventario.Ver as ivi
 import gui.Componentes as comp
 import gui.Menu.VisualizarMenu as vm
@@ -203,8 +202,9 @@ class Inicio(ven.VentanaPrincipal):
                 eliminar_text = "Eliminar\nProducto"
                 modificar_text = "Modificar\nProducto"
                 self.boton_agregar.config(command=self.abrir_agregar_producto)
-                self.boton_eliminar.config(command=self.abrir_eliminar_producto)
+                self.boton_eliminar.config(command=self.abrir_eliminar_inventario)
                 self.boton_ver.config(command=self.abrir_ver_inventario)
+                self.boton_modificar.config(command=self.abrir_modificar_inventario)
             case "Otros":
                 logo = IMG_OTROS
                 agregar_text = "Agregar\nOtros Datos"
@@ -327,9 +327,9 @@ class Inicio(ven.VentanaPrincipal):
         ad.AgregarDatos(datos=self.datos)
 
     
-    def abrir_eliminar_producto(self):
+    def abrir_eliminar_inventario(self):
         self.destroy()
-        iei.Eliminar(datos=self.datos)
+        ivi.VerInventario(datos=self.datos, tipo="Eliminar")
 
 
     def abrir_eliminar_usuario(self):
@@ -374,6 +374,11 @@ class Inicio(ven.VentanaPrincipal):
     def abrir_modificar_menu(self):
         self.destroy()
         mm.Modificar(datos=self.datos)
+
+
+    def abrir_modificar_inventario(self):
+        self.destroy()
+        ivi.VerInventario(datos=self.datos, tipo="Modificar")
 
 
     def abrir_modificar_local(self):

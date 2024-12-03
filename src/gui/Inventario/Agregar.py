@@ -10,13 +10,7 @@ class Agregar(ven.VentanaPrincipal):
         super().__init__(titulo_ventana="Añadir Productos", titulo="Añadir\nProductos")
 
         self.datos = datos
-
-        # Textos de error
-        self.label_error_nombre = None
-        self.label_error_precio = None
-        self.label_error_min = None
-        self.label_error_max = None
-        self.label_error_stock = None
+        self.datos_productos = self.datos["Inventario"]
 
         self.resizable(False, False)
 
@@ -27,7 +21,16 @@ class Agregar(ven.VentanaPrincipal):
         self.bind('<Escape>', lambda event: self.volver)
 
     def configurar_ventana(self):
-        self.geometry("450x625")
+        ancho = 460
+        alto = 625
+
+        pantalla_ancho = self.winfo_screenwidth()
+        pantalla_alto = self.winfo_screenheight()
+
+        x = (pantalla_ancho - ancho) // 2
+        y = (pantalla_alto - alto) // 2
+
+        self.geometry(f"{ancho}x{alto}+{x}+{y}")
 
         self.agregar_titulo()
 
@@ -59,6 +62,9 @@ class Agregar(ven.VentanaPrincipal):
         self.nombre_entry = tk.Entry(panel_nombre, width=25)
         self.nombre_entry.pack(expand=True)
 
+        self.label_error_nombre = tk.Label(panel_nombre, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_error_nombre.pack(expand=True)
+
         # Clase
         panel_clase = tk.Frame(panel, background=self.bgcolor)
         panel_clase.pack(expand=True, fill="both", side="left")
@@ -66,9 +72,11 @@ class Agregar(ven.VentanaPrincipal):
         label_clase = tk.Label(panel_clase, text="Clase:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label_clase.pack(expand=True)
 
-        values = ["clase1","clase2","clase3"]
+        values = [x[1] for x in self.datos_productos.simple_complete_query("Clases")]
 
         self.clase_list = ttk.Combobox(panel_clase, values=values)
+        self.clase_list.config(state="readonly")
+        self.clase_list.current(0)
         self.clase_list.pack(expand=True)
 
     
@@ -84,9 +92,11 @@ class Agregar(ven.VentanaPrincipal):
         label = tk.Label(panel_lugar, text="Lugar de Compra:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        values = ["clase1","clase2","clase3"]
+        values = [x[1] for x in self.datos_productos.simple_complete_query("Lugares")]
 
         self.lugar_compra_list = ttk.Combobox(panel_lugar, values=values)
+        self.lugar_compra_list.config(state="readonly")
+        self.lugar_compra_list.current(0)
         self.lugar_compra_list.pack(expand=True)
 
         # Unidad
@@ -96,9 +106,11 @@ class Agregar(ven.VentanaPrincipal):
         label = tk.Label(panel_unidad, text="Unidad:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
-        values = ["clase1","clase2","clase3"]
+        values = [x[1] for x in self.datos_productos.simple_complete_query("Unidades")]
 
         self.unidad_list = ttk.Combobox(panel_unidad, values=values)
+        self.unidad_list.config(state="readonly")
+        self.unidad_list.current(0)
         self.unidad_list.pack(expand=True)
 
 
@@ -111,12 +123,15 @@ class Agregar(ven.VentanaPrincipal):
         panel_precio = tk.Frame(panel, background=self.bgcolor)
         panel_precio.pack(expand=True, fill="both", side="left")
 
-        label = tk.Label(panel_precio, text="Precio:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
+        label = tk.Label(panel_precio, text="Precio Unitario:", font=(self.font, 16), background=self.bgcolor, foreground=self.fgcolor)
         label.pack(expand=True)
 
         self.precio_entry = comp.CampoTexto(panel_precio, tipo="int")
         self.precio_entry.config(width=15)
         self.precio_entry.pack()
+
+        self.label_error_precio = tk.Label(panel_precio, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_error_precio.pack(expand=True)
 
         # Stock Mínimo
         panel_stock_min = tk.Frame(panel, background=self.bgcolor)
@@ -128,6 +143,9 @@ class Agregar(ven.VentanaPrincipal):
         self.stock_min_entry = comp.CampoTexto(panel_stock_min, tipo="int")
         self.stock_min_entry.config(width=15)
         self.stock_min_entry.pack()
+
+        self.label_error_min = tk.Label(panel_stock_min, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_error_min.pack(expand=True)
 
     
     def agregar_fila_4(self):
@@ -146,6 +164,9 @@ class Agregar(ven.VentanaPrincipal):
         self.stock_max_entry.config(width=15)
         self.stock_max_entry.pack()
 
+        self.label_error_max = tk.Label(panel_stock_deseado, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_error_max.pack(expand=True)
+
         # Stock Disponible
         panel_stock_disponible = tk.Frame(panel, background=self.bgcolor)
         panel_stock_disponible.pack(expand=True, fill="both", side="left")
@@ -157,16 +178,73 @@ class Agregar(ven.VentanaPrincipal):
         self.stock_actual_entry.config(width=15)
         self.stock_actual_entry.pack()
 
+        self.label_error_stock = tk.Label(panel_stock_disponible, background=self.bgcolor, foreground="red", font=(self.font, 16), text="")
+        self.label_error_stock.pack(expand=True)
+
 
     def agregar_botones_opciones(self):
         panel = tk.Frame(self, background=self.bgcolor)
         panel.pack(expand=True, pady=15, fill="both")
 
-        self.b_agregar = comp.Boton(panel, text="Agregar\nProducto", command=None)
+        self.b_agregar = comp.Boton(panel, text="Agregar\nProducto", command=self.agregar_producto)
         self.b_agregar.pack(expand=True, side="left")
 
         self.b_volver = comp.Boton(panel, text="Volver", command=self.volver)
         self.b_volver.pack(expand=True, side="left")
+
+
+    def agregar_producto(self):
+        is_valid = 0
+
+        if self.nombre_entry.get() == "":
+            self.label_error_nombre.config(text="* Campo Obligatorio")
+        else:
+            self.label_error_nombre.config(text="")
+            is_valid+=1
+
+        if self.precio_entry.get() == "":
+            self.label_error_precio.config(text="* Campo Obligatorio")
+        else:
+            self.label_error_precio.config(text="")
+            is_valid+=1
+
+        if self.stock_min_entry.get() == "":
+            self.label_error_min.config(text="* Campo Obligatorio")
+        else:
+            self.label_error_min.config(text="")
+            is_valid+=1
+
+        if self.stock_max_entry.get() == "":
+            self.label_error_max.config(text="* Campo Obligatorio")
+        else:
+            self.label_error_max.config(text="")
+            is_valid+=1
+
+        if self.stock_actual_entry.get() == "":
+            self.label_error_stock.config(text="* Campo Obligatorio")
+        else:
+            self.label_error_stock.config(text="")
+            is_valid+=1
+
+        if is_valid == 5:
+            if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Agregar\neste Produto?", titulo_ventana="Agregar Producto").obtener_respuesta():
+                pk = self.datos_productos.obtener_pk("Productos", "id_producto")
+                id_clase = self.datos_productos.obtener_id_por_nombre("Clases", "ID_clase", "nombre_clase", self.clase_list.get())
+                id_lugar = self.datos_productos.obtener_id_por_nombre("Lugares", "id_lugar", "nombre_lugar", self.lugar_compra_list.get())
+                id_unidad = self.datos_productos.obtener_id_por_nombre("Unidades", "id_unidad", "nombre_unidad", self.unidad_list.get())
+                if self.datos_productos.agregar_producto(pk, self.nombre_entry.get(), id_clase, id_lugar, id_unidad, self.precio_entry.get(), self.stock_min_entry.get(), self.stock_max_entry.get()): 
+                    if self.datos_productos.insertar_stock_local(pk, self.stock_actual_entry.get()):
+                        ven.VentanaAvisoTL(self, texto="¡Producto agregado con Éxito!", titulo_ventana="Agregar Producto")
+                        self.datos["Usuario_Logueado"]["Registro"].insertar("Agregar", "Productos")
+                        self.volver()
+                    else:
+                        ven.VentanaAvisoTL(self, texto="No se pudo agregar el Producto.", titulo_ventana="Error")
+                else:
+                    ven.VentanaAvisoTL(self, texto="No se pudo agregar el Producto.", titulo_ventana="Error")
+
+                        
+
+
 
 
     def volver(self, e=None):
@@ -174,87 +252,6 @@ class Agregar(ven.VentanaPrincipal):
         i.Inicio(datos=self.datos)
 
     
-
-    # def aplicar_cambios(self) -> None:
-    #     # Va a parecer una tonteria, pero no voy a reescribir todo para ajustar esto
-    #     # No me importa si hay mas de 50 lineas en este metodo
-    #     if self.label_error_nombre:
-    #         self.label_error_nombre.grid_forget()
-    #         self.label_error_nombre = None
-
-    #     if self.label_error_precio:
-    #         self.label_error_precio.grid_forget()
-    #         self.label_error_precio = None
-
-    #     if self.label_error_max:
-    #         self.label_error_max.grid_forget()
-    #         self.label_error_max = None
-
-    #     if self.label_error_min:
-    #         self.label_error_min.grid_forget()
-    #         self.label_error_min = None
-
-    #     if self.label_error_stock:
-    #         self.label_error_stock.grid_forget()
-    #         self.label_error_stock = None
-
-    #     if self.frame1.comprobar_vacio():
-    #         self.label_error_nombre = tk.Label(self.frame1, text="Campo obligatorio*", fg="red")
-    #         self.label_error_nombre.grid(row=2, column=0, pady=10)
-
-    #     if self.frame5.comprobar_vacio():
-    #         self.label_error_precio = tk.Label(self.frame5, text="Campo obligatorio*", fg="red")
-    #         self.label_error_precio.grid(row=2, column=0, pady=10)
-
-    #     if self.frame6.comprobar_vacio():
-    #         self.label_error_max = tk.Label(self.frame6, text="Campo obligatorio*", fg="red")
-    #         self.label_error_max.grid(row=2, column=0, pady=10)
-
-    #     if self.frame7.comprobar_vacio():
-    #         self.label_error_min = tk.Label(self.frame7, text="Campo obligatorio*", fg="red")
-    #         self.label_error_min.grid(row=2, column=0, pady=10)
-
-    #     if self.frame8.comprobar_vacio():
-    #         self.label_error_stock = tk.Label(self.frame8, text="Campo obligatorio*", fg="red")
-    #         self.label_error_stock.grid(row=2, column=0, pady=10)
-
-    #     if not self.frame1.comprobar_vacio() and not self.frame5.comprobar_vacio() and not self.frame6.comprobar_vacio() and not self.frame7.comprobar_vacio() and not self.frame8.comprobar_vacio():
-    #         exists = CONSULTAS.get_specific_data(table="Inventario", column='nombre', name=self.frame1.get_entry(), column_where='nombre')
-    #         if exists is None and int(self.frame6.get_entry())<int(self.frame7.get_entry()):
-    #             message = msbox.askquestion("¿Aplicar Cambios?", "¿Desea ingresar los datos?")
-    #             if message=="yes":
-    #                 self.insertar_datos()
-    #                 msbox.showinfo("Datos Ingresados", "¡Se han ingresado los datos correctamente!")
-    #                 self.cerrar_ventana()
-    #         else:
-    #             if exists is not None:
-    #                 self.label_error_nombre = tk.Label(self.frame1, text="El producto ya existe.", fg="red")
-    #                 self.label_error_nombre.grid(row=2, column=0, pady=10)
-    #             if int(self.frame6.get_entry())>=int(self.frame7.get_entry()):
-    #                 msbox.showerror(title="¡Error!", message="Stock Mínimo no puede ser mayor o igual a Stock Máximo.")
-                    
-
-    # def insertar_datos(self) -> None:
-    #     nombre = self.frame1.get_entry()
-    #     clase = CONSULTAS.get_id_from_column(name=self.frame2.get_selected_list(), table="clases", column="nombre_clase")
-    #     lugar = CONSULTAS.get_id_from_column(name=self.frame3.get_selected_list(), table="lugares", column="nombre_lugar")
-    #     unidad = CONSULTAS.get_id_from_column(name=self.frame4.get_selected_list(), table="unidades", column="nombre_unidad")
-    #     precio = self.frame5.get_entry()
-    #     stock_minimo = self.frame6.get_entry()
-    #     stock_maximo = self.frame7.get_entry()
-    #     stock = self.frame8.get_entry()
-
-    #     data = [nombre, clase, lugar, unidad, precio, stock_minimo, stock_maximo, stock]
-    #     columnas = ["nombre", "id_clase", "id_lugar", "id_unidad", "precio", "stock_minimo", "stock_maximo", "stock"]
-
-    #     CONSULTAS.insert_data(record=data, column=columnas, table="Inventario")
-
-    # def matriz_a_lista(self, lista: list):
-    #     values = []
-
-    #     for i in range(len(lista)):
-    #         values.append(lista[i][0])
-    #     return values
 
 
 if __name__ == "__main__":

@@ -1,9 +1,20 @@
 import hashlib
 import pyodbc
 import json
-from datetime import datetime
+import sys
+from pathlib import Path
 
-def obtener_info_db(file: str = "./db/db_info.json") -> str:
+def fetch_resource(rsrc_path):
+        try:
+            base_path = Path(sys._MEIPASS)
+        except AttributeError:
+            return rsrc_path  # No es un exe, devuelve la ruta sin modificar
+        else:
+            return base_path / rsrc_path  # Retorna la ruta completa usando '/'
+
+DB_INFO = fetch_resource("./db/db_info.json")
+
+def obtener_info_db(file: str = DB_INFO) -> str:
     with open(file, 'r') as archivo:
         datos = json.load(archivo)
 

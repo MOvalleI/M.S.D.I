@@ -4,14 +4,20 @@ ESTADO DE LAS OPCIONES
 
 - Menu: 70%   -- Falta Implementrar "Modificar ingredientes", lo demás está hecho
 
-- Inventario 40% -- XD
+- Inventario 70% -- 
+	- Agregar Menu: COMPLETADO
+	- Ver Menu (y opciones de filtrado): COMPLETADO
+	- Eliminar Menu: EN PROCESO
+	- Modificar MEnu: EN PROCESO
 
-- Otros Datos 95% --  Falta arreglar la actualización de la tabla al modificar "Lugares"
+- Otros Datos 100%
 
-- Usuarios 60% -- Actualizan solo la sesión actual, falta que actualizen la base de datos completa
+- Usuarios 100%
 
-- Opciones 50% -- Solo GUI. Falta implementar el cambio en la base de datos
+- Opciones 100%
 
-- Perfil 60% -- Falta añadir opción de cambio de patron, e implementar los cambios cuando cierre sesión
+- Perfil 100%
 
-- Auditoria 0% (xd) -- Planificado, no implementado
+- Encriptar datos de servidor 0% -- Falta crear Programa externo que se encargue de configurar los datos del server (De momento no afecta al programa principal)
+
+- Auditoria 99% -- Implementarla en Ventanas de Inventario

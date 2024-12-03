@@ -1,7 +1,19 @@
 import pyodbc
 import json
+import sys
+from pathlib import Path
 
-def obtener_info_db(file: str = "./db/db_info.json") -> str:
+def fetch_resource(rsrc_path):
+        try:
+            base_path = Path(sys._MEIPASS)
+        except AttributeError:
+            return rsrc_path  # No es un exe, devuelve la ruta sin modificar
+        else:
+            return base_path / rsrc_path  # Retorna la ruta completa usando '/'
+
+DB_INFO = fetch_resource("./db/db_info.json")
+
+def obtener_info_db(file: str = DB_INFO) -> str:
     with open(file, 'r') as archivo:
         datos = json.load(archivo)
 
@@ -64,7 +76,8 @@ class InventarioDB:
     def inner_join_productos(self):
         query = f"""SELECT p.ID_producto, p.nombre_producto, p.stock_minimo, p.stock_maximo, pl.stock_disponible
         FROM Productos as p INNER JOIN ProductosLocales as pl
-        ON p.ID_producto = pl.ID_producto"""
+        ON p.ID_producto = pl.ID_producto
+        WHERE pl.producto_disponible = 1"""
 
         return self.query_execute(query)
     
@@ -277,6 +290,142 @@ class InventarioDB:
             return True
         except:
             self.conn.rollback()
+            return False
+        
+    
+    def agregar_producto(self, id_producto, nombre, id_clase, id_lugar, id_unidad, precio, stock_min, stock_max):
+        try:
+            query = "INSERT INTO Productos VALUES (?,?,?,?,?, ?, ?, ?)"
+            self.cursor.execute(query, (id_producto, nombre, id_clase, id_lugar, id_unidad, precio, stock_min, stock_max))
+            self.conn.commit()
+            return True
+        except:
+            return False
+        
+    
+    def insertar_stock_local(self, id_producto, cantidad):
+        try:
+            query = "EXEC insertar_stock_producto ?, ?"
+            self.cursor.execute(query, (id_producto, cantidad))
+            self.conn.commit()
+            return True
+        except:
+            return False
+        
+    
+    def filtrar_productos(self, nombre=None, id_tabla1=None, id_tabla2=None, id_tabla3=None,
+                                precio=None, stock_min=None, stock_deseado=None, stock_actual=None):
+        # Consulta base con WHERE 1=1 para facilitar concatenar condiciones
+        consulta = f"""SELECT p.id_producto, nombre_producto, p.stock_minimo, p.stock_maximo, pl.stock_disponible FROM Productos p
+                        INNER JOIN ProductosLocales pl ON p.id_producto = pl.id_producto
+                        WHERE pl.producto_disponible = 1"""
+        
+        # Lista para almacenar los parámetros
+        parametros = []
+        
+        # Filtro por nombre
+        if nombre is not None:
+            consulta += " AND p.nombre_producto LIKE ?"
+            parametros.append(f"%{nombre}%")  # Agregar el valor con comodines para búsqueda parcial
+        
+        # Filtro por id_tabla1
+        if id_tabla1 is not None:
+            consulta += " AND p.id_clase = ?"
+            parametros.append(id_tabla1)
+        
+        # Filtro por id_tabla2
+        if id_tabla2 is not None:
+            consulta += " AND p.id_lugar = ?"
+            parametros.append(id_tabla2)
+        
+        # Filtro por id_tabla3
+        if id_tabla3 is not None:
+            consulta += " AND p.id_unidad = ?"
+            parametros.append(id_tabla3)
+        
+        # Filtro por precio con operador
+        if precio is not None:
+            if isinstance(precio, list) and len(precio) == 2:
+                operador, valor = precio
+                consulta += f" AND p.precio_unitario {operador} ?"
+                parametros.append(valor)
+        
+        # Filtro por stock_min con operador
+        if stock_min is not None:
+            if isinstance(stock_min, list) and len(stock_min) == 2:
+                operador, valor = stock_min
+                consulta += f" AND p.stock_minimo {operador} ?"
+                parametros.append(valor)
+        
+        # Filtro por stock_deseado con operador
+        if stock_deseado is not None:
+            if isinstance(stock_deseado, list) and len(stock_deseado) == 2:
+                operador, valor = stock_deseado
+                consulta += f" AND p.stock_maximo {operador} ?"
+                parametros.append(valor)
+        
+        # Filtro por stock_actual con operador
+        if stock_actual is not None:
+            if isinstance(stock_actual, list) and len(stock_actual) == 2:
+                operador, valor = stock_actual
+                consulta += f" AND pl.stock_actual {operador} ?"
+                parametros.append(valor)
+        
+        self.cursor.execute(consulta, parametros)
+        
+        # Obtener los resultados
+        return self.cursor.fetchall()
+    
+
+    def buscar_tabla_por_producto(self, id_producto, tabla, columna, columna_join):
+        query = f"""SELECT t.{columna} FROM {tabla} t
+                    INNER JOIN Productos p ON t.{columna_join} = p.{columna_join}
+                    WHERE p.ID_producto = ?"""
+        
+        self.cursor.execute(query, (id_producto,))
+        return self.cursor.fetchone()[0]
+    
+
+    def obtener_valor_producto(self, id_producto, valor):
+        query = f"""SELECT {valor} FROM Productos
+                    WHERE id_producto = ?"""
+        
+        self.cursor.execute(query, (id_producto,))
+        return self.cursor.fetchone()[0]
+    
+
+    def obtener_stock_actual(self, id_producto):
+        query = f"""SELECT stock_disponible FROM ProductosLocales
+                    WHERE id_producto = ?"""
+        
+        self.cursor.execute(query, (id_producto,))
+        return self.cursor.fetchone()[0]
+    
+
+    def modificar_producto(self, id_producto: int, datos: list, id_local: int):
+        try:
+            query = f"""UPDATE Productos
+                        SET nombre_producto = ?,
+                            id_clase = ?,
+                            id_lugar = ?,
+                            id_unidad = ?,
+                            precio_unitario = ?,
+                            stock_minimo = ?,
+                            stock_maximo = ?
+                        WHERE id_producto = ?"""
+            
+            self.cursor.execute(query, (datos[0],datos[1],datos[2],datos[3],datos[4],datos[5],datos[6], id_producto))
+
+            query = f"""UPDATE ProductosLocales
+                        SET stock_disponible = ?
+                        WHERE id_producto = ? AND id_local = ?"""
+            
+            self.cursor.execute(query, (datos[7], id_producto, id_local))
+
+            self.conn.commit()
+
+            return True
+        except:
             return False
 
 

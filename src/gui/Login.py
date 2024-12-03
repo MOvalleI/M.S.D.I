@@ -10,7 +10,7 @@ import data.LocalInfo as li
 import ctypes
 
 
-BG_IMAGE = "./img/logos/Imagen fondo para login.png"
+BG_IMAGE = "./img/logos/Imagen_fondo_para_login.png"
 
 
 class Login(tk.Tk):

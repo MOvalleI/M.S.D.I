@@ -2,9 +2,18 @@ import data.InventarioDB as idb
 import data.Usuarios as u
 import gui.Login as l
 import gui.Ventanas as ven
+import os
+import sys
+
+def set_base_directory():
+    if getattr(sys, 'frozen', False):
+        os.chdir(os.path.dirname(sys.executable))
+    else:
+        os.chdir(os.path.dirname(__file__))
 
 class MSDI:
     def __init__(self):
+        set_base_directory()
         self.datos_inventario = None
         self.datos_usuarios = None
         self.ventana_cargando()

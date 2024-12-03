@@ -1,9 +1,21 @@
 import sqlite3
+import sys
+from pathlib import Path
+
+def fetch_resource(rsrc_path):
+        try:
+            base_path = Path(sys._MEIPASS)
+        except AttributeError:
+            return rsrc_path  # No es un exe, devuelve la ruta sin modificar
+        else:
+            return base_path / rsrc_path  # Retorna la ruta completa usando '/'
+
+DB_INFO = fetch_resource("./db/Preferences.db")
 
 "Modulo con funciones para configurar la base de datos PREFERENCES"
 
 def conectar() -> sqlite3:
-    conn = sqlite3.connect("./db/Preferences.db")
+    conn = sqlite3.connect(DB_INFO)
     cursor = conn.cursor()
     return conn, cursor
 
