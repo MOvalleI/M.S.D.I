@@ -427,6 +427,16 @@ class InventarioDB:
             return True
         except:
             return False
+        
+
+    def eliminar_producto(self, id_producto):
+        try:
+            query = "EXEC eliminar_producto ?"
+            self.cursor.execute(query, (id_producto,))
+            self.conn.commit()
+            return True
+        except:
+            return False
 
 
     def query_insert(self, query):

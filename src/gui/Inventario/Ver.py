@@ -6,7 +6,7 @@ import gui.Inicio as i
 
 class VerInventario(ven.VentanaPrincipal):
     def __init__(self, datos: dict, tipo: str = "Ver"):
-        super().__init__(titulo_ventana = "MSDI | Micro Sistema de Inventario | Ver Inventario", titulo = "Ver\nInventario")
+        super().__init__(titulo_ventana = "MSDI | Micro Sistema de Inventario | Productos", titulo = "Ver\nProductos")
 
         self.datos = datos
         self.inventario = self.datos["Inventario"]
@@ -30,6 +30,11 @@ class VerInventario(ven.VentanaPrincipal):
         self.agregar_tabla()
         self.agregar_opciones()
 
+        if self.tipo == "Modificar":
+            self.configurar_titulo("Modificar\nProductos")
+        elif self.tipo == "Eliminar":
+            self.configurar_titulo("Eliminar\nProductos")
+
         self.centrar_ventana()
 
 
@@ -42,6 +47,7 @@ class VerInventario(ven.VentanaPrincipal):
 
         self.producto_entry = comp.CampoTexto(panel)
         self.producto_entry.config(width=25)
+        self.producto_entry.bind("<KeyRelease>", lambda event: self.buscar_nombre())
         self.producto_entry.pack(pady=5)
 
         encabezados = ["ID producto", "Nombre", "Stock Mínimo", "Stock Deseado", "Stock Disponible"]
@@ -53,6 +59,11 @@ class VerInventario(ven.VentanaPrincipal):
         self.tabla.pack(pady=5)
 
         self.tabla.bind("<<TreeviewSelect>>", self.seleccionar_producto)
+
+    
+    def buscar_nombre(self):
+        nombre = self.producto_entry.get()
+        self.actualizar_tabla([nombre,None,None,None,None,None,None,None])
 
 
     def agregar_opciones(self):
@@ -85,7 +96,7 @@ class VerInventario(ven.VentanaPrincipal):
         self.b_accion = None
 
         if self.tipo == "Eliminar":
-            self.b_accion = comp.Boton(panel_opciones, text="Eliminar\nProducto", command=None)
+            self.b_accion = comp.Boton(panel_opciones, text="Eliminar\nProducto", command=self.eliminar_producto)
             self.b_accion.deshabilitar_boton()
             self.b_accion.pack(expand=True, side="left")
         elif self.tipo == "Modificar":                
@@ -171,7 +182,15 @@ class VerInventario(ven.VentanaPrincipal):
 
 
     def eliminar_producto(self):
-        pass
+        if ven.VentanaConfirmacion(self, texto="¿Seguro que desea Eliminar\neste Producto?", titulo_ventana="Eliminar Producto").obtener_respuesta():
+            if self.inventario.eliminar_producto(self.id_producto_seleccionado):
+                self.datos["Usuario_Logueado"]["Registro"].insertar("Eliminar", "Productos")
+                self.actualizar_tabla([None,None,None,None,None,None,None,None])
+                ven.VentanaAvisoTL(self, texto="¡Producto Eliminado con Éxito!", titulo_ventana="Eliminar Producto").wait_window()
+                self.b_accion.deshabilitar_boton()
+                self.b_detalles.deshabilitar_boton()
+            else:
+                ven.VentanaAvisoTL(self, texto="No se pudo eliminar el producto.", titulo_ventana="Error").wait_window()
 
 
     def modificar_producto(self):
@@ -744,5 +763,7 @@ class Modificar(ven.VentanaTopLevel):
                     self.parent.datos["Usuario_Logueado"]["Registro"].insertar("Modificar", "Productos")
                     self.destroy()
                     self.parent.actualizar_tabla([None,None,None,None,None,None,None,None])
+                    self.parent.b_accion.deshabilitar_boton()
+                    self.parent.b_detalles.deshabilitar_boton()
                 else:
                     ven.VentanaAvisoTL(self, texto="No se pudo modificar el Producto.", titulo_ventana="Error").wait_window()

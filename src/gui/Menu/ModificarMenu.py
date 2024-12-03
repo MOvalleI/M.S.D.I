@@ -70,11 +70,6 @@ class Modificar(v.VentanaPrincipal):
         self.boton_modificar_detalles.deshabilitar_boton()
         self.boton_modificar_detalles.pack(expand=True, side="left")
 
-        self.boton_modificar_ingredientes = comp.Boton(panel, text="Modificar\nIngredientes", command=None)
-        self.boton_modificar_ingredientes.deshabilitar_boton()
-        self.boton_modificar_ingredientes.pack(expand=True, side="left")
-
-
         self.boton_volver = comp.Boton(panel, text="Volver") 
         self.boton_volver.config(command=self.volver)
         self.boton_volver.pack(expand=True, side="left")
@@ -397,18 +392,6 @@ class Detalles(v.VentanaTopLevel):
             else:
                 self.label_nombre_error.config("* Ya Existe Menu con ese Nombre")
 
-
-class Ingredientes(v.VentanaTopLevel):
-    def __init__(self, parent = None):
-        super().__init__(parent, titulo_ventana = "Ventana Principal", titulo = "Ventana")
-
-        self.parent = parent
-
-        self.configurar_ventana()
-
-
-    def configurar_ventana(self):
-        self.agregar_titulo()
 
     
 
