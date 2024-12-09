@@ -171,6 +171,7 @@ class InventarioDB:
         query = "INSERT INTO ContenidoVenta VALUES (?, ?, ?)"
 
         datos_para_insertar = [(id_venta, datos_menu[0], datos_menu[1]) for datos_menu in menu]
+        print(datos_para_insertar)
         self.cursor.executemany(query, datos_para_insertar)
         self.conn.commit()
 

@@ -23,7 +23,7 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.resizable(False, False)
         self.config(background=self.bgcolor)
 
-        self.protocol("WM_DELETE_WINDOW",lambda : self.parent.actualizar_pedido(None, None))
+        self.protocol("WM_DELETE_WINDOW",self.cancelar)
 
         self.agregar_titulo()
         self.agregar_nombre()
@@ -77,7 +77,7 @@ class ModificarPedido(ven.VentanaTopLevel):
         self.b_agregar.pack(side="left", expand=True)
 
         self.b_cancelar = comp.Boton(panel, text="Cancelar")
-        self.b_cancelar.config(command=lambda : self.parent.actualizar_pedido(None, None))
+        self.b_cancelar.config(command=self.cancelar)
         self.b_cancelar.pack(side="left", expand=True)
 
 
@@ -113,6 +113,10 @@ class ModificarPedido(ven.VentanaTopLevel):
 
         self.destroy()
         self.parent.actualizar_pedido(id=self.id, values=values)
+
+    
+    def cancelar(self):
+        self.destroy()
 
 
 

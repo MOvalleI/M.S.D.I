@@ -170,7 +170,7 @@ class VerInventario(ven.VentanaPrincipal):
         label_unidad.pack(expand=True)
 
         texto_precio = self.inventario.obtener_valor_producto(self.id_producto_seleccionado, "precio_unitario")
-        label_precio = tk.Label(ventana, text=f"Precio Unitario: {texto_precio}", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 20))
+        label_precio = tk.Label(ventana, text=f"Precio Unitario: ${texto_precio}", foreground=self.fgcolor, background=self.bgcolor, font=(self.font, 20))
         label_precio.pack(expand=True)
 
         cerrar = comp.Boton(ventana, text="Cerrar", command=ventana.destroy)
